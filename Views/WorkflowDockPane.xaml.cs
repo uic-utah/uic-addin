@@ -4,7 +4,7 @@ namespace uic_addin.Views {
     /// <summary>
     ///     Interaction logic for WorkflowDockPaneView.xaml
     /// </summary>
-    public partial class WorkflowDockPaneView : UserControl {
+    public partial class WorkflowDockPaneView {
         public WorkflowDockPaneView() {
             InitializeComponent();
         }

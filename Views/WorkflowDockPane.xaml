@@ -20,6 +20,50 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+
     <TextBlock Text="{Binding Heading}" Style="{DynamicResource Esri_TextBlockDockPaneHeader}" />
+    <WrapPanel Grid.Row="0" Width="300" HorizontalAlignment="Left">
+      <TextBlock Style="{DynamicResource Esri_TextBlockH1}"
+                 Width="300" Margin="5,5,0,15"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center">
+        Start with a Facility
+      </TextBlock>
+      <TextBlock Style="{DynamicResource Esri_TextBlockRegular}"
+                 VerticalAlignment="Center"
+                 Margin="0,5"
+                 Width="60">
+        <Run Text="Facility Id:" />
+      </TextBlock>
+      <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}"
+               Margin="5,0"
+               MinWidth="10" Width="230" />
+      <Button Command="{Binding GetSelectedFacility}"
+              ToolTip="Use Selected Facility"
+              Content="Use Selection"
+              Style="{DynamicResource Esri_Button}"
+              Width="Auto"/>
+      <Button Command="{Binding SelectUicAndZoom}"
+              ToolTip="Select and Zoom"
+              Content="Zoom to Facility"
+              Style="{DynamicResource Esri_Button}"
+              Width="Auto"/>
+      <TextBlock Style="{DynamicResource Esri_TextBlockH1}"
+                 Width="300" MaxWidth="5,5,0,15"
+                 VerticalAlignment="Center"
+                 HorizontalAlignment="Center">
+        <Run Text="{Binding Heading}"/>
+      </TextBlock>
+    </WrapPanel>
+    <Grid Grid.Row="1">
+      <ComboBox ItemsSource="{Binding Facilities.Value}" SelectedIndex="{Binding FacilityId.Value}"></ComboBox>
+    </Grid>
   </Grid>
 </UserControl>
+
+
+
+
+
+
+

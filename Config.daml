@@ -1,0 +1,45 @@
+<ArcGIS defaultAssembly="uic-addin.dll" defaultNamespace="uic_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="1.0" desktopVersion="2.2.12813">
+    <Name>UIC Workflow</Name>
+    <Description>An ArcGIS Pro add-in to help manage, create, and validate the UIC GIS database</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>AGRC</Author>
+    <Company>AGRC</Company>
+    <Date>7/9/2018 3:55:00 PM, 2018</Date>
+    <Subject>Editing</Subject>
+  </AddInInfo>
+  <modules>
+    <insertModule id="UICModule" className="UicModule" autoLoad="false" caption="UicModule">
+      <tabs>
+        <tab id="UICTab" keytip="UIC Tools" caption="UIC Tools">
+          <group refID="UICGroup" />
+        </tab>
+      </tabs>
+      <groups>
+        <group id="UICGroup" keytip="uictools" caption="UIC Tools" appearsOnAddInTab="true">
+          <button refID="WorkflowDockPaneShowButton" size="large" />
+        </group>
+      </groups>
+      <controls>
+        <button id="WorkflowDockPaneShowButton"
+                caption="Workflow"
+                keytip="Show the add-in"
+                className="uic_addin.Controls.WorkflowDockPaneShowButton"
+                loadOnClick="true"
+                smallImage="Images\UIC16.png"
+                largeImage="Images\UIC32.png">
+          <tooltip heading="Show Dockpane">UIC Workflow Add-in<disabledText /></tooltip>
+        </button>
+      </controls>
+      <dockPanes>
+        <dockPane id="WorkflowDockPane"
+                  caption="UIC Workflow"
+                  className="uic_addin.Views.WorkflowDockPaneViewModel"
+                  dock="group"
+                  dockWith="esri_core_contentsDockPane">
+          <content className="uic_addin.Views.WorkflowDockPaneView" />
+        </dockPane>
+      </dockPanes>
+    </insertModule>
+  </modules>
+</ArcGIS>
