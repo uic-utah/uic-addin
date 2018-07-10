@@ -38,6 +38,15 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Octokit, Version=0.29.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Octokit.0.29.0\lib\net45\Octokit.dll</HintPath>
+    </Reference>
+    <Reference Include="ProEvergreen, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ProEvergreen.1.2.0\lib\net461\ProEvergreen.exe</HintPath>
+    </Reference>
+    <Reference Include="Semver, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Semver.2.0.4\lib\net452\Semver.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>packages\Serilog.2.7.1\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -114,6 +123,7 @@
     <AddInContent Include="DarkImages\AddInDesktop32.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\FacilityModel.cs" />
     <Compile Include="Views\WorkflowDockPane.xaml.cs">
       <DependentUpon>WorkflowDockPane.xaml</DependentUpon>
     </Compile>
