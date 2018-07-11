@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Windows;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -22,12 +23,16 @@ namespace uic_addin.Views {
             Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
 
+            MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
+        }
+
+        public void SetupSubscriptions(Map map) {
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
                                            return Enumerable.Empty<string>();
                                        }
 
-                                       return await QueryService.GetFacilityIdsFor(id);
+                                       return await QueryService.GetFacilityIdsFor(id, map);
                                    })
                                    .CatchIgnore()
                                    .Switch()
@@ -35,12 +40,13 @@ namespace uic_addin.Views {
 
             Facilities.ObserveOn(Application.Current.Dispatcher)
                       .ForEachAsync(async items => {
-                          if (items?.Count() != 1) {
-                              return;
-                          }
-
                           var pane = (FacilityAttributeDockpaneViewModel)FrameworkApplication
                               .DockPaneManager.Find(FacilityAttributeDockpaneViewModel.DockPaneId);
+
+                          if (items?.Count() != 1) {
+                              pane.Model.Value = new FacilityModel(null);
+                              return;
+                          }
 
                           pane.Model.Value = await QueryService.GetFacilityFor(items.First());
 
@@ -49,7 +55,7 @@ namespace uic_addin.Views {
 
             MapSelectionChangedEvent.Subscribe(async args => {
                 var facilitySelection = args.Selection?.Where(x => string.Equals(SplitLast(x.Key.Name), "uicfacility",
-                                                            StringComparison.InvariantCultureIgnoreCase));
+                                                                                 StringComparison.InvariantCultureIgnoreCase));
 
                 var facilityObjectIds = facilitySelection?.SelectMany(x => x.Value);
 
@@ -57,7 +63,7 @@ namespace uic_addin.Views {
                     return;
                 }
 
-                var facilityIds = await QueryService.GetFacilityIdsFor(facilityObjectIds);
+                var facilityIds = await QueryService.GetFacilityIdsFor(facilityObjectIds, args.Map);
                 if (facilityIds.Count() > 1) {
                     // TODO: show message
                     FrameworkApplication.AddNotification(new Notification {
@@ -65,7 +71,7 @@ namespace uic_addin.Views {
                     });
                 }
 
-                Facilities.Value = new [] { facilityIds.FirstOrDefault() };
+                Facilities.Value = new[] { facilityIds.FirstOrDefault() };
             });
         }
 

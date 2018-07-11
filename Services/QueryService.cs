@@ -12,8 +12,8 @@ using uic_addin.Models;
 
 namespace uic_addin.Services {
     public class QueryService {
-        public static async Task<IEnumerable<string>> GetFacilityIdsFor(string id) => await QueuedTask.Run(() => {
-            var layer = FindLayer("uicfacility", MapView.Active);
+        public static async Task<IEnumerable<string>> GetFacilityIdsFor(string id, Map map) => await QueuedTask.Run(() => {
+            var layer = FindLayer("uicfacility", map ?? MapView.Active.Map);
 
             var filter = new QueryFilter {
                 WhereClause = $"FacilityID LIKE '{id}%'"
@@ -30,10 +30,10 @@ namespace uic_addin.Services {
             return collection;
         });
 
-        public static BasicFeatureLayer FindLayer(string layerName, MapView activeView) {
+        public static BasicFeatureLayer FindLayer(string layerName, Map map) {
             Log.Verbose("finding feature layer {layer}", layerName);
 
-            var layers = activeView.Map.GetLayersAsFlattenedList();
+            var layers = map.GetLayersAsFlattenedList();
 
             return (BasicFeatureLayer)layers.FirstOrDefault(x => string.Equals(SplitLast(x.Name),
                                                                                SplitLast(layerName),
@@ -49,8 +49,8 @@ namespace uic_addin.Services {
             return x.Split('.').Last();
         }
 
-        public static async Task<FacilityModel> GetFacilityFor(string id) => await QueuedTask.Run(() => {
-            var layer = FindLayer("uicfacility", MapView.Active);
+        public static async Task<FacilityModel> GetFacilityFor(string id, Map map=null) => await QueuedTask.Run(() => {
+            var layer = FindLayer("uicfacility", map ?? MapView.Active.Map);
 
             var filter = new QueryFilter {
                 WhereClause = $"FacilityID='{id}'"
@@ -80,9 +80,9 @@ namespace uic_addin.Services {
             return model;
         });
 
-        public static async Task<IEnumerable<string>> GetFacilityIdsFor(IEnumerable<long> facilityObjectIds) => await
+        public static async Task<IEnumerable<string>> GetFacilityIdsFor(IEnumerable<long> facilityObjectIds, Map map=null) => await
             QueuedTask.Run(() => {
-                var layer = FindLayer("uicfacility", MapView.Active);
+                var layer = FindLayer("uicfacility", map ?? MapView.Active.Map);
 
                 var filter = new QueryFilter {
                     WhereClause = $"OBJECTID IN ({string.Join(",", facilityObjectIds)})"
