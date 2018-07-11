@@ -25,11 +25,12 @@ namespace uic_addin.Views {
             Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
 
-            if (MapView.Active != null) {
+            if (MapView.Active == null) {
+                _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
                 return;
             }
 
-            _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
+            SetupSubscriptions(MapView.Active.Map);
         }
 
         public void SetupSubscriptions(Map map) {
