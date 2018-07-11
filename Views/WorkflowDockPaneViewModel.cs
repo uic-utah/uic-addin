@@ -18,7 +18,7 @@ namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
         private const string DockPaneId = "WorkflowDockPane";
         private string _heading = "UIC Workflow Main";
-        private readonly SubscriptionToken _token = null;
+        private readonly SubscriptionToken _token;
 
         public WorkflowDockPaneViewModel() {
             FacilityId = new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
