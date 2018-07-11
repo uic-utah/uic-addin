@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Mapping;
@@ -17,16 +18,25 @@ namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
         private const string DockPaneId = "WorkflowDockPane";
         private string _heading = "UIC Workflow Main";
+        private readonly SubscriptionToken _token = null;
 
         public WorkflowDockPaneViewModel() {
             FacilityId = new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
 
-            MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
+            if (MapView.Active != null) {
+                return;
+            }
+
+            _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
         }
 
         public void SetupSubscriptions(Map map) {
+            if (_token != null) {
+                MapViewInitializedEvent.Unsubscribe(_token);
+            }
+
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
                                            return Enumerable.Empty<string>();
