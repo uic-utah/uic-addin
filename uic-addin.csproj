@@ -142,6 +142,11 @@
   <ItemGroup>
     <Compile Include="Models\FacilityModel.cs" />
     <Compile Include="Services\QueryService.cs" />
+    <Compile Include="Services\ThreadService.cs" />
+    <Compile Include="Views\FacilityAttributeDockpane.xaml.cs">
+      <DependentUpon>FacilityAttributeDockpane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FacilityAttributeDockpaneViewModel.cs" />
     <Compile Include="Views\WorkflowDockPane.xaml.cs">
       <DependentUpon>WorkflowDockPane.xaml</DependentUpon>
     </Compile>
@@ -151,6 +156,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\FacilityAttributeDockpane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\WorkflowDockPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

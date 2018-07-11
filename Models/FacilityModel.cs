@@ -6,7 +6,7 @@ using ArcGIS.Desktop.Mapping;
 using Microsoft.Build.Framework;
 
 namespace uic_addin.Models {
-    public class FacilityModel :  PropertyChangedBase, INotifyDataErrorInfo {
+    public class FacilityModel : PropertyChangedBase, INotifyDataErrorInfo {
         public const string IdField = "FacilityID";
         public const string TableName = "UicFacility";
         public readonly FeatureLayer FeatureLayer;

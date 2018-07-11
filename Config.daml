@@ -18,16 +18,11 @@
       <groups>
         <group id="UICGroup" keytip="uictools" caption="UIC Tools" appearsOnAddInTab="true">
           <button refID="WorkflowDockPaneShowButton" size="large" />
+          <button refID="esri_mapping_selectContext" size="large" />
         </group>
       </groups>
       <controls>
-        <button id="WorkflowDockPaneShowButton"
-                caption="Workflow"
-                keytip="Show the add-in"
-                className="uic_addin.Controls.WorkflowDockPaneShowButton"
-                loadOnClick="true"
-                smallImage="Images\UIC16.png"
-                largeImage="Images\UIC32.png">
+        <button id="WorkflowDockPaneShowButton" caption="Workflow" keytip="Show the add-in" className="uic_addin.Controls.WorkflowDockPaneShowButton" loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
           <tooltip heading="Show Dockpane">UIC Workflow Add-in<disabledText /></tooltip>
         </button>
       </controls>
@@ -38,6 +33,13 @@
                   dock="group"
                   dockWith="esri_core_contentsDockPane">
           <content className="uic_addin.Views.WorkflowDockPaneView" />
+        </dockPane>
+        <dockPane id="FacilityAttributeDockpane"
+                  caption="Facility Attributes"
+                  className="uic_addin.Views.FacilityAttributeDockpaneViewModel"
+                  dock="group"
+                  dockWith="esri_core_contentsDockPane">
+          <content className="uic_addin.Views.FacilityAttributeDockpaneView" />
         </dockPane>
       </dockPanes>
     </insertModule>
