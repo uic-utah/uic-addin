@@ -124,20 +124,9 @@
     <Grid Margin="0,0,0,-54" Grid.Row="2">
       <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
-        <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="2*" />
       </Grid.ColumnDefinitions>
 
       <DockPanel Grid.Row="0" Grid.ColumnSpan="2" LastChildFill="true" KeyboardNavigation.TabNavigation="Local"
@@ -151,37 +140,7 @@
           </TextBlock.ToolTip>
         </TextBlock>
       </DockPanel>
-      <ComboBox Grid.Row="1" Grid.Column="1" SelectedItem="{Binding SelectedInspectionId, Mode=TwoWay}" Margin="5"
-                ItemsSource="{Binding InspectionIds, Mode=OneWay}" />
-      <Button Grid.Row="1" Grid.Column="0" Content="Add New Inspection" Command="{Binding AddInspectionRecord}" />
-      <TextBlock Grid.Row="2" Grid.Column="0"
-                 Style="{DynamicResource Esri_TextBlockRegular}"
-                 HorizontalAlignment="Right" Margin="5"
-                 Text="Inspector" />
-      <TextBox Grid.Row="2" Grid.Column="1"
-               Height="20" HorizontalAlignment="Stretch" Margin="5"
-               Text="{Binding Inspector, ValidatesOnDataErrors=True}" />
-      <TextBlock Grid.Row="3" Grid.Column="0"
-                 Style="{DynamicResource Esri_TextBlockRegular}"
-                 HorizontalAlignment="Right" Margin="5"
-                 Text="Inspection Type" />
-      <TextBox Grid.Row="3" Grid.Column="1"
-               Height="20" HorizontalAlignment="Stretch" Margin="5"
-               Text="{Binding InspectionType, ValidatesOnDataErrors=True}" />
-      <TextBlock Grid.Row="4" Grid.Column="0"
-                 Style="{DynamicResource Esri_TextBlockRegular}"
-                 HorizontalAlignment="Right" Margin="5"
-                 Text="Inspection Date" />
-      <TextBox Grid.Row="4" Grid.Column="1"
-               Height="20" HorizontalAlignment="Stretch" Margin="5"
-               Text="{Binding InspectionDate, ValidatesOnDataErrors=True}" />
-      <TextBlock Grid.Row="5" Grid.Column="0"
-                 Style="{DynamicResource Esri_TextBlockRegular}"
-                 HorizontalAlignment="Right" Margin="5"
-                 Text="Comment" />
-      <TextBox Grid.Row="5" Grid.Column="1"
-               Height="20" HorizontalAlignment="Stretch" Margin="5"
-               Text="{Binding Comments, ValidatesOnDataErrors=True}" />
+      <ItemsControl ItemsSource="{Binding Model.Value.ErrorValues}"></ItemsControl>
     </Grid>
   </Grid>
 </UserControl>
