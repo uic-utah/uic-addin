@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -19,6 +20,7 @@ namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
         public const string DockPaneId = "WorkflowDockPane";
         public ICommand UseSelection { get; }
+        public ICommand ZoomToFacility { get; }
 
         private string _heading = "UIC Workflow Main";
         private readonly SubscriptionToken _token;
@@ -48,6 +50,12 @@ namespace uic_addin.Views {
 
                 Facilities.Value = new[] { selectedIds.FirstOrDefault() };
             }, ()=> MapView.Active.Map.SelectionCount > 0);
+
+            ZoomToFacility = new RelayCommand(async () => {
+                var facilityLayer = UicModule.Layers[FacilityModel.TableName] as BasicFeatureLayer;
+
+                await MapView.Active.ZoomToAsync(facilityLayer, Model.Value.ObjectId, TimeSpan.FromSeconds(2));
+            }, () => MapView.Active != null);
         }
 
         public void SetupSubscriptions(Map map) {
@@ -77,7 +85,9 @@ namespace uic_addin.Views {
                               return;
                           }
 
-                          pane.Model.Value = await QueryService.GetFacilityFor(items.First());
+                          var facilityLayer = UicModule.Layers[FacilityModel.TableName];
+                          pane.Model.Value = Model.Value = await QueryService.GetFacilityFor(items.First());
+                          await LayerService.SelectIdFromLayer(Model.Value.ObjectId, facilityLayer);
 
                           FacilityAttributeDockpaneViewModel.Show();
                           var wrapper = FrameworkApplication.GetPlugInWrapper("esri_editing_ShowAttributes");

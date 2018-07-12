@@ -55,5 +55,9 @@ namespace uic_addin.Services {
                 }
             }
         }
+
+        public static async Task SelectIdFromLayer(long id, Layer layer) => await ThreadService.RunOnBackground(() => layer.Map.SetSelection(new Dictionary<MapMember, List<long>> {
+                {layer, new List<long> {id}}
+            }));
     }
 }

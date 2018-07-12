@@ -43,7 +43,7 @@
               Content="Use Selection"
               Style="{DynamicResource Esri_Button}"
               Width="Auto"/>
-      <Button Command="{Binding SelectUicAndZoom}"
+      <Button Command="{Binding ZoomToFacility}"
               ToolTip="Select and Zoom"
               Content="Zoom to Facility"
               Style="{DynamicResource Esri_Button}"
