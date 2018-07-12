@@ -38,7 +38,7 @@
       <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}"
                Margin="5,0"
                MinWidth="10" Width="230" />
-      <Button Command="{Binding GetSelectedFacility}"
+      <Button Command="{Binding UseSelection}"
               ToolTip="Use Selected Facility"
               Content="Use Selection"
               Style="{DynamicResource Esri_Button}"
