@@ -1,18 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
-using Serilog;
 using uic_addin.Models;
 
 namespace uic_addin.Services {
     public class QueryService {
         public static async Task<IEnumerable<string>> GetFacilityIdsFor(string id, Map map) => await QueuedTask.Run(() => {
-            var layer = FindLayer("uicfacility", map ?? MapView.Active.Map);
+            var layer = LayerService.FindLayer("uicfacility", map ?? MapView.Active.Map);
 
             var filter = new QueryFilter {
                 WhereClause = $"FacilityID LIKE '{id}%'"
@@ -28,28 +26,9 @@ namespace uic_addin.Services {
 
             return collection;
         });
-
-        public static BasicFeatureLayer FindLayer(string layerName, Map map) {
-            Log.Verbose("finding feature layer {layer}", layerName);
-
-            var layers = map.GetLayersAsFlattenedList();
-
-            return (BasicFeatureLayer)layers.FirstOrDefault(x => string.Equals(SplitLast(x.Name),
-                                                                               SplitLast(layerName),
-                                                                               StringComparison
-                                                                                   .InvariantCultureIgnoreCase));
-        }
-
-        private static string SplitLast(string x) {
-            if (!x.Contains('.')) {
-                return x;
-            }
-
-            return x.Split('.').Last();
-        }
-
+        
         public static async Task<FacilityModel> GetFacilityFor(string id, Map map=null) => await QueuedTask.Run(() => {
-            var layer = FindLayer("uicfacility", map ?? MapView.Active.Map);
+            var layer = LayerService.FindLayer("uicfacility", map ?? MapView.Active.Map);
 
             var filter = new QueryFilter {
                 WhereClause = $"FacilityID='{id}'"
@@ -93,7 +72,7 @@ namespace uic_addin.Services {
 
         public static async Task<IEnumerable<string>> GetFacilityIdsFor(IEnumerable<long> facilityObjectIds, Map map=null) => await
             QueuedTask.Run(() => {
-                var layer = FindLayer("uicfacility", map ?? MapView.Active.Map);
+                var layer = LayerService.FindLayer("uicfacility", map ?? MapView.Active.Map);
 
                 var filter = new QueryFilter {
                     WhereClause = $"OBJECTID IN ({string.Join(",", facilityObjectIds)})"
