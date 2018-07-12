@@ -18,6 +18,7 @@ using uic_addin.Services;
 namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
         public const string DockPaneId = "WorkflowDockPane";
+        public ICommand UseSelection { get; set; }
 
         private string _heading = "UIC Workflow Main";
         private readonly SubscriptionToken _token;
@@ -33,6 +34,20 @@ namespace uic_addin.Views {
             }
 
             SetupSubscriptions(MapView.Active.Map);
+
+            UseSelection = new RelayCommand(async () => {
+                var facilityLayer = UicModule.Layers[FacilityModel.TableName];
+                var ids = await LayerService.GetSelectedIdsFor(facilityLayer);
+
+                var selectedIds = await QueryService.GetFacilityIdsFor(ids, facilityLayer.Map);
+                if (selectedIds.Count() > 1) {
+                    FrameworkApplication.AddNotification(new Notification {
+                        Message = $"Selected {selectedIds.Count()} facilities. Showing {selectedIds.FirstOrDefault()}"
+                    });
+                }
+
+                Facilities.Value = new[] { selectedIds.FirstOrDefault() };
+            }, ()=> MapView.Active.Map.SelectionCount > 0);
         }
 
         public void SetupSubscriptions(Map map) {
@@ -71,7 +86,7 @@ namespace uic_addin.Views {
                           if (wrapper is ICommand command && command.CanExecute(null)) {
                               command.Execute(null);
                           }
-                      });
+                      }); 
 
             MapSelectionChangedEvent.Subscribe(async args => {
                 var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'), "uicfacility",
@@ -85,7 +100,6 @@ namespace uic_addin.Views {
 
                 var facilityIds = await QueryService.GetFacilityIdsFor(facilityObjectIds, args.Map);
                 if (facilityIds.Count() > 1) {
-                    // TODO: show message
                     FrameworkApplication.AddNotification(new Notification {
                         Message = $"Selected {facilityIds.Count()} facilities. Showing {facilityIds.FirstOrDefault()}"
                     });
