@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using ArcGIS.Desktop.Mapping;
 using uic_addin.Attributes;
 using uic_addin.ViewModels;
 
@@ -10,7 +8,6 @@ namespace uic_addin.Models {
     public class FacilityModel : PropertyChangedWithValidation {
         public const string IdField = "FacilityID";
         public const string TableName = "UicFacility";
-        public readonly FeatureLayer FeatureLayer;
         public ObservableCollection<string> FipsDomainValues = new ObservableCollection<string>();
 
         private string _comments;
@@ -25,12 +22,8 @@ namespace uic_addin.Models {
         private string _naicsPrimary;
         private string _facilityId = "";
 
-        private FacilityModel() {
+        public FacilityModel() {
             FipsDomain = new ReadOnlyObservableCollection<string>(FipsDomainValues);
-        }
-
-        public FacilityModel(FeatureLayer facilityLayer) : this() {
-            FeatureLayer = facilityLayer;
         }
 
         public long SelectedOid { get; set; }

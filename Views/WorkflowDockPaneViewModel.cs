@@ -39,6 +39,8 @@ namespace uic_addin.Views {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
 
+
+
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
                                            return Enumerable.Empty<string>();
@@ -56,7 +58,8 @@ namespace uic_addin.Views {
                               .DockPaneManager.Find(FacilityAttributeDockpaneViewModel.DockPaneId);
 
                           if (items?.Count() != 1) {
-                              pane.Model.Value = new FacilityModel(null);
+                              pane.Model.Value = new FacilityModel();
+
                               return;
                           }
 
