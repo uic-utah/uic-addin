@@ -140,9 +140,11 @@
     <AddInContent Include="DarkImages\AddInDesktop32.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\FipsCodeAttribute.cs" />
     <Compile Include="Models\FacilityModel.cs" />
     <Compile Include="Services\QueryService.cs" />
     <Compile Include="Services\ThreadService.cs" />
+    <Compile Include="ViewModels\PropertyChangedWithValidation.cs" />
     <Compile Include="Views\FacilityAttributeDockpane.xaml.cs">
       <DependentUpon>FacilityAttributeDockpane.xaml</DependentUpon>
     </Compile>
@@ -181,6 +183,7 @@
     <AddInContent Include="DarkImages\GenericButtonPurple32.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="LICENSE" />
     <None Include="packages.config" />
     <None Include="README.md" />
