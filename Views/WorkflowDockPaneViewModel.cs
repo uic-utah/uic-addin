@@ -11,6 +11,7 @@ using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using uic_addin.Extensions;
 using uic_addin.Models;
 using uic_addin.Services;
 
@@ -39,8 +40,6 @@ namespace uic_addin.Views {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
 
-
-
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
                                            return Enumerable.Empty<string>();
@@ -66,10 +65,16 @@ namespace uic_addin.Views {
                           pane.Model.Value = await QueryService.GetFacilityFor(items.First());
 
                           FacilityAttributeDockpaneViewModel.Show();
+                          var wrapper = FrameworkApplication.GetPlugInWrapper("esri_editing_ShowAttributes");
+                          // tool and command(Button) supports this
+
+                          if (wrapper is ICommand command && command.CanExecute(null)) {
+                              command.Execute(null);
+                          }
                       });
 
             MapSelectionChangedEvent.Subscribe(async args => {
-                var facilitySelection = args.Selection?.Where(x => string.Equals(SplitLast(x.Key.Name), "uicfacility",
+                var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'), "uicfacility",
                                                                                  StringComparison.InvariantCultureIgnoreCase));
 
                 var facilityObjectIds = facilitySelection?.SelectMany(x => x.Value);
@@ -88,14 +93,6 @@ namespace uic_addin.Views {
 
                 Facilities.Value = new[] { facilityIds.FirstOrDefault() };
             });
-        }
-
-        private static string SplitLast(string x) {
-            if (!x.Contains('.')) {
-                return x;
-            }
-
-            return x.Split('.').Last();
         }
 
         // Exposed Model
