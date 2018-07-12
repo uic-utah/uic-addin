@@ -10,7 +10,6 @@ using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
-using Reactive.Bindings.ObjectExtensions;
 using uic_addin.Models;
 using uic_addin.Services;
 
