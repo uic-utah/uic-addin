@@ -18,7 +18,7 @@ using uic_addin.Services;
 namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
         public const string DockPaneId = "WorkflowDockPane";
-        public ICommand UseSelection { get; set; }
+        public ICommand UseSelection { get; }
 
         private string _heading = "UIC Workflow Main";
         private readonly SubscriptionToken _token;
