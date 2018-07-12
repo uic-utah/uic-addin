@@ -26,8 +26,6 @@ namespace uic_addin.Models {
             FipsDomain = new ReadOnlyObservableCollection<string>(FipsDomainValues);
         }
 
-        public long SelectedOid { get; set; }
-
         [Required(AllowEmptyStrings = false)]
         [StringLength(14, ErrorMessage = "Facility Identifiers contain 14 characters")]
         [DisplayName("Facility Id")]
@@ -101,6 +99,8 @@ namespace uic_addin.Models {
             get => _comments;
             set => SetProperty(ref _comments, value);
         }
+
+        public long ObjectId { get; set; }
 
         public ReadOnlyObservableCollection<string> FipsDomain { get; set; }
     }

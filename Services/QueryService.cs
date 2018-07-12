@@ -41,7 +41,7 @@ namespace uic_addin.Services {
                 while (cursor.MoveNext()) {
                     var row = cursor.Current;
 
-                    model.SelectedOid = Convert.ToInt64(row["OBJECTID"]);
+                    model.ObjectId = Convert.ToInt64(row["OBJECTID"]);
                     model.FacilityId = Convert.ToString(row["FacilityID"]);
                     model.CountyFips = Convert.ToString(row["CountyFIPS"]);
                     GetDomainFor(layer.GetTable() as FeatureClass, "CountyFIPS").ForEach(model.FipsDomainValues.Add);
