@@ -11,6 +11,7 @@ namespace uic_addin.Models {
         public const string IdField = "FacilityID";
         public const string TableName = "UicFacility";
         public readonly FeatureLayer FeatureLayer;
+        public ObservableCollection<string> FipsDomainValues = new ObservableCollection<string>();
 
         private string _comments;
         private string _countyFips;
@@ -25,6 +26,7 @@ namespace uic_addin.Models {
         private string _facilityId = "";
 
         private FacilityModel() {
+            FipsDomain = new ReadOnlyObservableCollection<string>(FipsDomainValues);
         }
 
         public FacilityModel(FeatureLayer facilityLayer) : this() {
@@ -107,5 +109,6 @@ namespace uic_addin.Models {
             set => SetProperty(ref _comments, value);
         }
 
+        public ReadOnlyObservableCollection<string> FipsDomain { get; set; }
     }
 }

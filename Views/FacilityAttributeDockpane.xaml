@@ -53,9 +53,10 @@
                  Style="{DynamicResource Esri_TextBlockRegular}"
                  HorizontalAlignment="Right" Margin="5"
                  Text="CountyFIPS" />
-      <TextBox Grid.Row="1" Grid.Column="1"
+      <ComboBox Grid.Row="1" Grid.Column="1"
                Height="20" HorizontalAlignment="Stretch" Margin="5"
-               Text="{Binding Model.Value.CountyFips, ValidatesOnDataErrors=True, Mode=TwoWay}" />
+               ItemsSource="{Binding Model.Value.FipsDomain}"
+               SelectedIndex="{Binding Model.Value.CountyFips, ValidatesOnDataErrors=True, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
       <TextBlock Grid.Row="2" Grid.Column="0"
                  Style="{DynamicResource Esri_TextBlockRegular}"
                  HorizontalAlignment="Right" Margin="5"
