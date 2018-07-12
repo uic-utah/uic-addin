@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
+using Reactive.Bindings;
 using uic_addin.Models;
 
 namespace uic_addin.Services {
@@ -26,7 +27,7 @@ namespace uic_addin.Services {
 
             return collection;
         });
-        
+
         public static async Task<FacilityModel> GetFacilityFor(string id, Map map=null) => await QueuedTask.Run(() => {
             var layer = UicModule.Layers[FacilityModel.TableName] as FeatureLayer;
 

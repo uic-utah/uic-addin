@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -36,7 +37,7 @@ namespace uic_addin {
                     return false;
                 }
             }
-
+            
             CachePanes();
 
             if (DockPanes.Count < 1 || DockPanes.Any(x => x.Value == null)) {
@@ -45,6 +46,8 @@ namespace uic_addin {
 
             return true;
         }
+
+       
 
         protected override bool CanUnload() {
             foreach (var pane in DockPanes.Values) {
