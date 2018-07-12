@@ -21,6 +21,7 @@ namespace uic_addin.Views {
         public const string DockPaneId = "WorkflowDockPane";
         public ICommand UseSelection { get; }
         public ICommand ZoomToFacility { get; }
+        public ICommand ShowAttributeEditorForSelectedRecord { get; }
 
         private string _heading = "UIC Workflow Main";
         private readonly SubscriptionToken _token;
@@ -54,8 +55,23 @@ namespace uic_addin.Views {
             ZoomToFacility = new RelayCommand(async () => {
                 var facilityLayer = UicModule.Layers[FacilityModel.TableName] as BasicFeatureLayer;
 
-                await MapView.Active.ZoomToAsync(facilityLayer, Model.Value.ObjectId, TimeSpan.FromSeconds(2));
-            }, () => MapView.Active != null);
+                await MapView.Active.ZoomToAsync(facilityLayer, Model.Value.ObjectId, TimeSpan.FromMilliseconds(250));
+            }, () => {
+                if (MapView.Active == null) {
+                    return false;
+                }
+
+                return Model?.Value?.ObjectId > 0;
+            });
+
+            ShowAttributeEditorForSelectedRecord = new RelayCommand(() => {
+                FacilityAttributeDockpaneViewModel.Show();
+                var wrapper = FrameworkApplication.GetPlugInWrapper("esri_editing_ShowAttributes");
+
+                if (wrapper is ICommand command && command.CanExecute(null)) {
+                    command.Execute(null);
+                }
+            }, () => MapView.Active.Map.SelectionCount > 0);
         }
 
         public void SetupSubscriptions(Map map) {
@@ -89,13 +105,7 @@ namespace uic_addin.Views {
                           pane.Model.Value = Model.Value = await QueryService.GetFacilityFor(items.First());
                           await LayerService.SelectIdFromLayer(Model.Value.ObjectId, facilityLayer);
 
-                          FacilityAttributeDockpaneViewModel.Show();
-                          var wrapper = FrameworkApplication.GetPlugInWrapper("esri_editing_ShowAttributes");
-                          // tool and command(Button) supports this
-
-                          if (wrapper is ICommand command && command.CanExecute(null)) {
-                              command.Execute(null);
-                          }
+                          ShowAttributeEditorForSelectedRecord.Execute(null);
                       }); 
 
 //            MapSelectionChangedEvent.Subscribe(async args => {
