@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
+using System.Windows.Input;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -15,7 +16,8 @@ using uic_addin.Services;
 
 namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
-        private const string DockPaneId = "WorkflowDockPane";
+        public const string DockPaneId = "WorkflowDockPane";
+
         private string _heading = "UIC Workflow Main";
         private readonly SubscriptionToken _token;
 
