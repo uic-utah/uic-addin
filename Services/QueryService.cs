@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -56,15 +55,16 @@ namespace uic_addin.Services {
                 WhereClause = $"FacilityID='{id}'"
             };
 
-            var model = new FacilityModel(null);
+            var model = new FacilityModel(layer as FeatureLayer);
 
             using (var cursor = layer.Search(filter)) {
                 while (cursor.MoveNext()) {
                     var row = cursor.Current;
 
                     model.SelectedOid = Convert.ToInt64(row["OBJECTID"]);
-                    model.UicFacilityId = Convert.ToString(row["FacilityID"]);
+                    model.FacilityId = Convert.ToString(row["FacilityID"]);
                     model.CountyFips = Convert.ToString(row["CountyFIPS"]);
+                    GetDomainFor(layer.GetTable() as FeatureClass, "CountyFIPS").ForEach(model.FipsDomainValues.Add);
                     model.NaicsPrimary = Convert.ToString(row["NAICSPrimary"]);
                     model.FacilityName = Convert.ToString(row["FacilityName"]);
                     model.FacilityAddress = Convert.ToString(row["FacilityAddress"]);
@@ -79,6 +79,17 @@ namespace uic_addin.Services {
 
             return model;
         });
+
+        private static List<string> GetDomainFor(FeatureClass layer, string fieldName) {
+            var definition = layer.GetDefinition();
+
+            var fieldIndex = definition.FindField(fieldName);
+            var field = definition.GetFields()[fieldIndex];
+
+            var domain = field.GetDomain() as CodedValueDomain;
+
+            return domain?.GetCodedValuePairs().Select(x => x.Value).ToList();
+        }
 
         public static async Task<IEnumerable<string>> GetFacilityIdsFor(IEnumerable<long> facilityObjectIds, Map map=null) => await
             QueuedTask.Run(() => {
