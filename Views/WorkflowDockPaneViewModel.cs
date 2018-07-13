@@ -108,25 +108,29 @@ namespace uic_addin.Views {
                           ShowAttributeEditorForSelectedRecord.Execute(null);
                       }); 
 
-//            MapSelectionChangedEvent.Subscribe(async args => {
-//                var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'), "uicfacility",
-//                                                                                 StringComparison.InvariantCultureIgnoreCase));
-//
-//                var facilityObjectIds = facilitySelection?.SelectMany(x => x.Value);
-//
-//                if (!facilityObjectIds.Any()) {
-//                    return;
-//                }
-//
-//                var facilityIds = await QueryService.GetFacilityIdsFor(facilityObjectIds, args.Map);
-//                if (facilityIds.Count() > 1) {
-//                    FrameworkApplication.AddNotification(new Notification {
-//                        Message = $"Selected {facilityIds.Count()} facilities. Showing {facilityIds.FirstOrDefault()}"
-//                    });
-//                }
-//
-//                Facilities.Value = new[] { facilityIds.FirstOrDefault() };
-//            });
+            MapSelectionChangedEvent.Subscribe(async args => {
+                if (!FrameworkApplication.State.Contains(UicModule.FacilitySelectionState)) {
+                    return;
+                }
+
+                var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'), "uicfacility",
+                                                                                 StringComparison.InvariantCultureIgnoreCase));
+
+                var facilityObjectIds = facilitySelection?.SelectMany(x => x.Value);
+
+                if (!facilityObjectIds.Any()) {
+                    return;
+                }
+
+                var facilityIds = await QueryService.GetFacilityIdsFor(facilityObjectIds, args.Map);
+                if (facilityIds.Count() > 1) {
+                    FrameworkApplication.AddNotification(new Notification {
+                        Message = $"Selected {facilityIds.Count()} facilities. Showing {facilityIds.FirstOrDefault()}"
+                    });
+                }
+
+                Facilities.Value = new[] { facilityIds.FirstOrDefault() };
+            });
         }
 
         // Exposed Model

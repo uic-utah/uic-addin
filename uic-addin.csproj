@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\FipsCodeAttribute.cs" />
+    <Compile Include="Controls\FacilitySelectTool.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\FacilityModel.cs" />
     <Compile Include="Services\LayerService.cs" />

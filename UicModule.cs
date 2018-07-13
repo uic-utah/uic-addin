@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -17,6 +15,7 @@ using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 namespace uic_addin {
     internal class UicModule : Module {
         public static readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
+        public static readonly string FacilitySelectionState = "0";
 
         private static UicModule _this;
         private static readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
@@ -46,8 +45,6 @@ namespace uic_addin {
 
             return true;
         }
-
-       
 
         protected override bool CanUnload() {
             foreach (var pane in DockPanes.Values) {
