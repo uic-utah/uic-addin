@@ -78,8 +78,7 @@ namespace uic_addin {
             Log.Debug("Caching project dock panes");
 
             var paneIds = new[] {
-                WorkflowDockPaneViewModel.DockPaneId,
-                FacilityAttributeDockpaneViewModel.DockPaneId
+                WorkflowDockPaneViewModel.DockPaneId
             };
 
             foreach (var id in paneIds) {
