@@ -46,13 +46,6 @@
                   dockWith="esri_core_contentsDockPane">
           <content className="uic_addin.Views.WorkflowDockPaneView" />
         </dockPane>
-        <dockPane id="FacilityAttributeDockpane"
-                  caption="Facility Attributes"
-                  className="uic_addin.Views.FacilityAttributeDockpaneViewModel"
-                  dock="group"
-                  dockWith="esri_core_contentsDockPane">
-          <content className="uic_addin.Views.FacilityAttributeDockpaneView" />
-        </dockPane>
       </dockPanes>
     </insertModule>
   </modules>
