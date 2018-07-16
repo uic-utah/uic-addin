@@ -20,50 +20,39 @@
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-
-    <TextBlock Text="{Binding Heading}" Style="{DynamicResource Esri_TextBlockDockPaneHeader}" />
-    <WrapPanel Grid.Row="0" Width="300" HorizontalAlignment="Left">
-      <TextBlock Style="{DynamicResource Esri_TextBlockH1}"
-                 Width="300" Margin="5,5,0,15"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center">
-        Start with a Facility
+    <StackPanel Grid.Row="0" HorizontalAlignment="Left">
+      <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10">
+        <Run Text="Start with a Facility Id" />
       </TextBlock>
-      <TextBlock Style="{DynamicResource Esri_TextBlockRegular}"
-                 VerticalAlignment="Center"
-                 Margin="0,5"
-                 Width="60">
-        <Run Text="Facility Id:" />
+      <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}" Width="212"
+               HorizontalAlignment="Center" />
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+        <Button Command="{Binding UseSelection}"
+                ToolTip="Use Selected Facility"
+                Content="Load Selected"
+                Style="{DynamicResource Esri_Button}"
+                Width="Auto" />
+        <Button Command="{Binding ShowAttributeEditorForSelectedRecord}"
+                ToolTip="Edit Selected Feature"
+                Content="Edit Selected"
+                Style="{DynamicResource Esri_Button}"
+                Width="Auto" />
+        <Button Command="{Binding ZoomToFacility}"
+                ToolTip="Select and Zoom"
+                Content="Zoom"
+                Style="{DynamicResource Esri_Button}"
+                Width="Auto" />
+      </StackPanel>
+      <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,5,0,0">
+        <Run Text="{Binding Heading}" />
       </TextBlock>
-      <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}"
-               Margin="5,0"
-               MinWidth="10" Width="230" />
-      <Button Command="{Binding UseSelection}"
-              ToolTip="Use Selected Facility"
-              Content="Use Selection"
-              Style="{DynamicResource Esri_Button}"
-              Width="Auto"/>
-      <Button Command="{Binding ZoomToFacility}"
-              ToolTip="Select and Zoom"
-              Content="Zoom to Facility"
-              Style="{DynamicResource Esri_Button}"
-              Width="Auto"/>
-      <TextBlock Style="{DynamicResource Esri_TextBlockH1}"
-                 Width="300" MaxWidth="5,5,0,15"
-                 VerticalAlignment="Center"
-                 HorizontalAlignment="Center">
-        <Run Text="{Binding Heading}"/>
+      <TextBlock Style="{DynamicResource Esri_TextBlockH2}" Margin="10,0,0,10">
+        <Run Text="{Binding Model.Value.FacilityId}" />
       </TextBlock>
-    </WrapPanel>
+    </StackPanel>
     <Grid Grid.Row="1">
-      <ComboBox ItemsSource="{Binding Facilities.Value}" SelectedIndex="{Binding FacilityId.Value}"></ComboBox>
+      <ItemsControl />
     </Grid>
   </Grid>
 </UserControl>
-
-
-
-
-
-
 

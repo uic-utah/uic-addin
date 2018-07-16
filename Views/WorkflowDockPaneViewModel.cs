@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Windows;
@@ -19,12 +18,10 @@ using uic_addin.Services;
 namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
         public const string DockPaneId = "WorkflowDockPane";
-        public ICommand UseSelection { get; }
-        public ICommand ZoomToFacility { get; }
-        public ICommand ShowAttributeEditorForSelectedRecord { get; }
+        private readonly SubscriptionToken _token;
+
 
         private string _heading = "UIC Workflow Main";
-        private readonly SubscriptionToken _token;
 
         public WorkflowDockPaneViewModel() {
             FacilityId = new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
@@ -42,8 +39,8 @@ namespace uic_addin.Views {
                     });
                 }
 
-                Facilities.Value = new[] { selectedIds.FirstOrDefault() };
-            }, ()=> MapView.Active?.Map.SelectionCount > 0);
+                Facilities.Value = new[] {selectedIds.FirstOrDefault()};
+            }, () => MapView.Active?.Map.SelectionCount > 0);
 
             ZoomToFacility = new RelayCommand(async () => {
                 var facilityLayer = UicModule.Layers[FacilityModel.TableName] as BasicFeatureLayer;
@@ -58,7 +55,6 @@ namespace uic_addin.Views {
             });
 
             ShowAttributeEditorForSelectedRecord = new RelayCommand(() => {
-                FacilityAttributeDockpaneViewModel.Show();
                 var wrapper = FrameworkApplication.GetPlugInWrapper("esri_editing_ShowAttributes");
 
                 if (wrapper is ICommand command && command.CanExecute(null)) {
@@ -72,6 +68,22 @@ namespace uic_addin.Views {
             }
 
             SetupSubscriptions(MapView.Active.Map);
+        }
+
+        public ICommand UseSelection { get; }
+        public ICommand ZoomToFacility { get; }
+        public ICommand ShowAttributeEditorForSelectedRecord { get; }
+
+        // Exposed Model
+        public ReactiveProperty<FacilityModel> Model { get; set; }
+
+        public ReactiveProperty<string> FacilityId { get; set; }
+
+        public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
+
+        public string Heading {
+            get => _heading;
+            set => SetProperty(ref _heading, value, () => Heading);
         }
 
         public void SetupSubscriptions(Map map) {
@@ -92,33 +104,40 @@ namespace uic_addin.Views {
 
             Facilities.ObserveOn(Application.Current.Dispatcher)
                       .ForEachAsync(async items => {
-                          var pane = (FacilityAttributeDockpaneViewModel)FrameworkApplication
-                              .DockPaneManager.Find(FacilityAttributeDockpaneViewModel.DockPaneId);
-
                           if (items?.Count() != 1) {
-                              pane.Model.Value = new FacilityModel();
+                              Model.Value = new FacilityModel();
+                              
+                              return;
+                          }
 
+                          Model.Value = await QueryService.GetFacilityFor(items.First());
+
+                          var selection = await ThreadService.RunOnBackground(MapView.Active.Map.GetSelection);
+
+                          if (selection.Count(x => x.Key.Name == FacilityModel.TableName) != 0) {
                               return;
                           }
 
                           var facilityLayer = UicModule.Layers[FacilityModel.TableName];
-                          pane.Model.Value = Model.Value = await QueryService.GetFacilityFor(items.First());
-                          await LayerService.SelectIdFromLayer(Model.Value.ObjectId, facilityLayer);
+                          await LayerService.SetSelectionFromId(Model.Value.ObjectId, facilityLayer);
 
-                          ShowAttributeEditorForSelectedRecord.Execute(null);
-                      }); 
+                      });
 
             MapSelectionChangedEvent.Subscribe(async args => {
                 if (!FrameworkApplication.State.Contains(UicModule.FacilitySelectionState)) {
                     return;
                 }
 
-                var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'), "uicfacility",
-                                                                                 StringComparison.InvariantCultureIgnoreCase));
+                var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'),
+                                                                                 "uicfacility",
+                                                                                 StringComparison
+                                                                                     .InvariantCultureIgnoreCase));
 
                 var facilityObjectIds = facilitySelection?.SelectMany(x => x.Value);
 
                 if (!facilityObjectIds.Any()) {
+                    Facilities.Value = Enumerable.Empty<string>();
+
                     return;
                 }
 
@@ -129,20 +148,8 @@ namespace uic_addin.Views {
                     });
                 }
 
-                Facilities.Value = new[] { facilityIds.FirstOrDefault() };
+                Facilities.Value = new[] {facilityIds.FirstOrDefault()};
             });
-        }
-
-        // Exposed Model
-        public ReactiveProperty<FacilityModel> Model { get; set; }
-
-        public ReactiveProperty<string> FacilityId { get; set; }
-
-        public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
-
-        public string Heading {
-            get => _heading;
-            set => SetProperty(ref _heading, value, () => Heading);
         }
 
         public static void Show() {
