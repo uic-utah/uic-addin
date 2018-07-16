@@ -31,13 +31,6 @@ namespace uic_addin.Views {
             Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
 
-            if (MapView.Active == null) {
-                _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
-                return;
-            }
-
-            SetupSubscriptions(MapView.Active.Map);
-
             UseSelection = new RelayCommand(async () => {
                 var facilityLayer = UicModule.Layers[FacilityModel.TableName];
                 var ids = await LayerService.GetSelectedIdsFor(facilityLayer);
@@ -50,7 +43,7 @@ namespace uic_addin.Views {
                 }
 
                 Facilities.Value = new[] { selectedIds.FirstOrDefault() };
-            }, ()=> MapView.Active.Map.SelectionCount > 0);
+            }, ()=> MapView.Active?.Map.SelectionCount > 0);
 
             ZoomToFacility = new RelayCommand(async () => {
                 var facilityLayer = UicModule.Layers[FacilityModel.TableName] as BasicFeatureLayer;
@@ -72,6 +65,13 @@ namespace uic_addin.Views {
                     command.Execute(null);
                 }
             }, () => MapView.Active.Map.SelectionCount > 0);
+
+            if (MapView.Active == null) {
+                _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
+                return;
+            }
+
+            SetupSubscriptions(MapView.Active.Map);
         }
 
         public void SetupSubscriptions(Map map) {
