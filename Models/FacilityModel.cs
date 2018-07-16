@@ -50,7 +50,7 @@ namespace uic_addin.Models {
         }
 
         [Required]
-        [StringLength(6, ErrorMessage = "NIACS codes are 1-6 characters")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "NIACS codes are 1-6 characters")]
         [DisplayName("NAICS Code")]
         public string NaicsPrimary {
             get => _naicsPrimary;
