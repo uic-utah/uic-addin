@@ -120,7 +120,6 @@ namespace uic_addin.Views {
 
                           var facilityLayer = UicModule.Layers[FacilityModel.TableName];
                           await LayerService.SetSelectionFromId(Model.Value.ObjectId, facilityLayer);
-
                       });
 
             MapSelectionChangedEvent.Subscribe(async args => {

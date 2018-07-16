@@ -4,15 +4,17 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
+             xmlns:converters="clr-namespace:uic_addin.Converters"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{Binding WorkflowDockPaneViewModel}">
-  <UserControl.Resources>
+    <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <extensions:DesignOnlyResourceDictionary
           Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
@@ -24,7 +26,7 @@
       <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10">
         <Run Text="Start with a Facility Id" />
       </TextBlock>
-      <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}" Width="212"
+      <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}" Width="278"
                HorizontalAlignment="Center" />
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
         <Button Command="{Binding UseSelection}"
@@ -46,13 +48,21 @@
       <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,5,0,0">
         <Run Text="{Binding Heading}" />
       </TextBlock>
-      <TextBlock Style="{DynamicResource Esri_TextBlockH2}" Margin="10,0,0,10">
-        <Run Text="{Binding Model.Value.FacilityId}" />
+      <TextBlock Style="{DynamicResource Esri_TextBlockH4}" Margin="10,0,0,10" Visibility="{Binding Model.Value.FacilityId, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Hidden}">
+        <Run Text="{Binding Path=Model.Value.FacilityId, StringFormat='Current Facility: {0}'}" />
       </TextBlock>
     </StackPanel>
     <Grid Grid.Row="1">
-      <ItemsControl />
+      <StackPanel>
+        <TextBlock Style="{DynamicResource Esri_TextBlockH2}" Margin="5,0,0,10"
+                   Visibility="{Binding Model.Value.HasErrors, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}">
+          <Run Text="Facility Validation Issues" />
+        </TextBlock>
+        <ItemsControl ItemsSource="{Binding Model.Value.ErrorValues}" Margin="5,0,0,0" />
+      </StackPanel>
     </Grid>
   </Grid>
 </UserControl>
+
+
 
