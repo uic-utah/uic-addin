@@ -30,11 +30,12 @@
           <Run Text="{Binding NewFacilityId.Value}"></Run>
         </TextBlock.Inlines>
       </TextBlock>
-      <Button 
+      <Button Command="{Binding CreateFacilityCommand}"
               ToolTip="Use Selected Facility"
               Content="Create"
               HorizontalAlignment="Center"
               Style="{DynamicResource Esri_Button}"
+              Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Visible}"
               Width="100pt"/>
     </StackPanel>
   </Grid>
