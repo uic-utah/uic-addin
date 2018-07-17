@@ -18,7 +18,7 @@ namespace uic_addin {
         public static readonly string FacilitySelectionState = "0";
 
         private static UicModule _this;
-        private static readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
+        public static readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
         private static SubscriptionToken _token;
 
         public static UicModule Current => _this ?? (_this =
