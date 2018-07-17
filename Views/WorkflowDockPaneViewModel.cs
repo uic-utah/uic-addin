@@ -60,7 +60,7 @@ namespace uic_addin.Views {
                 if (wrapper is ICommand command && command.CanExecute(null)) {
                     command.Execute(null);
                 }
-            }, () => MapView.Active.Map.SelectionCount > 0);
+            }, () => MapView.Active?.Map.SelectionCount > 0);
 
             if (MapView.Active == null) {
                 _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
