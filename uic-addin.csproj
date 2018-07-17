@@ -141,6 +141,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\FipsCodeAttribute.cs" />
+    <Compile Include="Controls\CreateNewFacilityPane.xaml.cs">
+      <DependentUpon>CreateNewFacilityPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CreateNewFacilityPaneOpenButton.cs" />
+    <Compile Include="Controls\CreateNewFacilityPaneViewModel.cs" />
     <Compile Include="Controls\FacilitySelectTool.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -158,6 +163,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\CreateNewFacilityPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\WorkflowDockPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
