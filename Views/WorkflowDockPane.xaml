@@ -8,13 +8,13 @@
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{Binding WorkflowDockPaneViewModel}">
-    <UserControl.Resources>
+  <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <extensions:DesignOnlyResourceDictionary
           Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml" />
       </ResourceDictionary.MergedDictionaries>
-      <BooleanToVisibilityConverter x:Key="BoolToVis"/>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </ResourceDictionary>
   </UserControl.Resources>
   <Grid>
@@ -28,7 +28,7 @@
       </TextBlock>
       <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}" Width="278"
                HorizontalAlignment="Center" />
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
         <Button Command="{Binding UseSelection}"
                 ToolTip="Use Selected Facility"
                 Content="Load Selected"
@@ -45,20 +45,44 @@
                 Style="{DynamicResource Esri_Button}"
                 Width="Auto" />
       </StackPanel>
+      <Separator />
       <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,5,0,0">
         <Run Text="{Binding Heading}" />
       </TextBlock>
-      <TextBlock Style="{DynamicResource Esri_TextBlockH4}" Margin="10,0,0,10" Visibility="{Binding Model.Value.FacilityId, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Hidden}">
-        <Run Text="{Binding Path=Model.Value.FacilityId, StringFormat='Current Facility: {0}'}" />
+      <TextBlock Margin="10,0,0,10"
+                 Visibility="{Binding Model.Value.FacilityId, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Hidden}">
+        <TextBlock.Inlines>
+          <Run Foreground="{DynamicResource Esri_Gray145}" FontSize="13pt" FontWeight="SemiBold" FontFamily="Segoe UI"
+               Text="Current Facility: " />
+          <Run Foreground="{DynamicResource Esri_Gray160}" FontSize="11pt" FontFamily="Segoe UI"
+               Text="{Binding Path=Model.Value.FacilityId}" />
+        </TextBlock.Inlines>
       </TextBlock>
+      <Separator />
     </StackPanel>
     <Grid Grid.Row="1">
       <StackPanel>
-        <TextBlock Style="{DynamicResource Esri_TextBlockH2}" Margin="5,0,0,10"
+        <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10"
+                   Foreground="{DynamicResource Esri_TextCaptionActiveBrush}"
                    Visibility="{Binding Model.Value.HasErrors, Converter={StaticResource BoolToVis}, FallbackValue=Hidden}">
           <Run Text="Facility Validation Issues" />
         </TextBlock>
-        <ItemsControl ItemsSource="{Binding Model.Value.ErrorValues}" Margin="5,0,0,0" />
+        <Grid Margin="10">
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
+            <ItemsControl ItemsSource="{Binding Model.Value.ErrorValues}" Margin="5,0,0,0">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <TextBlock Style="{DynamicResource Esri_TextBlockRegular}">
+                    <TextBlock.Inlines>
+                      <Run Text="•" />
+                      <Run Text="{Binding Path=.}" />
+                    </TextBlock.Inlines>
+                  </TextBlock>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Grid>
       </StackPanel>
     </Grid>
   </Grid>

@@ -27,7 +27,7 @@ namespace uic_addin.Models {
         }
 
         [Required(AllowEmptyStrings = false)]
-        [StringLength(14, ErrorMessage = "Facility Identifiers contain 14 characters")]
+        [StringLength(14, ErrorMessage = "Facility Identifiers should contain 14 characters")]
         [DisplayName("Facility Id")]
         public string FacilityId {
             get => _facilityId;
@@ -50,7 +50,7 @@ namespace uic_addin.Models {
         }
 
         [Required]
-        [StringLength(6, MinimumLength = 6, ErrorMessage = "NIACS codes are 1-6 characters")]
+        [StringLength(6, MinimumLength = 6, ErrorMessage = "NIACS codes should be 1-6 characters")]
         [DisplayName("NAICS Code")]
         public string NaicsPrimary {
             get => _naicsPrimary;

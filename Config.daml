@@ -24,10 +24,10 @@
         </group>
       </groups>
       <controls>
-        <button id="WorkflowDockPaneShowButton" caption="Workflow" keytip="Show the add-in"
+        <button id="WorkflowDockPaneShowButton" caption="Validation" keytip="Show the add-in"
                 className="uic_addin.Controls.WorkflowDockPaneShowButton" loadOnClick="true"
                 smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
-          <tooltip heading="Show Dockpane">UIC Workflow Add-in<disabledText /></tooltip>
+          <tooltip heading="Show Dockpane">UIC Validation<disabledText /></tooltip>
         </button>
         <tool id="SelectFacilityFeaturesTool" caption="select facility"
               className="uic_addin.Controls.FacilitySelectTool"
