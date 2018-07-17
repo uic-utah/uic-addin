@@ -1,24 +1,36 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ArcGIS.Core.CIM;
 using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Editing;
 using ArcGIS.Desktop.Framework;
+using ArcGIS.Desktop.Framework.Dialogs;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using uic_addin.Models;
+using uic_addin.Views;
 
 namespace uic_addin.Controls {
     internal class CreateNewFacilityPaneViewModel : ViewStatePane {
         private const string ViewPaneId = "CreateNewFacilityPane";
+        private Guid FacilityGuid { get; set; }
+
+        public ReactiveCommand CreateFacilityCommand { get; }
 
         /// <summary>
         ///     Consume the passed in CIMView. Call the base constructor to wire up the CIMView.
         /// </summary>
         public CreateNewFacilityPaneViewModel(CIMView view)
             : base(view) {
+
+            CreateFacilityCommand = new ReactiveCommand();
+            CreateFacilityCommand.Subscribe(async () => await CreateFacility());
         }
 
         /// <summary>
@@ -64,7 +76,41 @@ namespace uic_addin.Controls {
                 return null;
             }
 
-            return $"UTU{fips}F-last8";
+            FacilityGuid = Guid.NewGuid();
+
+            var guidString = FacilityGuid.ToString().ToUpper();
+            return $"UTU{fips}F{guidString.Substring(guidString.Length - 8)}";
+        }
+
+        private async Task CreateFacility() {
+            var facilityLayer = UicModule.Layers[FacilityModel.TableName];
+
+            var operation = new EditOperation {
+                Name = "Create new Facility",
+                SelectNewFeatures = true,
+                ShowProgressor = true,
+                ProgressMessage = "Creating new facility"
+            };
+
+            var attributes = new Dictionary<string, object> {
+                ["GUID"] = FacilityGuid,
+                ["FacilityId"] = NewFacilityId.Value,
+                ["CountyFIPS"] = CountyFips.Value
+            };
+
+            operation.Create(facilityLayer, attributes);
+            await operation.ExecuteAsync();
+
+            if (operation.IsSucceeded) {
+                var pane = UicModule.DockPanes[WorkflowDockPaneViewModel.DockPaneId] as WorkflowDockPaneViewModel;
+                pane?.ShowAttributeEditorForSelectedRecord.Execute(null);
+
+                await UninitializeAsync();
+
+                return;
+            }
+
+            MessageBox.Show(operation.ErrorMessage, "Create Facility Error");
         }
 
         /// <summary>
