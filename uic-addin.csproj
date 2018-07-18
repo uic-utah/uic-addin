@@ -154,6 +154,11 @@
     <Compile Include="Services\QueryService.cs" />
     <Compile Include="Services\ThreadService.cs" />
     <Compile Include="ViewModels\PropertyChangedWithValidation.cs" />
+    <Compile Include="Views\EvergreenTab.xaml.cs">
+      <DependentUpon>EvergreenTab.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\EvergreenTabButton.cs" />
+    <Compile Include="Views\EvergreenTabViewModel.cs" />
     <Compile Include="Views\WorkflowDockPane.xaml.cs">
       <DependentUpon>WorkflowDockPane.xaml</DependentUpon>
     </Compile>
@@ -164,6 +169,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\CreateNewFacilityPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\EvergreenTab.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
@@ -14,19 +14,23 @@ using Reactive.Bindings.Extensions;
 using uic_addin.Extensions;
 using uic_addin.Models;
 using uic_addin.Services;
+using Application = System.Windows.Application;
+using Notification = ArcGIS.Desktop.Framework.Notification;
 
 namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
-        public const string DockPaneId = "WorkflowDockPane";
         private readonly SubscriptionToken _token;
-
-
         private string _heading = "UIC Workflow Main";
 
         public WorkflowDockPaneViewModel() {
             FacilityId = new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
+            IsCurrent = new ReactiveProperty<bool>(true);
+            UpdateToVersionMessage = new ReactiveProperty<string>("Update");
+
+            UpdateSelf = new ReactiveCommand();
+            UpdateSelf.Subscribe(async () => await UpdateAddin());
 
             UseSelection = new RelayCommand(async () => {
                 var facilityLayer = UicModule.Layers[FacilityModel.TableName];
@@ -70,8 +74,17 @@ namespace uic_addin.Views {
             SetupSubscriptions(MapView.Active.Map);
         }
 
+        public const string DockPaneId = "WorkflowDockPane";
+
+        public string Heading {
+            get => _heading;
+            set => SetProperty(ref _heading, value, () => Heading);
+        }
+
         public ICommand UseSelection { get; }
+
         public ICommand ZoomToFacility { get; }
+
         public ICommand ShowAttributeEditorForSelectedRecord { get; }
 
         // Exposed Model
@@ -81,15 +94,18 @@ namespace uic_addin.Views {
 
         public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
 
-        public string Heading {
-            get => _heading;
-            set => SetProperty(ref _heading, value, () => Heading);
-        }
+        public ReactiveProperty<bool> IsCurrent { get; }
+
+        public ReactiveProperty<string> UpdateToVersionMessage { get; set; }
+
+        public ReactiveCommand UpdateSelf { get; set; }
 
         public void SetupSubscriptions(Map map) {
             if (_token != null) {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
+
+
 
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
@@ -106,7 +122,7 @@ namespace uic_addin.Views {
                       .ForEachAsync(async items => {
                           if (items?.Count() != 1) {
                               Model.Value = new FacilityModel();
-                              
+
                               return;
                           }
 
@@ -154,6 +170,35 @@ namespace uic_addin.Views {
         public static void Show() {
             var pane = FrameworkApplication.DockPaneManager.Find(DockPaneId);
             pane?.Activate();
+        }
+
+        private static async Task UpdateAddin() {
+            if (UicModule.AddinRelease == null) {
+                return;
+            }
+
+            await UicModule.Evergreen.Update(UicModule.AddinRelease);
+
+            var notification = new Notification {
+                Message = "Restart to complete the update.",
+                ImageUrl = "",
+                Title = "Evergreen: Upate Complete"
+            };
+
+            FrameworkApplication.AddNotification(notification);
+        }
+
+        public void ShowSettings() => FrameworkApplication.OpenBackstage("EvergreenTab");
+
+        protected override async Task InitializeAsync() => await CheckForLastest();
+
+        private async Task CheckForLastest()
+        {
+            UicModule.AddinRelease = await UicModule.Evergreen.GetLatestReleaseFromGithub();
+            var version = UicModule.Evergreen.GetCurrentAddInVersion();
+
+            IsCurrent.Value = UicModule.Evergreen.IsCurrent(version.AddInVersion, UicModule.AddinRelease);
+            UpdateToVersionMessage.Value = $"Update to {UicModule.AddinRelease.TagName}";
         }
     }
 }
