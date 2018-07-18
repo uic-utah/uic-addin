@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.props" Condition="Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -13,6 +14,8 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -39,11 +42,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
-    <Reference Include="Octokit, Version=0.29.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\Octokit.0.29.0\lib\net45\Octokit.dll</HintPath>
+    <Reference Include="Octokit, Version=0.30.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Octokit.0.30.0\lib\net45\Octokit.dll</HintPath>
     </Reference>
-    <Reference Include="ProEvergreen, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\ProEvergreen.1.2.0\lib\net461\ProEvergreen.exe</HintPath>
+    <Reference Include="ProEvergreen, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\ProEvergreen.2.0.1\lib\net461\ProEvergreen.exe</HintPath>
     </Reference>
     <Reference Include="ReactiveProperty, Version=5.0.0.0, Culture=neutral, PublicKeyToken=910d1732782c71cb, processorArchitecture=MSIL">
       <HintPath>packages\ReactiveProperty.5.1.1\lib\net461\ReactiveProperty.dll</HintPath>
@@ -76,6 +79,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll</HintPath>
     </Reference>
@@ -149,16 +153,16 @@
     <Compile Include="Controls\FacilitySelectTool.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Models\EvergreenSettings.cs" />
     <Compile Include="Models\FacilityModel.cs" />
     <Compile Include="Services\LayerService.cs" />
     <Compile Include="Services\QueryService.cs" />
     <Compile Include="Services\ThreadService.cs" />
     <Compile Include="ViewModels\PropertyChangedWithValidation.cs" />
-    <Compile Include="Views\EvergreenTab.xaml.cs">
-      <DependentUpon>EvergreenTab.xaml</DependentUpon>
+    <Compile Include="Views\EvergreenSettings.xaml.cs">
+      <DependentUpon>EvergreenSettings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\EvergreenTabButton.cs" />
-    <Compile Include="Views\EvergreenTabViewModel.cs" />
+    <Compile Include="Views\EvergreenSettingsViewModel.cs" />
     <Compile Include="Views\WorkflowDockPane.xaml.cs">
       <DependentUpon>WorkflowDockPane.xaml</DependentUpon>
     </Compile>
@@ -172,7 +176,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\EvergreenTab.xaml">
+    <Page Include="Views\EvergreenSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -230,4 +234,12 @@
   <Target Name="BeforeBuild">
     <Error Text="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets not found." Condition="!Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets')" />
   </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.props'))" />
+    <Error Condition="!Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets'))" />
+  </Target>
+  <Import Project="packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets" Condition="Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets')" />
 </Project>
