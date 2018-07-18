@@ -33,6 +33,9 @@
         <button id="CreateNewFacilityButton" caption="Create Facility" className="uic_addin.Controls.CreateNewFacilityPaneOpenButton" loadOnClick="true" smallImage="Images\GenericButtonGreen16.png" largeImage="Images\GenericButtonGreen32.png">
           <tooltip heading="Open Pane">Open Pane<disabledText /></tooltip>
         </button>
+        <button id="uic_addin_Views_EvergreenTab_Button" caption="EvergreenTabButton" className="uic_addin.Views.EvergreenTabButton" loadOnClick="true">
+          <tooltip heading="BackstageTab Button Heading">BackstageTab button tool tip text.<disabledText /></tooltip>
+        </button>
       </controls>
       <dockPanes>
         <dockPane id="WorkflowDockPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowDockPaneViewModel" dock="group" dockWith="esri_core_contentsDockPane">
@@ -46,4 +49,10 @@
       </panes>
     </insertModule>
   </modules>
+  <backstage>
+    <insertButton refID="EvergreenTab" insert="before" placeWith="esri_core_exitApplicationButton" separator="true" />
+    <insertTab id="EvergreenTab" caption="EvergreenTab" className="uic_addin.Views.EvergreenTabViewModel" insert="before" placeWith="esri_core_exitApplicationButton">
+      <content className="uic_addin.Views.EvergreenTabView" />
+    </insertTab>
+  </backstage>
 </ArcGIS>

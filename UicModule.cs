@@ -1,31 +1,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
+using Octokit;
+using ProEvergreen;
 using Serilog;
 using uic_addin.Models;
 using uic_addin.Services;
 using uic_addin.Views;
 using Module = ArcGIS.Desktop.Framework.Contracts.Module;
+using Notification = ArcGIS.Desktop.Framework.Notification;
 
 namespace uic_addin {
     internal class UicModule : Module {
+        public static Evergreen Evergreen { get; private set; }
+        public static Release AddinRelease { get; set; }
+
         public static readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
-        public static readonly string FacilitySelectionState = "0";
-
-        private static UicModule _this;
         public static readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
-        private static SubscriptionToken _token;
-
+        public static readonly string FacilitySelectionState = "0";
         public static UicModule Current => _this ?? (_this =
                                                (UicModule)FrameworkApplication.FindModule("UICModule"));
 
+        private static UicModule _this;
+        private static SubscriptionToken _token;
+
         protected override bool Initialize() {
             Log.Debug("Initializing UIC Workflow Addin {version}", Assembly.GetExecutingAssembly().GetName().Version);
+
+            Evergreen = new Evergreen("agrc", "uic-addin"); 
 
             if (MapView.Active == null) {
                 _token = MapViewInitializedEvent.Subscribe(args => CacheLayers(args.MapView));
