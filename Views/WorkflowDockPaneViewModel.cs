@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
@@ -14,23 +15,24 @@ using Reactive.Bindings.Extensions;
 using uic_addin.Extensions;
 using uic_addin.Models;
 using uic_addin.Services;
-using Application = System.Windows.Application;
-using Notification = ArcGIS.Desktop.Framework.Notification;
 
 namespace uic_addin.Views {
     internal class WorkflowDockPaneViewModel : DockPane {
+        public const string DockPaneId = "WorkflowDockPane";
         private readonly SubscriptionToken _token;
         private string _heading = "UIC Workflow Main";
 
         public WorkflowDockPaneViewModel() {
-            FacilityId = new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
-            Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
-            Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
-            ShowUpdate = new ReactiveProperty<bool>(false);
-            UpdateToVersionMessage = UicModule.Evergreen.Select(x => $"Update to {x.GetCurrentAddInVersion().AddInVersion}")
+            UpdateToVersionMessage = UicModule.Current.IsCurrent.Select(x => {
+                                                  if (x) {
+                                                      return "Your add-in is up to date! 💙";
+                                                  }
+
+                                                  return
+                                                      $"Update to {UicModule.Current.EvergreenSettings?.LatestRelease?.TagName}";
+                                              })
                                               .ToReactiveProperty();
 
-            UpdateSelf = new ReactiveCommand();
             UpdateSelf.Subscribe(async () => await UpdateAddin());
 
             ShowUpdate = UicModule.Current.IsCurrent.Select(x => !x)
@@ -71,14 +73,12 @@ namespace uic_addin.Views {
             }, () => MapView.Active?.Map.SelectionCount > 0);
 
             if (MapView.Active == null) {
-                _token = MapViewInitializedEvent.Subscribe(args => SetupSubscriptions(args.MapView.Map));
+                _token = MapViewInitializedEvent.Subscribe(args => SetupMapSubscriptions(args.MapView.Map));
                 return;
             }
 
-            SetupSubscriptions(MapView.Active.Map);
+            SetupMapSubscriptions(MapView.Active.Map);
         }
-
-        public const string DockPaneId = "WorkflowDockPane";
 
         public string Heading {
             get => _heading;
@@ -91,10 +91,15 @@ namespace uic_addin.Views {
 
         public ICommand ShowAttributeEditorForSelectedRecord { get; }
 
-        // Exposed Model
-        public ReactiveProperty<FacilityModel> Model { get; set; }
+        public ICommand ShowSettings => FrameworkApplication.GetPlugInWrapper("esri_core_showOptionsSheetButton") as
+            ICommand;
 
-        public ReactiveProperty<string> FacilityId { get; set; }
+        // Exposed Model
+        public ReactiveProperty<FacilityModel> Model { get; set; } =
+            new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
+
+        public ReactiveProperty<string> FacilityId { get; set; } =
+            new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
 
         public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
 
@@ -102,16 +107,12 @@ namespace uic_addin.Views {
 
         public ReactiveProperty<string> UpdateToVersionMessage { get; set; }
 
-        public ReactiveCommand UpdateSelf { get; set; }
+        public ReactiveCommand UpdateSelf { get; set; } = new ReactiveCommand();
 
-
-        public void SetupSubscriptions(Map map) {
+        public void SetupMapSubscriptions(Map map) {
             if (_token != null) {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
-
-            ShowUpdate = UicModule.IsCurrent.Select(x => !x)
-                                  .ToReactiveProperty();
 
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
@@ -122,7 +123,7 @@ namespace uic_addin.Views {
                                    })
                                    .CatchIgnore()
                                    .Switch()
-                                   .ToReactiveProperty();
+                                   .ToReactiveProperty(mode: ReactivePropertyMode.DistinctUntilChanged);
 
             Facilities.ObserveOn(Application.Current.Dispatcher)
                       .ForEachAsync(async items => {
@@ -145,7 +146,7 @@ namespace uic_addin.Views {
                       });
 
             MapSelectionChangedEvent.Subscribe(async args => {
-                if (!FrameworkApplication.State.Contains(UicModule.FacilitySelectionState)) {
+                if (!FrameworkApplication.State.Contains(UicModule.Current.FacilitySelectionState)) {
                     return;
                 }
 
@@ -188,7 +189,7 @@ namespace uic_addin.Views {
             var notification = new Notification {
                 Message = "Restart to complete the update.",
                 ImageUrl = "",
-                Title = "Evergreen: Upate Complete"
+                Title = "Evergreen: Restart Required"
             };
 
             FrameworkApplication.AddNotification(notification);

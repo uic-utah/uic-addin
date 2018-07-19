@@ -42,13 +42,6 @@ namespace uic_addin {
 
         protected override bool Initialize() {
             Log.Debug("Initializing UIC Workflow Addin {version}", Assembly.GetExecutingAssembly().GetName().Version);
-            Evergreen = new ReactiveProperty<Evergreen> {
-                Value = new Evergreen("agrc", "uic-addin")
-            };
-
-            EvergreenSettings = new EvergreenSettings {
-                BetaChannel = true
-            };
 
             if (MapView.Active == null) {
                 _token = MapViewInitializedEvent.Subscribe(args => CacheLayers(args.MapView));
@@ -73,7 +66,12 @@ namespace uic_addin {
             Settings.Clear();
 
             if (settings == null) {
-                await CheckForLastest();
+                try {
+                    await CheckForLastest();
+                } catch {
+                    // ignored
+                }
+
                 await base.OnReadSettingsAsync(null);
 
                 return;
@@ -89,7 +87,11 @@ namespace uic_addin {
 
             EvergreenSettings.BetaChannel = Convert.ToBoolean(Settings["UICAddin.Evergreen.BetaChannel"]);
 
-            await CheckForLastest();
+            try {
+                await CheckForLastest();
+            } catch {
+                // ignored
+            }
         }
 
         protected override async Task OnWriteSettingsAsync(ModuleSettingsWriter settings) {
@@ -97,7 +99,11 @@ namespace uic_addin {
                 settings.Add(key, Settings[key]);
             }
 
-            await CheckForLastest();
+            try {
+                await CheckForLastest();
+            } catch {
+                // ignored
+            }
         }
 
         protected override bool CanUnload() {
