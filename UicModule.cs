@@ -151,8 +151,17 @@ namespace uic_addin {
 
             EvergreenSettings.LatestRelease = await Evergreen.Value.GetLatestReleaseFromGithub(useBetaChannel);
             var version = Evergreen.Value.GetCurrentAddInVersion();
+            try {
+                IsCurrent.Value = Evergreen.Value.IsCurrent(version.AddInVersion, EvergreenSettings.LatestRelease);
+            } catch (ArgumentNullException) {
+                if (version == null) {
+                    // pro addin version couldnt be found
+                    throw;
+                }
 
-            IsCurrent.Value = Evergreen.Value.IsCurrent(version.AddInVersion, EvergreenSettings.LatestRelease);
+                // github doesn't have a version. most likely only prereleases and no stable
+                IsCurrent.Value = true;
+            }
         }
     }
 }
