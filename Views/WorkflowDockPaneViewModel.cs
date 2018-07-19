@@ -114,6 +114,8 @@ namespace uic_addin.Views {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
 
+            PromptForProjection(map);
+
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
                                            return Enumerable.Empty<string>();
@@ -172,6 +174,17 @@ namespace uic_addin.Views {
 
                 Facilities.Value = new[] {facilityIds.FirstOrDefault()};
             });
+        }
+
+        private static void PromptForProjection(ILayerContainer map) {
+            var layers = map.Layers.Where(layer => layer.GetSpatialReference().Wkid != 26912);
+
+            var model = layers.Select(x => new {
+                x.Name,
+                Sr = x.GetSpatialReference().Name
+            });
+
+
         }
 
         public static void Show() {
