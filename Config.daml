@@ -22,6 +22,7 @@
           <button refID="WorkflowDockPaneShowButton" size="large" />
           <tool refID="SelectFacilityFeaturesTool" size="large" />
           <button refID="CreateNewFacilityButton" size="large" />
+          <button refID="esri_core_showOptionsSheetButton" size="large" />
         </group>
       </groups>
       <controls>
