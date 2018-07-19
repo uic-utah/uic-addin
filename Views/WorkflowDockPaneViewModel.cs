@@ -26,8 +26,9 @@ namespace uic_addin.Views {
             FacilityId = new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Facilities = new ReactiveProperty<IEnumerable<string>>(mode: ReactivePropertyMode.DistinctUntilChanged);
             Model = new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
-            IsCurrent = new ReactiveProperty<bool>(true);
-            UpdateToVersionMessage = new ReactiveProperty<string>("Update");
+            ShowUpdate = new ReactiveProperty<bool>(false);
+            UpdateToVersionMessage = UicModule.Evergreen.Select(x => $"Update to {x.GetCurrentAddInVersion().AddInVersion}")
+                                              .ToReactiveProperty();
 
             UpdateSelf = new ReactiveCommand();
             UpdateSelf.Subscribe(async () => await UpdateAddin());
@@ -94,18 +95,20 @@ namespace uic_addin.Views {
 
         public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
 
-        public ReactiveProperty<bool> IsCurrent { get; }
+        public ReactiveProperty<bool> ShowUpdate { get; set; }
 
         public ReactiveProperty<string> UpdateToVersionMessage { get; set; }
 
         public ReactiveCommand UpdateSelf { get; set; }
+
 
         public void SetupSubscriptions(Map map) {
             if (_token != null) {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
 
-
+            ShowUpdate = UicModule.IsCurrent.Select(x => !x)
+                                  .ToReactiveProperty();
 
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
@@ -173,11 +176,11 @@ namespace uic_addin.Views {
         }
 
         private static async Task UpdateAddin() {
-            if (UicModule.AddinRelease == null) {
+            if (UicModule.EvergreenSettings.LatestRelease == null) {
                 return;
             }
 
-            await UicModule.Evergreen.Update(UicModule.AddinRelease);
+            await UicModule.Evergreen.Value.Update(UicModule.EvergreenSettings.LatestRelease);
 
             var notification = new Notification {
                 Message = "Restart to complete the update.",
@@ -186,19 +189,6 @@ namespace uic_addin.Views {
             };
 
             FrameworkApplication.AddNotification(notification);
-        }
-
-        public void ShowSettings() => FrameworkApplication.OpenBackstage("EvergreenTab");
-
-        protected override async Task InitializeAsync() => await CheckForLastest();
-
-        private async Task CheckForLastest()
-        {
-            UicModule.AddinRelease = await UicModule.Evergreen.GetLatestReleaseFromGithub();
-            var version = UicModule.Evergreen.GetCurrentAddInVersion();
-
-            IsCurrent.Value = UicModule.Evergreen.IsCurrent(version.AddInVersion, UicModule.AddinRelease);
-            UpdateToVersionMessage.Value = $"Update to {UicModule.AddinRelease.TagName}";
         }
     }
 }

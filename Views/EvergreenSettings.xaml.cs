@@ -15,10 +15,10 @@ using System.Windows.Shapes;
 
 namespace uic_addin.Views {
     /// <summary>
-    /// Interaction logic for EvergreenTabView.xaml
+    /// Interaction logic for EvergreenSettingsView.xaml
     /// </summary>
-    public partial class EvergreenTabView : UserControl {
-        public EvergreenTabView() {
+    public partial class EvergreenSettingsView : UserControl {
+        public EvergreenSettingsView() {
             InitializeComponent();
         }
     }
