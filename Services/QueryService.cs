@@ -5,13 +5,12 @@ using System.Threading.Tasks;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
-using Reactive.Bindings;
 using uic_addin.Models;
 
 namespace uic_addin.Services {
     public class QueryService {
         public static async Task<IEnumerable<string>> GetFacilityIdsFor(string id, Map map) => await QueuedTask.Run(() => {
-            var layer = UicModule.Layers[FacilityModel.TableName] as FeatureLayer;
+            var layer = UicModule.Current.Layers[FacilityModel.TableName] as FeatureLayer;
 
             var filter = new QueryFilter {
                 WhereClause = $"FacilityID LIKE '{id}%'"
@@ -29,7 +28,7 @@ namespace uic_addin.Services {
         });
 
         public static async Task<FacilityModel> GetFacilityFor(string id, Map map=null) => await QueuedTask.Run(() => {
-            var layer = UicModule.Layers[FacilityModel.TableName] as FeatureLayer;
+            var layer = UicModule.Current.Layers[FacilityModel.TableName] as FeatureLayer;
 
             var filter = new QueryFilter {
                 WhereClause = $"FacilityID='{id}'"
@@ -73,7 +72,7 @@ namespace uic_addin.Services {
 
         public static async Task<IEnumerable<string>> GetFacilityIdsFor(IEnumerable<long> facilityObjectIds, Map map=null) => await
             QueuedTask.Run(() => {
-                var layer = UicModule.Layers[FacilityModel.TableName] as FeatureLayer;
+                var layer = UicModule.Current.Layers[FacilityModel.TableName] as FeatureLayer;
 
                 var filter = new QueryFilter {
                     WhereClause = $"OBJECTID IN ({string.Join(",", facilityObjectIds)})"

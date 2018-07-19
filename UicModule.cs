@@ -18,21 +18,27 @@ using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 
 namespace uic_addin {
     internal class UicModule : Module {
-        public static readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
-        public static readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
-        public static readonly string FacilitySelectionState = "0";
-
         private static UicModule _this;
-        private static SubscriptionToken _token;
-        public static ReactiveProperty<Evergreen> Evergreen { get; private set; }
-        public static ReactiveProperty<bool> IsCurrent { get; } = new ReactiveProperty<bool>();
-        public static EvergreenSettings EvergreenSettings { get; set; }
+        private readonly IEnumerable<string> _addinKeys = new[] {"UICAddin.Evergreen.BetaChannel"};
+        public readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
+        public readonly string FacilitySelectionState = "0";
+        public readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
+        private SubscriptionToken _token;
+
+        public ReactiveProperty<Evergreen> Evergreen { get; } = new ReactiveProperty<Evergreen> {
+            Value = new Evergreen("agrc", "uic-addin")
+        };
+
+        public ReactiveProperty<bool> IsCurrent { get; } = new ReactiveProperty<bool>(true);
+
+        public EvergreenSettings EvergreenSettings { get; set; } = new EvergreenSettings {
+            BetaChannel = true
+        };
 
         public static UicModule Current => _this ?? (_this =
                                                (UicModule)FrameworkApplication.FindModule("UICModule"));
 
         public Dictionary<string, string> Settings { get; set; } = new Dictionary<string, string>();
-        private readonly IEnumerable<string> _addinKeys = new[] {"UICAddin.Evergreen.BetaChannel"};
 
         protected override bool Initialize() {
             Log.Debug("Initializing UIC Workflow Addin {version}", Assembly.GetExecutingAssembly().GetName().Version);
@@ -104,7 +110,7 @@ namespace uic_addin {
             return true;
         }
 
-        public static void CacheLayers(MapView view = null) {
+        public void CacheLayers(MapView view = null) {
             Log.Debug("Caching project layers");
 
             if (_token != null) {
@@ -123,7 +129,7 @@ namespace uic_addin {
                 LayerService.FindLayer(FacilityModel.TableName, activeView.Map) as FeatureLayer;
         }
 
-        public static void CachePanes() {
+        public void CachePanes() {
             Log.Debug("Caching project dock panes");
 
             var paneIds = new[] {
@@ -135,7 +141,7 @@ namespace uic_addin {
             }
         }
 
-        private static void FindPaneFromId(string id) {
+        private void FindPaneFromId(string id) {
             if (DockPanes.ContainsKey(id)) {
                 return;
             }
@@ -143,7 +149,7 @@ namespace uic_addin {
             DockPanes[id] = FrameworkApplication.DockPaneManager.Find(id);
         }
 
-        public static async Task CheckForLastest() {
+        public async Task CheckForLastest() {
             var useBetaChannel = true;
             if (Current.Settings.TryGetValue("UICAddin.Evergreen.BetaChannel", out var value)) {
                 bool.TryParse(value, out useBetaChannel);

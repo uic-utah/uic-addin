@@ -13,12 +13,12 @@ namespace uic_addin.Controls {
         }
 
         protected override Task<bool> OnSketchCompleteAsync(Geometry geometry) {
-            FrameworkApplication.State.Activate(UicModule.FacilitySelectionState);
+            FrameworkApplication.State.Activate(UicModule.Current.FacilitySelectionState);
 
             return QueuedTask.Run(() => {
                 MapView.Active.SelectFeatures(geometry);
 
-                FrameworkApplication.State.Deactivate(UicModule.FacilitySelectionState);
+                FrameworkApplication.State.Deactivate(UicModule.Current.FacilitySelectionState);
 
                 return true;
             });
