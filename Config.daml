@@ -1,5 +1,7 @@
-<ArcGIS defaultAssembly="uic-addin.dll" defaultNamespace="uic_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="1.0.0-beta.1" desktopVersion="2.2.12813">
+<ArcGIS defaultAssembly="uic-addin.dll" defaultNamespace="uic_addin" xmlns="http://schemas.esri.com/DADF/Registry"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="1.0.0-beta.0" desktopVersion="2.2.12813">
     <Name>UIC Workflow</Name>
     <Description>An ArcGIS Pro add-in to help manage, create, and validate the UIC GIS database</Description>
     <Image>Images\AddinDesktop32.png</Image>
@@ -9,7 +11,7 @@
     <Subject>Editing</Subject>
   </AddInInfo>
   <modules>
-    <insertModule id="UICModule" className="UicModule" autoLoad="false" caption="UicModule">
+    <insertModule id="UICModule" className="UicModule" autoLoad="true" caption="UIC Module">
       <tabs>
         <tab id="UICTab" keytip="UIC Tools" caption="UIC Tools">
           <group refID="UICGroup" />
@@ -23,36 +25,46 @@
         </group>
       </groups>
       <controls>
-        <button id="WorkflowDockPaneShowButton" caption="Validation" keytip="Show the add-in" className="uic_addin.Controls.WorkflowDockPaneShowButton" loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+        <button id="WorkflowDockPaneShowButton" caption="Validation" keytip="Show the add-in"
+                className="uic_addin.Controls.WorkflowDockPaneShowButton" loadOnClick="true"
+                smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
           <tooltip heading="Show Dockpane">UIC Validation<disabledText /></tooltip>
         </button>
-        <tool id="SelectFacilityFeaturesTool" caption="select facility" className="uic_addin.Controls.FacilitySelectTool" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="z2">
+        <tool id="SelectFacilityFeaturesTool" caption="select facility"
+              className="uic_addin.Controls.FacilitySelectTool" smallImage="Images\UIC16.png"
+              largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="z2">
           <tooltip heading="Select Facility Features">
-            Select facility features to start the UIC workflow<disabledText /></tooltip>
+            Select facility features to start the UIC workflow<disabledText />
+          </tooltip>
         </tool>
-        <button id="CreateNewFacilityButton" caption="Create Facility" className="uic_addin.Controls.CreateNewFacilityPaneOpenButton" loadOnClick="true" smallImage="Images\GenericButtonGreen16.png" largeImage="Images\GenericButtonGreen32.png">
+        <button id="CreateNewFacilityButton" caption="Create Facility" keytip="Create Facility"
+                className="uic_addin.Controls.CreateNewFacilityPaneOpenButton" loadOnClick="true"
+                smallImage="Images\GenericButtonGreen16.png" largeImage="Images\GenericButtonGreen32.png">
           <tooltip heading="Open Pane">Open Pane<disabledText /></tooltip>
-        </button>
-        <button id="uic_addin_Views_EvergreenTab_Button" caption="EvergreenTabButton" className="uic_addin.Views.EvergreenTabButton" loadOnClick="true">
-          <tooltip heading="BackstageTab Button Heading">BackstageTab button tool tip text.<disabledText /></tooltip>
         </button>
       </controls>
       <dockPanes>
-        <dockPane id="WorkflowDockPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowDockPaneViewModel" dock="group" dockWith="esri_core_contentsDockPane">
+        <dockPane id="WorkflowDockPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowDockPaneViewModel"
+                  dock="group" dockWith="esri_core_contentsDockPane">
           <content className="uic_addin.Views.WorkflowDockPaneView" />
         </dockPane>
       </dockPanes>
       <panes>
-        <pane id="CreateNewFacilityPane" caption="Create New Facility" className="uic_addin.Controls.CreateNewFacilityPaneViewModel" smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab" defaultTool="esri_mapping_navigateTool">
+        <pane id="CreateNewFacilityPane" caption="Create New Facility"
+              className="uic_addin.Controls.CreateNewFacilityPaneViewModel"
+              smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab"
+              defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Controls.CreateNewFacilityPaneView" />
         </pane>
       </panes>
     </insertModule>
   </modules>
-  <backstage>
-    <insertButton refID="EvergreenTab" insert="before" placeWith="esri_core_exitApplicationButton" separator="true" />
-    <insertTab id="EvergreenTab" caption="EvergreenTab" className="uic_addin.Views.EvergreenTabViewModel" insert="before" placeWith="esri_core_exitApplicationButton">
-      <content className="uic_addin.Views.EvergreenTabView" />
-    </insertTab>
-  </backstage>
+  <propertySheets>
+    <updateSheet refID="esri_core_optionsPropertySheet">
+      <insertPage id="EvergreenSettings" caption="UIC Add-in" className="uic_addin.Views.EvergreenSettingsViewModel"
+                  group="Project">
+        <content className="uic_addin.Views.EvergreenSettingsView" />
+      </insertPage>
+    </updateSheet>
+  </propertySheets>
 </ArcGIS>

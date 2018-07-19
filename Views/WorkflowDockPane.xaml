@@ -23,20 +23,17 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <StackPanel Grid.Row="0" HorizontalAlignment="Left">
-      <StackPanel Visibility="{Binding IsCurrent.Value, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
+      <StackPanel Visibility="{Binding ShowUpdate.Value, Converter={StaticResource BoolToVis}}">
         <TextBlock Style="{DynamicResource Esri_TextBlockH1}"
                    Foreground="{DynamicResource Esri_TextCaptionActiveBrush}" Margin="5,0,0,10">
           <Run Text="Add-in Update Available!" />
         </TextBlock>
-        <StackPanel Orientation="Horizontal">
-          <Button Content="View Addin Settings" Width="Auto" Style="{DynamicResource Esri_Button}" />
-          <Button Command="{Binding UpdateSelf}"
-                  ToolTip="Update Addin"
-                  Content="{Binding UpdateToVersionMessage.Value}"
-                  Foreground="{DynamicResource Esri_TextCaptionActiveBrush}"
-                  Style="{DynamicResource Esri_Button}"
-                  Width="Auto" />
-        </StackPanel>
+        <Button Command="{Binding UpdateSelf}"
+                ToolTip="Update Addin"
+                Content="{Binding UpdateToVersionMessage.Value}"
+                Foreground="{DynamicResource Esri_TextCaptionActiveBrush}"
+                Style="{DynamicResource Esri_Button}"
+                Width="Auto" />
       </StackPanel>
       <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10">
         <Run Text="Start with a Facility Id" />
