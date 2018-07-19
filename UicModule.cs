@@ -156,11 +156,12 @@ namespace uic_addin {
             }
 
             EvergreenSettings.LatestRelease = await Evergreen.Value.GetLatestReleaseFromGithub(useBetaChannel);
-            var version = Evergreen.Value.GetCurrentAddInVersion();
+            EvergreenSettings.CurrentVersion = Evergreen.Value.GetCurrentAddInVersion();
             try {
-                IsCurrent.Value = Evergreen.Value.IsCurrent(version.AddInVersion, EvergreenSettings.LatestRelease);
+                IsCurrent.Value = Evergreen.Value.IsCurrent(EvergreenSettings.CurrentVersion.AddInVersion,
+                                                            EvergreenSettings.LatestRelease);
             } catch (ArgumentNullException) {
-                if (version == null) {
+                if (EvergreenSettings.CurrentVersion == null) {
                     // pro addin version couldnt be found
                     throw;
                 }
