@@ -7,36 +7,33 @@ using Reactive.Bindings;
 
 namespace uic_addin.Views {
     internal class EvergreenSettingsViewModel : Page {
-        private bool _originalBetaChannel = false;
+        private bool _betaChannel;
 
         public EvergreenSettingsViewModel() {
-            CurrentVersion = UicModule.Evergreen.Select(x => x.GetCurrentAddInVersion().AddInVersion)
-                                      .ToReactiveProperty();
+            CurrentVersion = UicModule
+                .Current.Evergreen.Select(x => UicModule.Current.EvergreenSettings.CurrentVersion.AddInVersion)
+                .ToReactiveProperty();
 
-            OpenRepository = new ReactiveCommand();
-
-            OpenRepository.Subscribe(() => Open("https://github.com/agrc/uic-addin"));
+            OpenRepository.Subscribe(() => Process.Start("https://github.com/agrc/uic-addin"));
         }
 
-        public ReactiveCommand OpenRepository { get; set; }
-
-        private bool _betaChannel;
-        private bool _dirty;
+        public ReactiveCommand OpenRepository { get; set; } = new ReactiveCommand();
 
         public bool BetaChannel {
             get => _betaChannel;
             set {
-                if (SetProperty(ref _betaChannel, value, () => BetaChannel))
+                var modified = value != _betaChannel;
+
+                if (SetProperty(ref _betaChannel, value, () => BetaChannel) && modified) {
                     IsModified = true;
+                }
             }
         }
 
         public ReactiveProperty<string> CurrentVersion { get; }
 
-        public void Open(string url) => Process.Start(url);
-
         /// <summary>
-        /// Invoked when the OK or apply button on the property sheet has been clicked.
+        ///     Invoked when the OK or apply button on the property sheet has been clicked.
         /// </summary>
         /// <returns>A task that represents the work queued to execute in the ThreadPool.</returns>
         /// <remarks>This function is only called if the page has set its IsModified flag to true.</remarks>
@@ -44,15 +41,21 @@ namespace uic_addin.Views {
             var settings = UicModule.Current.Settings;
 
             settings["UICAddin.Evergreen.BetaChannel"] = BetaChannel.ToString();
-            UicModule.EvergreenSettings.BetaChannel = BetaChannel;
-            
-            Project.Current.SetDirty();
+            if (BetaChannel != UicModule.Current.EvergreenSettings.BetaChannel) {
+                Project.Current.SetDirty();
+            }
 
-            await UicModule.CheckForLastest();
+            UicModule.Current.EvergreenSettings.BetaChannel = BetaChannel;
+
+            try {
+                await UicModule.Current.CheckForLastest();
+            } catch {
+                // ignored
+            }
         }
 
         /// <summary>
-        /// Called when the page loads because to has become visible.
+        ///     Called when the page loads because to has become visible.
         /// </summary>
         /// <returns>A task that represents the work queued to execute in the ThreadPool.</returns>
         protected override Task InitializeAsync() {
@@ -62,17 +65,9 @@ namespace uic_addin.Views {
                 bool.TryParse(value, out useBetaChannel);
             }
 
-            BetaChannel = useBetaChannel;
+            _betaChannel = useBetaChannel;
 
             return Task.FromResult(0);
-        }
-
-        public bool Dirty => _originalBetaChannel != UicModule.EvergreenSettings.BetaChannel;
-
-        /// <summary>
-        /// Called when the page is destroyed.
-        /// </summary>
-        protected override void Uninitialize() {
         }
     }
 }
