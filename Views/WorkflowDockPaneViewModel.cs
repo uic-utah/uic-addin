@@ -33,8 +33,11 @@ namespace uic_addin.Views {
             UpdateSelf = new ReactiveCommand();
             UpdateSelf.Subscribe(async () => await UpdateAddin());
 
+            ShowUpdate = UicModule.Current.IsCurrent.Select(x => !x)
+                                  .ToReactiveProperty();
+
             UseSelection = new RelayCommand(async () => {
-                var facilityLayer = UicModule.Layers[FacilityModel.TableName];
+                var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName];
                 var ids = await LayerService.GetSelectedIdsFor(facilityLayer);
 
                 var selectedIds = await QueryService.GetFacilityIdsFor(ids, facilityLayer.Map);
@@ -48,7 +51,7 @@ namespace uic_addin.Views {
             }, () => MapView.Active?.Map.SelectionCount > 0);
 
             ZoomToFacility = new RelayCommand(async () => {
-                var facilityLayer = UicModule.Layers[FacilityModel.TableName] as BasicFeatureLayer;
+                var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName] as BasicFeatureLayer;
 
                 await MapView.Active.ZoomToAsync(facilityLayer, Model.Value.ObjectId, TimeSpan.FromMilliseconds(250));
             }, () => {
@@ -137,7 +140,7 @@ namespace uic_addin.Views {
                               return;
                           }
 
-                          var facilityLayer = UicModule.Layers[FacilityModel.TableName];
+                          var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName];
                           await LayerService.SetSelectionFromId(Model.Value.ObjectId, facilityLayer);
                       });
 
@@ -176,11 +179,11 @@ namespace uic_addin.Views {
         }
 
         private static async Task UpdateAddin() {
-            if (UicModule.EvergreenSettings.LatestRelease == null) {
+            if (UicModule.Current.EvergreenSettings.LatestRelease == null) {
                 return;
             }
 
-            await UicModule.Evergreen.Value.Update(UicModule.EvergreenSettings.LatestRelease);
+            await UicModule.Current.Evergreen.Value.Update(UicModule.Current.EvergreenSettings.LatestRelease);
 
             var notification = new Notification {
                 Message = "Restart to complete the update.",

@@ -83,7 +83,7 @@ namespace uic_addin.Controls {
         }
 
         private async Task CreateFacility() {
-            var facilityLayer = UicModule.Layers[FacilityModel.TableName];
+            var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName];
 
             var operation = new EditOperation {
                 Name = "Create new Facility",
@@ -102,7 +102,7 @@ namespace uic_addin.Controls {
             await operation.ExecuteAsync();
 
             if (operation.IsSucceeded) {
-                var pane = UicModule.DockPanes[WorkflowDockPaneViewModel.DockPaneId] as WorkflowDockPaneViewModel;
+                var pane = UicModule.Current.DockPanes[WorkflowDockPaneViewModel.DockPaneId] as WorkflowDockPaneViewModel;
                 pane?.ShowAttributeEditorForSelectedRecord.Execute(null);
 
                 await UninitializeAsync();
