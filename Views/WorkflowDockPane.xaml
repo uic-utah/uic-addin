@@ -23,6 +23,19 @@
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <StackPanel Grid.Row="0" HorizontalAlignment="Left">
+      <Button Command="{Binding ShowSettings}"
+              Style="{DynamicResource Esri_Button}"
+              Width="Auto"
+              HorizontalAlignment="Left">
+        <StackPanel Orientation="Horizontal">
+          <Image Source="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericOptions16.png"
+                 Width="16px"
+                 Height="16px"
+                 Margin="0,0,5,0"
+                 HorizontalAlignment="Left" />
+          <TextBlock Text="Options" />
+        </StackPanel>
+      </Button>
       <StackPanel Visibility="{Binding ShowUpdate.Value, Converter={StaticResource BoolToVis}}">
         <TextBlock Style="{DynamicResource Esri_TextBlockH1}"
                    Foreground="{DynamicResource Esri_TextCaptionActiveBrush}" Margin="5,0,0,10">
