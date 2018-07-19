@@ -18,7 +18,7 @@
         </tab>
       </tabs>
       <groups>
-        <group id="UICGroup" keytip="uictools" caption="UIC Tools" appearsOnAddInTab="true">
+        <group id="UICGroup" keytip="uictools" caption="UIC Tools" appearsOnAddInTab="false">
           <button refID="WorkflowDockPaneShowButton" size="large" />
           <tool refID="SelectFacilityFeaturesTool" size="large" />
           <button refID="CreateNewFacilityButton" size="large" />
