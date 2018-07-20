@@ -101,7 +101,12 @@ namespace uic_addin.Views {
         public ReactiveProperty<string> FacilityId { get; set; } =
             new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
 
+        public ReactiveCollection<IEnumerable<Layer>> LayerAdded { get; set; } =
+            new ReactiveCollection<IEnumerable<Layer>>();
+
         public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
+
+        public ReactiveProperty<bool> Prompt { get; set; }
 
         public ReactiveProperty<bool> ShowUpdate { get; set; }
 
@@ -114,7 +119,7 @@ namespace uic_addin.Views {
                 MapViewInitializedEvent.Unsubscribe(_token);
             }
 
-            PromptForProjection(map);
+            ThreadService.RunOnBackground(() => PromptForProjection(map));
 
             Facilities = FacilityId.Select(async id => {
                                        if (id.Length < 4) {
@@ -147,6 +152,14 @@ namespace uic_addin.Views {
                           await LayerService.SetSelectionFromId(Model.Value.ObjectId, facilityLayer);
                       });
 
+            Prompt = LayerAdded.ObserveAddChanged().Select(x => {
+                                   PromptForProjection(MapView.Active?.Map);
+
+                                   return true;
+                               }).ToReactiveProperty();
+
+            LayersAddedEvent.Subscribe(args => LayerAdded.AddOnScheduler(args.Layers));
+
             MapSelectionChangedEvent.Subscribe(async args => {
                 if (!FrameworkApplication.State.Contains(UicModule.Current.FacilitySelectionState)) {
                     return;
@@ -176,16 +189,34 @@ namespace uic_addin.Views {
             });
         }
 
-        private static void PromptForProjection(ILayerContainer map) {
-            var layers = map.Layers.Where(layer => layer.GetSpatialReference().Wkid != 26912);
+        private static void PromptForProjection(ILayerContainer map) => ThreadService.RunOnBackground(() => {
+            if (map == null && MapView.Active?.Map == null) {
+                return;
+            }
 
-            var model = layers.Select(x => new {
+            var activeMap = map ?? MapView.Active.Map;
+
+            var layers = Enumerable.Empty<Layer>();
+
+            layers = activeMap.Layers.Where(layer => layer.GetSpatialReference().Wkid != 26912);
+
+            if (!layers.Any()) {
+                return;
+            }
+
+            var problems = layers.Select(x => new {
                 x.Name,
                 Sr = x.GetSpatialReference().Name
             });
 
+            var message =
+                problems.Aggregate("",
+                                   (current, item) => current +
+                                                      $"Layer {item.Name} has a spatial reference of {item.Sr}{Environment.NewLine}");
+            message += $"{Environment.NewLine}Please reproject these layers";
 
-        }
+            MessageBox.Show(message, "Spatial Reference Issue");
+        });
 
         public static void Show() {
             var pane = FrameworkApplication.DockPaneManager.Find(DockPaneId);
