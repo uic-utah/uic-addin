@@ -1,5 +1,5 @@
 <ArcGIS defaultAssembly="uic-addin.dll" defaultNamespace="uic_addin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="1.0.0-beta.1" desktopVersion="2.2.12813">
+  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="1.0.0" desktopVersion="2.2.12813">
     <Name>UIC Workflow</Name>
     <Description>An ArcGIS Pro add-in to help manage, create, and validate the UIC GIS database</Description>
     <Image>Images\AddinDesktop32.png</Image>
@@ -21,6 +21,7 @@
           <tool refID="SelectFacilityFeaturesTool" size="large" />
           <button refID="CreateNewFacilityButton" size="large" />
           <button refID="esri_core_showOptionsSheetButton" size="large" />
+          <customControl refID="CreateNewFacilityControl" size="large" />
         </group>
       </groups>
       <controls>
@@ -31,14 +32,12 @@
           <tooltip heading="Select Facility Features">
             Select facility features to start the UIC workflow<disabledText /></tooltip>
         </tool>
-        <button id="CreateNewFacilityButton" caption="Create Facility" keytip="Create Facility" className="uic_addin.Controls.CreateNewFacilityPaneOpenButton" loadOnClick="true" smallImage="Images\GenericButtonGreen16.png" largeImage="Images\GenericButtonGreen32.png">
-          <tooltip heading="Open Pane">Open Pane<disabledText /></tooltip>
-        </button>
+        <customControl isDropDown="true" id="CreateNewFacilityControl" caption="Create New Facility" className="uic_addin.Controls.CreateNewFacilityControlViewModel" loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+          <content className="uic_addin.Controls.CreateNewFacilityControlView" />
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </customControl>
       </controls>
       <panes>
-        <pane id="CreateNewFacilityPane" caption="Create New Facility" className="uic_addin.Controls.CreateNewFacilityPaneViewModel" smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab" defaultTool="esri_mapping_navigateTool">
-          <content className="uic_addin.Controls.CreateNewFacilityPaneView" />
-        </pane>
         <pane id="WorkflowPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowViewModel" smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab" defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Views.WorkflowView" />
         </pane>
