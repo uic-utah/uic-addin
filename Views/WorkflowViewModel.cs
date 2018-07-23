@@ -139,6 +139,7 @@ namespace uic_addin.Views {
 
         public RelayCommand ShowAttributeEditorForSelectedRecord { get; }
 
+        // todo explore PropertySheet.Show
         public ICommand ShowSettings => FrameworkApplication.GetPlugInWrapper("esri_core_showOptionsSheetButton") as
             ICommand;
 
@@ -178,8 +179,10 @@ namespace uic_addin.Views {
 
             await UicModule.Current.Evergreen.Value.Update(UicModule.Current.EvergreenSettings.LatestRelease);
 
-            var result = MessageBox.Show("A restart is required to complete the update. Would you like to exit Pro now?", "Evergreen: Restart Required",
-                            MessageBoxButton.YesNo);
+            var result =
+                MessageBox.Show("A restart is required to complete the update. Would you like to exit Pro now?",
+                                "Evergreen: Restart Required",
+                                MessageBoxButton.YesNo);
 
             if (result == MessageBoxResult.Yes) {
                 await FrameworkApplication.ShutdownAsync();
