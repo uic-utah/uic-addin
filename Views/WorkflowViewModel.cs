@@ -20,12 +20,21 @@ namespace uic_addin.Views {
     internal class WorkflowViewModel : TOCMapPaneProviderPane {
         private const string ViewPaneId = "WorkflowPane";
         private readonly SubscriptionToken _subscriptionToken;
+        private SubscriptionToken _mapLoadToken;
 
         /// <summary>
         ///     Consume the passed in CIMView. Call the base constructor to wire up the CIMView.
         /// </summary>
         public WorkflowViewModel(CIMView view) : base(view) {
             _dockUnderMapView = true;
+
+            Prompt = LayerAdded.ObserveAddChanged().Select(x => {
+                PromptForProjection(MapView.Active?.Map);
+
+                return true;
+            }).ToReactiveProperty();
+
+            LayersAddedEvent.Subscribe(args => LayerAdded.AddOnScheduler(args.Layers));
 
             UpdateToVersionMessage = UicModule.Current.IsCurrent.Select(x => {
                                                   if (x) {
@@ -156,6 +165,11 @@ namespace uic_addin.Views {
 
         public ReactiveProperty<string> UpdateToVersionMessage { get; set; }
 
+        public ReactiveProperty<bool> Prompt { get; set; }
+
+        public ReactiveCollection<IEnumerable<Layer>> LayerAdded { get; set; } =
+            new ReactiveCollection<IEnumerable<Layer>>();
+
         public ReactiveCommand UpdateSelf { get; set; } = new ReactiveCommand();
 
         /// <summary>
@@ -209,6 +223,35 @@ namespace uic_addin.Views {
             return newPane;
         }
 
+        private static void PromptForProjection(ILayerContainer map) => ThreadService.RunOnBackground(() => {
+            if (map == null && MapView.Active?.Map == null) {
+                return;
+            }
+
+            var activeMap = map ?? MapView.Active.Map;
+
+            var layers = Enumerable.Empty<Layer>();
+
+            layers = activeMap.Layers.Where(layer => layer.GetSpatialReference().Wkid != 26912);
+
+            if (!layers.Any()) {
+                return;
+            }
+
+            var problems = layers.Select(x => new {
+                x.Name,
+                Sr = x.GetSpatialReference().Name
+            });
+
+            var message =
+                problems.Aggregate("",
+                                   (current, item) => current +
+                                                      $"Layer {item.Name} has a spatial reference of {item.Sr}{Environment.NewLine}");
+            message += $"{Environment.NewLine}Please reproject these layers";
+
+            MessageBox.Show(message, "Spatial Reference Issue");
+        });
+
         /// <summary>
         ///     Called when the pane is initialized.
         /// </summary>
@@ -217,6 +260,8 @@ namespace uic_addin.Views {
             await SetMapURI(uri);
 
             await base.InitializeAsync();
+
+            _mapLoadToken = MapViewInitializedEvent.Subscribe(args => PromptForProjection(args.MapView.Map));
         }
 
         /// <summary>
@@ -224,6 +269,7 @@ namespace uic_addin.Views {
         /// </summary>
         protected override async Task UninitializeAsync() {
             MapSelectionChangedEvent.Unsubscribe(_subscriptionToken);
+            MapViewInitializedEvent.Unsubscribe(_mapLoadToken);
 
             Facilities.Dispose();
             FacilityId.Dispose();
