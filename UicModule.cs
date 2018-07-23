@@ -13,7 +13,6 @@ using Reactive.Bindings;
 using Serilog;
 using uic_addin.Models;
 using uic_addin.Services;
-using uic_addin.Views;
 using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 
 namespace uic_addin {
@@ -51,12 +50,6 @@ namespace uic_addin {
                 if (Layers.Count < 1 || Layers.Any(x => x.Value == null)) {
                     return false;
                 }
-            }
-
-            CachePanes();
-
-            if (DockPanes.Count < 1 || DockPanes.Any(x => x.Value == null)) {
-                return false;
             }
 
             return true;
@@ -138,13 +131,7 @@ namespace uic_addin {
         public void CachePanes() {
             Log.Debug("Caching project dock panes");
 
-            var paneIds = new[] {
-                WorkflowDockPaneViewModel.DockPaneId
-            };
-
-            foreach (var id in paneIds) {
-                FindPaneFromId(id);
-            }
+            
         }
 
         private void FindPaneFromId(string id) {

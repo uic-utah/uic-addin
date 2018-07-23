@@ -102,8 +102,8 @@ namespace uic_addin.Controls {
             await operation.ExecuteAsync();
 
             if (operation.IsSucceeded) {
-                var pane = UicModule.Current.DockPanes[WorkflowDockPaneViewModel.DockPaneId] as WorkflowDockPaneViewModel;
-                pane?.ShowAttributeEditorForSelectedRecord.Execute(null);
+//                var pane = UicModule.Current.DockPanes[WorkflowDockPaneViewModel.DockPaneId] as WorkflowDockPaneViewModel;
+//                pane?.ShowAttributeEditorForSelectedRecord.Execute(null);
 
                 await UninitializeAsync();
 
