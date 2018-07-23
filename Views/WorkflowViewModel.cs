@@ -69,11 +69,8 @@ namespace uic_addin.Views {
             });
 
             ShowAttributeEditorForSelectedRecord = new RelayCommand(() => {
-                var wrapper = FrameworkApplication.GetPlugInWrapper("esri_editing_ShowAttributes");
-
-                if (wrapper is ICommand command && command.CanExecute(null)) {
-                    command.Execute(null);
-                }
+                var edits = FrameworkApplication.DockPaneManager.Find("esri_editing_AttributesDockPane");
+                edits.Activate(true);
             }, () => MapView.Active?.Map.SelectionCount > 0);
 
             Facilities = FacilityId.Select(async id => {
