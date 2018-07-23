@@ -58,7 +58,8 @@ namespace uic_addin.Controls {
             var attributes = new Dictionary<string, object> {
                 ["GUID"] = FacilityGuid,
                 ["FacilityId"] = NewFacilityId.Value,
-                ["CountyFIPS"] = CountyFips.Value
+                ["CountyFIPS"] = CountyFips.Value,
+                ["FacilityState"] = "UT"
             };
 
             operation.Create(facilityLayer, attributes);
