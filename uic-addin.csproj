@@ -163,11 +163,11 @@
       <DependentUpon>EvergreenSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EvergreenSettingsViewModel.cs" />
-    <Compile Include="Views\WorkflowDockPane.xaml.cs">
-      <DependentUpon>WorkflowDockPane.xaml</DependentUpon>
+    <Compile Include="Views\Workflow.xaml.cs">
+      <DependentUpon>Workflow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\WorkflowViewModel.cs" />
     <Compile Include="Controls\WorkflowDockPaneShowButton.cs" />
-    <Compile Include="Views\WorkflowDockPaneViewModel.cs" />
     <Compile Include="UicModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -180,7 +180,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\WorkflowDockPane.xaml">
+    <Page Include="Views\Workflow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -199,6 +199,10 @@
     <AddInContent Include="Images\GenericButtonPurple32.png" />
     <AddInContent Include="DarkImages\GenericButtonPurple16.png" />
     <AddInContent Include="DarkImages\GenericButtonPurple32.png" />
+    <AddInContent Include="Images\GenericButtonGreen16.png" />
+    <AddInContent Include="Images\GenericButtonGreen32.png" />
+    <AddInContent Include="DarkImages\GenericButtonGreen16.png" />
+    <AddInContent Include="DarkImages\GenericButtonGreen32.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
