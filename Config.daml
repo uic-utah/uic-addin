@@ -65,4 +65,9 @@
       </insertPage>
     </updateSheet>
   </propertySheets>
+  <conditions>
+    <insertCondition id="workflow_pane_created" caption="has the workflow pane model been created yet?">
+      <state id="workflow_pane_enabled" />
+    </insertCondition>
+  </conditions>
 </ArcGIS>
