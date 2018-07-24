@@ -77,7 +77,7 @@ namespace uic_addin.Controls {
             var domains = QueryService.GetDomainFor(fc.GetFeatureClass(), "CountyFIPS");
 
             foreach (var pair in domains) {
-                FipsCodes.Add(pair);
+                Application.Current.Dispatcher.Invoke(() => FipsCodes.Add(pair));
             }
         }
 
