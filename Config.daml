@@ -14,36 +14,38 @@
     <insertModule id="UICModule" className="UicModule" autoLoad="true" caption="UIC Module">
       <tabs>
         <tab id="UICTab" keytip="UIC Tools" caption="UIC Tools">
-          <group refID="UICGroup" />
+          <group refID="UICToolGroup" />
+          <group refID="UICCreationGroup" />
         </tab>
       </tabs>
       <groups>
-        <group id="UICGroup" keytip="uictools" caption="UIC Tools" appearsOnAddInTab="false">
-          <button refID="WorkflowDockPaneShowButton" size="large" />
+        <group id="UICToolGroup" caption="UIC Tools" keytip="uictools" appearsOnAddInTab="false">
+          <button refID="ShowWorkflowPane" size="large" />
           <tool refID="SelectFacilityFeaturesTool" size="large" />
           <button refID="CreateNewFacilityButton" size="large" />
-          <button refID="esri_core_showOptionsSheetButton" size="large" />
+        </group>
+        <group id="UICCreationGroup" caption="Editing" keytip="uiccreate" appearsOnAddInTab="false">
           <customControl refID="CreateNewFacilityControl" size="large" />
         </group>
       </groups>
       <controls>
-        <button id="WorkflowDockPaneShowButton" caption="Validation" keytip="Show the add-in"
-                className="uic_addin.Controls.WorkflowDockPaneShowButton" loadOnClick="true"
-                smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="esri_mapping_mapPane">
+        <button id="ShowWorkflowPane" caption="Validation" keytip="uu"
+                className="uic_addin.Controls.ShowWorkflowPane" loadOnClick="true"
+                smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="workflow_pane_created">
           <tooltip heading="Show Dockpane">UIC Validation<disabledText /></tooltip>
         </button>
         <tool id="SelectFacilityFeaturesTool" caption="select facility"
               className="uic_addin.Controls.FacilitySelectTool" smallImage="Images\UIC16.png"
-              largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="z2">
+              largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="u2">
           <tooltip heading="Select Facility Features">
             Select facility features to start the UIC workflow<disabledText />
           </tooltip>
         </tool>
-        <customControl isDropDown="true" id="CreateNewFacilityControl" caption="Create New Facility"
+        <customControl isDropDown="true" id="CreateNewFacilityControl" caption="Create New Facility" keytip="u1"
                        className="uic_addin.Controls.CreateNewFacilityControlViewModel" loadOnClick="true"
-                       smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+                       smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="esri_mapping_mapPane">
           <content className="uic_addin.Controls.CreateNewFacilityControlView" />
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+          <tooltip heading="Create Facility Record">Create Facility Record<disabledText /></tooltip>
         </customControl>
       </controls>
       <panes>
