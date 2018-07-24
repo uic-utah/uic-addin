@@ -20,9 +20,9 @@
           BorderBrush="{DynamicResource Esri_Gray125}" BorderThickness="1" Padding="17, 15">
 
     <StackPanel HorizontalAlignment="Left" Width="Auto">
-      <TextBlock Text="Create new Facility Record" VerticalAlignment="Top" HorizontalAlignment="Left"
-                 Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10" />
-      <Grid>
+      <TextBlock Text="Start a new Facility Record" VerticalAlignment="Top" HorizontalAlignment="Left"
+                 Style="{DynamicResource Esri_TextBlockH1}" Margin="0,0,0,10" />
+      <Grid Width="300">
         <Grid.RowDefinitions>
           <RowDefinition Height="25" />
           <RowDefinition Height="25" />
@@ -30,15 +30,15 @@
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
-          <TextBlock Text="County FIPS:" VerticalAlignment="Center" Margin="3" />
+          <TextBlock Text="County FIPS:" VerticalAlignment="Center" Margin="0,3,3,3" />
           <ComboBox Width="170pt" ItemsSource="{Binding FipsCodes}" SelectedItem="{Binding CountyFips.Value}"
                     SelectedValuePath="Key"
                     DisplayMemberPath="Value"
                     VerticalAlignment="Center"
-                    Margin="3" />
+                    Margin="0,3,3,3" />
         </StackPanel>
         <TextBlock Grid.Row="1"
-                   Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Visible}">
+                   Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Collapsed}">
           <TextBlock.Inlines>
             <Run Text="Generated Facility Id:" />
             <Run Foreground="Fuchsia" Text="{Binding NewFacilityId.Value}" />
@@ -50,8 +50,6 @@
                 Grid.Row="2"
                 HorizontalAlignment="Center"
                 Style="{DynamicResource Esri_Button}"
-                Margin="0,5,0,0"
-                Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Visible}"
                 Margin="0,5,0,5"
                 IsEnabled="{Binding EnableCreateButton.Value}"
                 Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Collapsed}"
