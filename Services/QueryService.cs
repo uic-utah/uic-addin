@@ -43,7 +43,6 @@ namespace uic_addin.Services {
                     model.ObjectId = Convert.ToInt64(row["OBJECTID"]);
                     model.FacilityId = Convert.ToString(row["FacilityID"]);
                     model.CountyFips = Convert.ToString(row["CountyFIPS"]);
-                    GetDomainFor(layer.GetTable() as FeatureClass, "CountyFIPS").ForEach(model.FipsDomainValues.Add);
                     model.NaicsPrimary = Convert.ToString(row["NAICSPrimary"]);
                     model.FacilityName = Convert.ToString(row["FacilityName"]);
                     model.FacilityAddress = Convert.ToString(row["FacilityAddress"]);
@@ -59,7 +58,7 @@ namespace uic_addin.Services {
             return model;
         });
 
-        private static List<string> GetDomainFor(FeatureClass layer, string fieldName) {
+        public static SortedList<object, string> GetDomainFor(FeatureClass layer, string fieldName) {
             var definition = layer.GetDefinition();
 
             var fieldIndex = definition.FindField(fieldName);
@@ -67,7 +66,7 @@ namespace uic_addin.Services {
 
             var domain = field.GetDomain() as CodedValueDomain;
 
-            return domain?.GetCodedValuePairs().Select(x => x.Value).ToList();
+            return domain?.GetCodedValuePairs();
         }
 
         public static async Task<IEnumerable<string>> GetFacilityIdsFor(IEnumerable<long> facilityObjectIds, Map map=null) => await
