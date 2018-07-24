@@ -26,15 +26,17 @@
         </group>
         <group id="UICCreationGroup" caption="Editing" keytip="uiccreate" appearsOnAddInTab="false">
           <customControl refID="CreateNewFacilityControl" size="large" />
+          <button refID="esri_editing_SaveEditsBtn" />
+          <button refID="esri_editing_DiscardEditsBtn" />
         </group>
       </groups>
       <controls>
-        <button id="ShowWorkflowPane" caption="Validation" keytip="uu"
+        <button id="ShowWorkflowPane" caption="Main" keytip="uu"
                 className="uic_addin.Controls.ShowWorkflowPane" loadOnClick="true"
                 smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="workflow_pane_created">
           <tooltip heading="Show Dockpane">UIC Validation<disabledText /></tooltip>
         </button>
-        <tool id="SelectFacilityFeaturesTool" caption="select facility"
+        <tool id="SelectFacilityFeaturesTool" caption="Select Facility"
               className="uic_addin.Controls.FacilitySelectTool" smallImage="Images\UIC16.png"
               largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="u2">
           <tooltip heading="Select Facility Features">
