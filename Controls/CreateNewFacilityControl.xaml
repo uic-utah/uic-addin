@@ -27,6 +27,7 @@
           <RowDefinition Height="25" />
           <RowDefinition Height="25" />
           <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Left">
           <TextBlock Text="County FIPS:" VerticalAlignment="Center" Margin="3" />
@@ -52,6 +53,11 @@
                 Margin="0,5,0,0"
                 Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Visible}"
                 Width="100pt" />
+          <TextBlock Grid.Row="3" TextWrapping="Wrap"
+            Text="A new row will be created in an edit session. This record has no geometry and will not persist until the edits are saved."
+            VerticalAlignment="Center" HorizontalAlignment="Left"
+            Style="{DynamicResource Esri_TextBlockH6}" FontStyle="Italic" Margin="0,10,0,0"
+            Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Collapsed}" />
       </Grid>
     </StackPanel>
   </Border>
