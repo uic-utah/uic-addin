@@ -261,6 +261,7 @@ namespace uic_addin.Views {
 
             await base.InitializeAsync();
 
+            FrameworkApplication.State.Deactivate(UicModule.Current.WorkflowModelState);
             _mapLoadToken = MapViewInitializedEvent.Subscribe(args => PromptForProjection(args.MapView.Map));
         }
 
@@ -277,6 +278,8 @@ namespace uic_addin.Views {
             ShowUpdate.Dispose();
             UpdateToVersionMessage.Dispose();
             UpdateSelf.Dispose();
+
+            FrameworkApplication.State.Activate(UicModule.Current.WorkflowModelState);
 
             await base.UninitializeAsync();
         }

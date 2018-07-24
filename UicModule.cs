@@ -13,6 +13,7 @@ using Reactive.Bindings;
 using Serilog;
 using uic_addin.Models;
 using uic_addin.Services;
+using uic_addin.Views;
 using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 
 namespace uic_addin {
@@ -21,6 +22,7 @@ namespace uic_addin {
         private readonly IEnumerable<string> _addinKeys = new[] {"UICAddin.Evergreen.BetaChannel"};
         public readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
         public readonly string FacilitySelectionState = "0";
+        public readonly string WorkflowModelState = "workflow_pane_enabled";
         public readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
         private SubscriptionToken _token;
 
@@ -51,6 +53,8 @@ namespace uic_addin {
                     return false;
                 }
             }
+
+            FrameworkApplication.State.Activate(WorkflowModelState);
 
             return true;
         }

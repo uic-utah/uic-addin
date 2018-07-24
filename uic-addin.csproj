@@ -166,7 +166,7 @@
       <DependentUpon>Workflow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WorkflowViewModel.cs" />
-    <Compile Include="Controls\WorkflowDockPaneShowButton.cs" />
+    <Compile Include="Controls\ShowWorkflowPane.cs" />
     <Compile Include="UicModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
