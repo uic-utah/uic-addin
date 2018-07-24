@@ -82,6 +82,11 @@ namespace uic_addin.Controls {
         }
 
         private async Task CreateFacility() {
+            Application.Current.Dispatcher.Invoke(() => {
+                var edits = FrameworkApplication.DockPaneManager.Find("esri_editing_AttributesDockPane");
+                edits.Hide();
+            });
+
             var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName];
 
             var operation = new EditOperation {
@@ -102,15 +107,17 @@ namespace uic_addin.Controls {
             operation.Create(facilityLayer, attributes);
             await operation.ExecuteAsync();
 
-            if (operation.IsSucceeded) {
-                var edits = FrameworkApplication.DockPaneManager.Find("esri_editing_AttributesDockPane");
-//                edits.Pin();
-//                edits.Activate(true);
-
+            if (!operation.IsSucceeded) {
                 return;
             }
 
             EnableCreateButton.Value = false;
+
+            Application.Current.Dispatcher.Invoke(() => {
+                var edits = FrameworkApplication.DockPaneManager.Find("esri_editing_AttributesDockPane");
+                edits.Activate(true);
+                edits.UnPin();
+            });
         }
     }
 }
