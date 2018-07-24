@@ -194,12 +194,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
-    <AddInContent Include="Images\GenericButtonPurple16.png" />
-    <AddInContent Include="Images\GenericButtonPurple32.png" />
     <AddInContent Include="DarkImages\GenericButtonPurple16.png" />
     <AddInContent Include="DarkImages\GenericButtonPurple32.png" />
-    <AddInContent Include="Images\GenericButtonGreen16.png" />
-    <AddInContent Include="Images\GenericButtonGreen32.png" />
     <AddInContent Include="DarkImages\GenericButtonGreen16.png" />
     <AddInContent Include="DarkImages\GenericButtonGreen32.png" />
   </ItemGroup>
