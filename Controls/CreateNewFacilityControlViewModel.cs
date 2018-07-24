@@ -2,10 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using ArcGIS.Desktop.Editing;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Dialogs;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Internal.Framework.Utilities;
 using ArcGIS.Desktop.Mapping;
 using Reactive.Bindings;
@@ -16,7 +17,15 @@ using uic_addin.Services;
 namespace uic_addin.Controls {
     internal class CreateNewFacilityControlViewModel : CustomControl {
         public CreateNewFacilityControlViewModel() {
-            CreateFacilityCommand.Subscribe(async () => await CreateFacility());
+            CreateFacilityCommand.Subscribe(async () => {
+                var progress = new ProgressDialog("Creating edit session");
+                progress.Show();
+
+                await CreateFacility();
+
+                progress.Hide();
+            });
+
             NewFacilityId = CountyFips.Select(Generate)
                                       .Select(SetButtonStatus)
                                       .CatchIgnore()
@@ -79,7 +88,8 @@ namespace uic_addin.Controls {
                 Name = "Create new Facility",
                 SelectNewFeatures = true,
                 ShowProgressor = true,
-                ProgressMessage = "Creating new facility"
+                ProgressMessage = "Creating new facility",
+                ShowModalMessageAfterFailure = true
             };
 
             var attributes = new Dictionary<string, object> {
@@ -100,7 +110,6 @@ namespace uic_addin.Controls {
                 return;
             }
 
-            MessageBox.Show(operation.ErrorMessage, "Create Facility Error");
             EnableCreateButton.Value = false;
         }
     }
