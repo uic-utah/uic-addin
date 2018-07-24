@@ -66,8 +66,9 @@ namespace uic_addin.Controls {
             await operation.ExecuteAsync();
 
             if (operation.IsSucceeded) {
-                //                var pane = UicModule.Current.DockPanes[WorkflowDockPaneViewModel.DockPaneId] as WorkflowDockPaneViewModel;
-                //                pane?.ShowAttributeEditorForSelectedRecord.Execute(null);
+                var edits = FrameworkApplication.DockPaneManager.Find("esri_editing_AttributesDockPane");
+//                edits.Pin();
+//                edits.Activate(true);
 
                 return;
             }
