@@ -1,14 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ArcGIS.Desktop.Editing;
+using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Dialogs;
+using ArcGIS.Desktop.Internal.Framework.Utilities;
+using ArcGIS.Desktop.Mapping;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using uic_addin.Models;
+using uic_addin.Services;
 
 namespace uic_addin.Controls {
     internal class CreateNewFacilityControlViewModel : CustomControl {
@@ -17,6 +20,8 @@ namespace uic_addin.Controls {
             NewFacilityId = CountyFips.Select(Generate)
                                       .CatchIgnore()
                                       .ToReactiveProperty();
+
+            ThreadService.RunOnBackground(PopulateFips);
         }
 
         private Guid FacilityGuid { get; set; }
@@ -25,16 +30,14 @@ namespace uic_addin.Controls {
 
         public ReactiveProperty<string> NewFacilityId { get; set; }
 
-        public ReactiveProperty<string> CountyFips { get; set; } = new ReactiveProperty<string>();
+        public ReactiveProperty<KeyValuePair<object, string>> CountyFips { get; set; } =
+            new ReactiveProperty<KeyValuePair<object, string>>();
 
-        public ObservableCollection<string> FipsCodes { get; set; } = new ObservableCollection<string>(new List<string> {
-            "1",
-            "2",
-            "3"
-        });
+        public SortableObservableCollection<KeyValuePair<object, string>> FipsCodes { get; set; } =
+            new SortableObservableCollection<KeyValuePair<object, string>>();
 
-        private string Generate(string fips) {
-            if (string.IsNullOrEmpty(fips)) {
+        private string Generate(KeyValuePair<object, string> pair) {
+            if (pair.Key == null) {
                 return null;
             }
 
@@ -42,7 +45,19 @@ namespace uic_addin.Controls {
 
             var guidString = FacilityGuid.ToString().ToUpper();
 
-            return $"UTU{fips}F{guidString.Substring(guidString.Length - 8)}";
+            var fips = pair.Key.ToString();
+            var code = fips.Substring(fips.Length - 2);
+
+            return $"UTU{code}F{guidString.Substring(guidString.Length - 8)}";
+        }
+
+        private void PopulateFips() {
+            var fc = UicModule.Current.Layers[FacilityModel.TableName] as FeatureLayer;
+            var domains = QueryService.GetDomainFor(fc.GetFeatureClass(), "CountyFIPS");
+
+            foreach (var pair in domains) {
+                FipsCodes.Add(pair);
+            }
         }
 
         private async Task CreateFacility() {
