@@ -52,6 +52,9 @@
                 Style="{DynamicResource Esri_Button}"
                 Margin="0,5,0,0"
                 Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Visible}"
+                Margin="0,5,0,5"
+                IsEnabled="{Binding EnableCreateButton.Value}"
+                Visibility="{Binding NewFacilityId.Value, Converter={converters:StringNullOrEmptyToVisibilityConverter}, FallbackValue=Collapsed}"
                 Width="100pt" />
           <TextBlock Grid.Row="3" TextWrapping="Wrap"
             Text="A new row will be created in an edit session. This record has no geometry and will not persist until the edits are saved."
