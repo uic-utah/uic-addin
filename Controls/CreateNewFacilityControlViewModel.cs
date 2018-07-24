@@ -18,6 +18,7 @@ namespace uic_addin.Controls {
         public CreateNewFacilityControlViewModel() {
             CreateFacilityCommand.Subscribe(async () => await CreateFacility());
             NewFacilityId = CountyFips.Select(Generate)
+                                      .Select(SetButtonStatus)
                                       .CatchIgnore()
                                       .ToReactiveProperty();
 
@@ -29,6 +30,7 @@ namespace uic_addin.Controls {
         public ReactiveCommand CreateFacilityCommand { get; } = new ReactiveCommand();
 
         public ReactiveProperty<string> NewFacilityId { get; set; }
+        public ReactiveProperty<bool> EnableCreateButton { get; set; } = new ReactiveProperty<bool>(true);
 
         public ReactiveProperty<KeyValuePair<object, string>> CountyFips { get; set; } =
             new ReactiveProperty<KeyValuePair<object, string>>();
@@ -49,6 +51,16 @@ namespace uic_addin.Controls {
             var code = fips.Substring(fips.Length - 2);
 
             return $"UTU{code}F{guidString.Substring(guidString.Length - 8)}";
+        }
+
+        private string SetButtonStatus(string value) {
+            if (string.IsNullOrEmpty(value) || string.IsNullOrEmpty(NewFacilityId?.Value)) {
+                EnableCreateButton.Value = true;
+            } else {
+                EnableCreateButton.Value = value != NewFacilityId.Value;
+            }
+
+            return value;
         }
 
         private void PopulateFips() {
@@ -89,6 +101,7 @@ namespace uic_addin.Controls {
             }
 
             MessageBox.Show(operation.ErrorMessage, "Create Facility Error");
+            EnableCreateButton.Value = false;
         }
     }
 }
