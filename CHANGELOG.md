@@ -1,3 +1,14 @@
+<a name="1.1.0-beta.2"></a>
+# [1.1.0-beta.2](https://github.com/agrc/uic-addin/compare/1.1.0-beta.1...1.1.0-beta.2) (2018-07-25)
+
+
+### Features
+
+* free text search of naics codes by title or code ([89e25a1](https://github.com/agrc/uic-addin/commit/89e25a1))
+* improve naics drill down layout ([a232ec6](https://github.com/agrc/uic-addin/commit/a232ec6))
+
+
+
 <a name="1.1.0-beta.1"></a>
 # [1.1.0-beta.1](https://github.com/agrc/uic-addin/compare/1.1.0-beta.0...1.1.0-beta.1) (2018-07-25)
 
@@ -34,3 +45,6 @@
 
 <a name="1.0.0-beta.1"></a>
 # 1.0.0-beta.1 (2018-07-18)
+
+
+
