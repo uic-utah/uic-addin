@@ -211,8 +211,12 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="LICENSE" />
-    <AddInContent Include="NaicsIndex\2017_NAICS_Index_File.xlsx" />
-    <AddInContent Include="NaicsIndex\2-6 digit_2017_Codes.xlsx" />
+    <Content Include="NaicsDocuments\2017_NAICS_Index_File.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NaicsDocuments\2_6_digit_2017_Codes.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
