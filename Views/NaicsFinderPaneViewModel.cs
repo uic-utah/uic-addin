@@ -10,6 +10,7 @@ using System.Windows;
 using ArcGIS.Core.CIM;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ExcelDataReader;
 using Reactive.Bindings;
 using uic_addin.Models;
@@ -58,10 +59,13 @@ namespace uic_addin.Views {
             NaicsCategories = new ObservableCollection<KeyValuePair<object, string>>(categories);
         }
 
+        public ReactiveProperty<string> InputCode { get; set; } = new ReactiveProperty<string>();
+
         public ReactiveProperty<int> CurrentCode { get; set; } = new ReactiveProperty<int>();
+
         public ReactiveProperty<bool> Expanded { get; set; }
 
-        public RelayCommand ShowCategory { get; set; } 
+        public RelayCommand ShowCategory { get; set; }
 
         public ObservableCollection<KeyValuePair<object, string>> NaicsCategories { get; set; }
 
@@ -83,6 +87,13 @@ namespace uic_addin.Views {
 
         public List<NaicsModel> AllNaicsCodes { get; set; } = new List<NaicsModel>();
 
+
+        public ReactiveProperty<string> UpdateSearch { get; set; }
+
+        public ReactiveProperty<bool> HasValue { get; set; }
+
+        public ReactiveCommand SetClipboard { get; set; }
+
         /// <summary>
         ///     Create a new instance of the pane.
         /// </summary>
@@ -101,11 +112,17 @@ namespace uic_addin.Views {
 
             ShowCategory = new RelayCommand(SetActive, () => true);
             HasValue = CurrentCode.Select(x => x.ToString().Length == 6)
-                .ToReactiveProperty();
+                                  .ToReactiveProperty();
             SetClipboard = HasValue.ToReactiveCommand()
                                    .WithSubscribe(() => Clipboard.SetText(CurrentCode.Value.ToString()));
             Expanded = CurrentCode.Select(x => x < 10)
                                   .ToReactiveProperty();
+            UpdateSearch = InputCode.Select(x => x)
+                                    .Throttle(TimeSpan.FromMilliseconds(200))
+                                    .ObserveOn(Application.Current.Dispatcher)
+                                    .Do(async x => await FilterNaicsByString(x))
+                                    .ToReactiveProperty();
+            SetInputCode = new RelayCommand(x => { InputCode.Value = x.ToString(); }, () => true);
 
             var codeColumn = 1;
             var titleColumn = 2;
@@ -161,9 +178,29 @@ namespace uic_addin.Views {
             }
         }
 
-        public ReactiveProperty<bool> HasValue { get; set; }
+        public RelayCommand SetInputCode { get; set; }
 
-        public ReactiveCommand SetClipboard { get; set; }
+        private async Task FilterNaicsByString(string input) => await QueuedTask.Run(() => {
+            if (string.IsNullOrEmpty(input) || input.Length < 3) {
+                Application.Current.Dispatcher.Invoke(NaicsModels.Clear);
+
+                return;
+            }
+
+            IEnumerable<NaicsModel> codes;
+
+            if (int.TryParse(input, out var _)) {
+                codes = AllNaicsCodes.Where(x => x.Code.ToString().StartsWith(input));
+            } else {
+                codes = AllNaicsCodes.Where(x => x.Title.ToLower().Contains(input.ToLower()));
+            }
+
+            Application.Current.Dispatcher.Invoke(NaicsModels.Clear);
+
+            foreach (var model in codes) {
+                Application.Current.Dispatcher.Invoke(() => NaicsModels.Add(model));
+            }
+        });
 
         /// <summary>
         ///     Called when the pane is uninitialized.
@@ -178,7 +215,7 @@ namespace uic_addin.Views {
             }
 
             CurrentCode.Value = code;
-            
+
             var start = code * 10;
 
             var depth = code.ToString().Length;
