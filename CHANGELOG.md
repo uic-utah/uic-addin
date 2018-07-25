@@ -1,3 +1,13 @@
+<a name="1.1.0-beta.1"></a>
+# [1.1.0-beta.1](https://github.com/agrc/uic-addin/compare/1.1.0-beta.0...1.1.0-beta.1) (2018-07-25)
+
+
+### Features
+
+* create naics finding pane ([1ad0898](https://github.com/agrc/uic-addin/commit/1ad0898))
+
+
+
 <a name="1.1.0-beta.0"></a>
 # [1.1.0-beta.0](https://github.com/agrc/uic-addin/compare/1.0.0...1.1.0-beta.0) (2018-07-24)
 
