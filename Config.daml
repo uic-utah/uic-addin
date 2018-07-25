@@ -64,7 +64,7 @@
               defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Views.WorkflowView" />
         </pane>
-        <pane id="NaicsFinderPane" caption="NaicsFinderPane" className="uic_addin.Views.NaicsFinderPaneViewModel"
+        <pane id="NaicsFinderPane" caption="Naics Finder" className="uic_addin.Views.NaicsFinderPaneViewModel"
               smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab"
               defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Views.NaicsFinderPaneView" />
