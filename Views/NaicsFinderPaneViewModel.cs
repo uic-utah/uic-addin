@@ -59,6 +59,7 @@ namespace uic_addin.Views {
         }
 
         public ReactiveProperty<int> CurrentCode { get; set; } = new ReactiveProperty<int>();
+        public ReactiveProperty<bool> Expanded { get; set; }
 
         public RelayCommand ShowCategory { get; set; } 
 
@@ -103,6 +104,8 @@ namespace uic_addin.Views {
                 .ToReactiveProperty();
             SetClipboard = HasValue.ToReactiveCommand()
                                    .WithSubscribe(() => Clipboard.SetText(CurrentCode.Value.ToString()));
+            Expanded = CurrentCode.Select(x => x < 10)
+                                  .ToReactiveProperty();
 
             var codeColumn = 1;
             var titleColumn = 2;
