@@ -15,21 +15,21 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </UserControl.Resources>
-  <StackPanel HorizontalAlignment="Left" Margin="5">
-    <TextBlock Text="Start with a Category" VerticalAlignment="Top" HorizontalAlignment="Left"
-               Style="{DynamicResource Esri_TextBlockH1}" Margin="0,0,0,10" />
-    <ScrollViewer Height="500" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
-      <Grid>
+      <Grid HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
           <RowDefinition Height="Auto" />
-          <RowDefinition Height="Auto" />
+          <RowDefinition />
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <TextBlock Grid.Row="0" Text="Start with a Category" VerticalAlignment="Top" HorizontalAlignment="Left"
+                   Style="{DynamicResource Esri_TextBlockH1}" Margin="0,0,0,10" />
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
           <TextBlock Style="{DynamicResource Esri_TextBlockH2}"
                      Foreground="{DynamicResource Esri_Yellow3}"
-                     Margin="3">NAICS Code:</TextBlock>
+                     Margin="3">
+            NAICS Code:
+          </TextBlock>
           <TextBlock Text="{Binding CurrentCode.Value}"
                      Style="{DynamicResource Esri_TextBlockH3}"
                      Foreground="{DynamicResource Esri_Blue}"
@@ -49,51 +49,60 @@
             </StackPanel>
           </Button>
         </StackPanel>
-        <ItemsControl Grid.Row="1" ItemsSource="{Binding NaicsCategories}">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <UniformGrid Columns="4"/>
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Button CommandParameter="{Binding Key}"
-                      Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+        <Expander Grid.Row="2" HorizontalAlignment="Stretch" Header="NAICS Top Level Categories"
+                  ExpandDirection="Down" IsExpanded="{Binding Expanded.Value}"
+                  Style="{DynamicResource Esri_ExpanderPlus}">
+          <ScrollViewer Height="{Binding Path=ActualHeight, 
+           RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+            <ItemsControl ItemsSource="{Binding NaicsCategories}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Button CommandParameter="{Binding Key}"
+                          Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
                              Path=DataContext.ShowCategory}"
-                      Style="{DynamicResource Esri_Button}"
-                      Width="150"
-                      Margin="2">
-                <TextBlock Text="{Binding Value}" TextWrapping="Wrap" TextAlignment="Center" />
-              </Button>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        <StackPanel Grid.Row="2" Orientation="Vertical" Margin="10">
-          <TextBlock Text="Category Items" VerticalAlignment="Top" HorizontalAlignment="Left"
-                     Style="{DynamicResource Esri_TextBlockH1}" Margin="10"
-                     Foreground="{DynamicResource Esri_Blue}"/>
-          <Separator VerticalAlignment="Center" Background="{DynamicResource Esri_Blue}"/>
-          </StackPanel>
-        <ItemsControl Grid.Row="3" ItemsSource="{Binding FilteredNaics}">
-          <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-              <UniformGrid Columns="4" />
-            </ItemsPanelTemplate>
-          </ItemsControl.ItemsPanel>
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-              <Button CommandParameter="{Binding Code}"
-                      Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
+                          Style="{DynamicResource Esri_Button}"
+                          Width="150"
+                          Margin="7"
+                          Padding="5">
+                    <TextBlock Text="{Binding Value}" TextWrapping="Wrap" TextAlignment="Center" />
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Expander>
+        <Expander Grid.Row="3" Header="NAICS Sub Categories"
+                  ExpandDirection="Down" IsExpanded="True"
+                  Style="{DynamicResource Esri_ExpanderPlus}"
+                  BorderThickness="0">
+          <ScrollViewer>
+            <ItemsControl ItemsSource="{Binding FilteredNaics}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Button CommandParameter="{Binding Code}"
+                          Command="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},
                              Path=DataContext.ShowCategory}"
-                      Style="{DynamicResource Esri_Button}"
-                      Width="150"
-                      Margin="2">
-                <TextBlock Text="{Binding Title}" TextWrapping="Wrap" TextAlignment="Center" />
-              </Button>
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                          Style="{DynamicResource Esri_Button}"
+                          Width="150"
+                          Margin="7"
+                          Padding="5">
+                    <TextBlock Text="{Binding Title}" TextWrapping="Wrap" TextAlignment="Center" />
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Expander>
       </Grid>
-    </ScrollViewer>
-  </StackPanel>
+      </Grid>
 </UserControl>
