@@ -18,7 +18,6 @@
   </UserControl.Resources>
   <Border Background="{DynamicResource Esri_Gray100}"
           BorderBrush="{DynamicResource Esri_Gray125}" BorderThickness="1" Padding="17, 15">
-
     <StackPanel HorizontalAlignment="Left" Width="Auto">
       <TextBlock Text="Start a new Facility Record" VerticalAlignment="Top" HorizontalAlignment="Left"
                  Style="{DynamicResource Esri_TextBlockH1}" Margin="0,0,0,10" />

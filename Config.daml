@@ -32,19 +32,19 @@
         </group>
       </groups>
       <controls>
-        <button id="ShowWorkflowPane" caption="Main" keytip="uu"
-                className="uic_addin.Controls.ShowWorkflowPane" loadOnClick="true"
-                smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="workflow_pane_created">
+        <button id="ShowWorkflowPane" caption="Main" keytip="uu" className="uic_addin.Controls.ShowWorkflowPane"
+                loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
+                condition="workflow_pane_created">
           <tooltip heading="Show Dockpane">UIC Validation<disabledText /></tooltip>
         </button>
         <tool id="SelectFacilityFeaturesTool" caption="Select Facility"
               className="uic_addin.Controls.FacilitySelectTool" smallImage="Images\UIC16.png"
-              largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="u2">
+              largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="us">
           <tooltip heading="Select Facility Features">
             Select facility features to start the UIC workflow<disabledText />
           </tooltip>
         </tool>
-        <customControl isDropDown="true" id="CreateNewFacilityControl" caption="Create New Facility" keytip="u1"
+        <customControl isDropDown="true" id="CreateNewFacilityControl" caption="Create New Facility" keytip="uf"
                        className="uic_addin.Controls.CreateNewFacilityControlViewModel" loadOnClick="true"
                        smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="esri_mapping_mapPane">
           <content className="uic_addin.Controls.CreateNewFacilityControlView" />
