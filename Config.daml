@@ -23,6 +23,7 @@
           <button refID="ShowWorkflowPane" size="large" />
           <tool refID="SelectFacilityFeaturesTool" size="large" />
           <button refID="CreateNewFacilityButton" size="large" />
+          <button refID="NaicsFinderPaneOpenButton" size="large" />
         </group>
         <group id="UICCreationGroup" caption="Editing" keytip="uiccreate" appearsOnAddInTab="false">
           <customControl refID="CreateNewFacilityControl" size="large" />
@@ -49,12 +50,24 @@
           <content className="uic_addin.Controls.CreateNewFacilityControlView" />
           <tooltip heading="Create Facility Record">Create Facility Record<disabledText /></tooltip>
         </customControl>
+        <button id="NaicsFinderPaneOpenButton" caption="Find NAICS Code" keytip="un"
+                className="uic_addin.Controls.NaicsFinderPaneOpenButton" loadOnClick="true"
+                smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+          <tooltip heading="Find NAICS Code">
+            NAICS Code Finder<disabledText />
+          </tooltip>
+        </button>
       </controls>
       <panes>
         <pane id="WorkflowPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowViewModel"
               smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab"
               defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Views.WorkflowView" />
+        </pane>
+        <pane id="NaicsFinderPane" caption="NaicsFinderPane" className="uic_addin.Views.NaicsFinderPaneViewModel"
+              smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab"
+              defaultTool="esri_mapping_navigateTool">
+          <content className="uic_addin.Views.NaicsFinderPaneView" />
         </pane>
       </panes>
     </insertModule>
