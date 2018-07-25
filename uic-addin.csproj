@@ -41,6 +41,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ExcelDataReader, Version=3.4.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
+      <HintPath>packages\ExcelDataReader.3.4.0\lib\net45\ExcelDataReader.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Octokit, Version=0.30.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\Octokit.0.30.0\lib\net45\Octokit.dll</HintPath>
@@ -79,6 +82,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll</HintPath>
@@ -154,6 +158,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\EvergreenSettings.cs" />
     <Compile Include="Models\FacilityModel.cs" />
+    <Compile Include="Models\NaicsModel.cs" />
     <Compile Include="Services\LayerService.cs" />
     <Compile Include="Services\QueryService.cs" />
     <Compile Include="Services\ThreadService.cs" />

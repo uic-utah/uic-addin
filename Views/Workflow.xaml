@@ -24,7 +24,7 @@
     </Grid.RowDefinitions>
     <StackPanel Grid.Row="0" HorizontalAlignment="Left">
       <Button Command="{Binding ShowSettings}"
-              Style="{DynamicResource Esri_Button}"
+              Style="{DynamicResource Esri_ButtonBorderless}"
               Width="Auto"
               HorizontalAlignment="Left">
         <StackPanel Orientation="Horizontal">
