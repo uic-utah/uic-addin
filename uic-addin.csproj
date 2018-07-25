@@ -162,6 +162,11 @@
       <DependentUpon>EvergreenSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\EvergreenSettingsViewModel.cs" />
+    <Compile Include="Views\NaicsFinderPane.xaml.cs">
+      <DependentUpon>NaicsFinderPane.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\NaicsFinderPaneOpenButton.cs" />
+    <Compile Include="Views\NaicsFinderPaneViewModel.cs" />
     <Compile Include="Views\Workflow.xaml.cs">
       <DependentUpon>Workflow.xaml</DependentUpon>
     </Compile>
@@ -176,6 +181,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\EvergreenSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\NaicsFinderPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
