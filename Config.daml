@@ -14,21 +14,24 @@
     <insertModule id="UICModule" className="UicModule" autoLoad="true" caption="UIC Module">
       <tabs>
         <tab id="UICTab" keytip="UIC Tools" caption="UIC Tools">
-          <group refID="UICToolGroup" />
+          <group refID="UICMainGroup" />
           <group refID="UICCreationGroup" />
+          <group refID="UICToolGroup" />
         </tab>
       </tabs>
       <groups>
-        <group id="UICToolGroup" caption="UIC Tools" keytip="uictools" appearsOnAddInTab="false">
+        <group id="UICMainGroup" caption="Main" keytip="u" appearsOnAddInTab="false">
           <button refID="ShowWorkflowPane" size="large" />
-          <tool refID="SelectFacilityFeaturesTool" size="large" />
-          <button refID="CreateNewFacilityButton" size="large" />
-          <button refID="NaicsFinderPaneOpenButton" size="large" />
+        </group>
+        <group id="UICToolGroup" caption="UIC Tools" keytip="uictools" appearsOnAddInTab="false">
+          <tool refID="SelectFacilityFeaturesTool" size="middle" />
+          <button refID="CreateNewFacilityButton" size="middle" />
+          <button refID="NaicsFinderPaneOpenButton" size="middle" />
         </group>
         <group id="UICCreationGroup" caption="Editing" keytip="uiccreate" appearsOnAddInTab="false">
           <customControl refID="CreateNewFacilityControl" size="large" />
-          <button refID="esri_editing_SaveEditsBtn" />
-          <button refID="esri_editing_DiscardEditsBtn" />
+          <button refID="esri_editing_SaveEditsBtn" size="middle" />
+          <button refID="esri_editing_DiscardEditsBtn" size="middle" />
         </group>
       </groups>
       <controls>
@@ -60,12 +63,12 @@
       </controls>
       <panes>
         <pane id="WorkflowPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowViewModel"
-              smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab"
+              smallImage="Images\UIC16.png" defaultTab="esri_mapping_homeTab"
               defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Views.WorkflowView" />
         </pane>
         <pane id="NaicsFinderPane" caption="Naics Finder" className="uic_addin.Views.NaicsFinderPaneViewModel"
-              smallImage="Images\GenericButtonGreen16.png" defaultTab="esri_mapping_homeTab"
+              smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Filter16.png" defaultTab="esri_mapping_homeTab"
               defaultTool="esri_mapping_navigateTool">
           <content className="uic_addin.Views.NaicsFinderPaneView" />
         </pane>
