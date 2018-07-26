@@ -17,7 +17,7 @@
       <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </ResourceDictionary>
   </UserControl.Resources>
-  <Grid>
+  <Grid IsEnabled="{Binding IsReady.Value}">
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />

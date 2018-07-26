@@ -5,6 +5,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Xml.Linq;
 using ArcGIS.Core.CIM;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
@@ -167,6 +168,8 @@ namespace uic_addin.Views {
 
         public ReactiveProperty<bool> Prompt { get; set; }
 
+        public ReactiveProperty<bool> IsReady { get; set; } = new ReactiveProperty<bool>(false);
+
         public ReactiveCollection<IEnumerable<Layer>> LayerAdded { get; set; } =
             new ReactiveCollection<IEnumerable<Layer>>();
 
@@ -211,6 +214,10 @@ namespace uic_addin.Views {
                 ViewType = ViewPaneId,
                 ViewProperties = new Dictionary<string, object>()
             };
+
+            if (mapView == null) {
+                return null;
+            }
 
             view.ViewProperties["MAPURI"] = mapView.Map.URI;
 

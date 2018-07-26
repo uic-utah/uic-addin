@@ -19,6 +19,7 @@ using Serilog.Events;
 using Serilog.Sinks.Email;
 using uic_addin.Models;
 using uic_addin.Services;
+using uic_addin.Views;
 using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 
 namespace uic_addin {
@@ -48,6 +49,7 @@ namespace uic_addin {
 
         protected override bool Initialize() {
             SetupLogging();
+
             QueuedTask.Run(async () => {
                 await CheckForLastest();
 
@@ -172,6 +174,12 @@ namespace uic_addin {
 
             Layers[FacilityModel.TableName] =
                 LayerService.FindLayer(FacilityModel.TableName, activeView.Map) as FeatureLayer;
+
+            FrameworkApplication.State.Activate(WorkflowModelState);
+            var pane = FrameworkApplication.Panes.Find("WorkflowPane").FirstOrDefault();
+            if (pane != null && pane is WorkflowViewModel workflow) {
+                workflow.IsReady.Value = true;
+            }
         }
 
         public void CachePanes() {
