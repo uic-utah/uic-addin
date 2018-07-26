@@ -59,7 +59,7 @@
         </customControl>
         <button id="NaicsFinderPaneOpenButton" caption="Find NAICS Code" keytip="un"
                 className="uic_addin.Controls.NaicsFinderPaneOpenButton" loadOnClick="true"
-                smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Filter16.png" largeImage="Images\UIC32.png">
           <tooltip heading="Find NAICS Code">
             NAICS Code Finder<disabledText />
           </tooltip>
