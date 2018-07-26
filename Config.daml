@@ -24,7 +24,7 @@
         <group id="UICMainGroup" caption="Main" keytip="u" appearsOnAddInTab="false">
           <button refID="ShowWorkflowPane" size="large" />
         </group>
-        <group id="UICToolGroup" caption="UIC Tools" keytip="uictools" appearsOnAddInTab="false">
+        <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
           <tool refID="SelectFacilityFeaturesTool" size="middle" />
           <button refID="CreateNewFacilityButton" size="middle" />
           <button refID="NaicsFinderPaneOpenButton" size="middle" />
