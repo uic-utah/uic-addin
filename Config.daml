@@ -17,6 +17,7 @@
           <group refID="UICMainGroup" />
           <group refID="UICCreationGroup" />
           <group refID="UICToolGroup" />
+          <group refID="UICHelp" />
         </tab>
       </tabs>
       <groups>
@@ -32,6 +33,9 @@
           <customControl refID="CreateNewFacilityControl" size="large" />
           <button refID="esri_editing_SaveEditsBtn" size="middle" />
           <button refID="esri_editing_DiscardEditsBtn" size="middle" />
+        </group>
+        <group id="UICHelp" caption ="Help" keytip="uh" appearsOnAddInTab="false">
+          <customControl refID="FeedbackControl" size="middle" />
         </group>
       </groups>
       <controls>
@@ -60,6 +64,12 @@
             NAICS Code Finder<disabledText />
           </tooltip>
         </button>
+        <customControl isDropDown="true" id="FeedbackControl" caption="Provide Feedback" keytip="uf"
+                       className="uic_addin.Controls.FeedbackControlViewModel" loadOnClick="true"
+                       smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+          <content className="uic_addin.Controls.FeedbackControlView" />
+          <tooltip heading="Send Feedback">Send Feedback<disabledText /></tooltip>
+        </customControl>
       </controls>
       <panes>
         <pane id="WorkflowPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowViewModel"
