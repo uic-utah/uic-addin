@@ -1,3 +1,12 @@
+<a name="1.1.0-beta.3"></a>
+# [1.1.0-beta.3](https://github.com/agrc/uic-addin/compare/1.1.0-beta.2...1.1.0-beta.3) (2018-07-26)
+
+
+### Features
+
+* create feedback button ([4741370](https://github.com/agrc/uic-addin/commit/4741370)), closes [#15](https://github.com/agrc/uic-addin/issues/15)
+
+
 <a name="1.1.0-beta.2"></a>
 # [1.1.0-beta.2](https://github.com/agrc/uic-addin/compare/1.1.0-beta.1...1.1.0-beta.2) (2018-07-25)
 
@@ -45,6 +54,3 @@
 
 <a name="1.0.0-beta.1"></a>
 # 1.0.0-beta.1 (2018-07-18)
-
-
-
