@@ -1,19 +1,24 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
 using ProEvergreen;
 using Reactive.Bindings;
+using Reactive.Bindings.ObjectExtensions;
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.Email;
 using uic_addin.Models;
 using uic_addin.Services;
-using uic_addin.Views;
 using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 
 namespace uic_addin {
@@ -42,7 +47,12 @@ namespace uic_addin {
         public Dictionary<string, string> Settings { get; set; } = new Dictionary<string, string>();
 
         protected override bool Initialize() {
-            Log.Debug("Initializing UIC Workflow Addin {version}", Assembly.GetExecutingAssembly().GetName().Version);
+            SetupLogging();
+            QueuedTask.Run(async () => {
+                await CheckForLastest();
+
+                Log.Debug("Initializing UIC Workflow Addin {version}", EvergreenSettings.CurrentVersion.AddInVersion);
+            });
 
             if (MapView.Active == null) {
                 _token = MapViewInitializedEvent.Subscribe(args => CacheLayers(args.MapView));
@@ -57,6 +67,38 @@ namespace uic_addin {
             FrameworkApplication.State.Activate(WorkflowModelState);
 
             return true;
+        }
+
+        private void SetupLogging() {
+            var addinFolder = GetAddinFolder();
+            var logLocation = Path.Combine(addinFolder, "{Date}-log.txt");
+
+            var email = new EmailConnectionInfo {
+                EmailSubject = "UIC Addin",
+                FromEmail = "noreply@utah.gov",
+                ToEmail = "sgourley@utah.gov;kwalker@utah.gov",
+                MailServer = "send.state.ut.us",
+                Port = 25
+            };
+
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Email(email, restrictedToMinimumLevel: LogEventLevel.Error)
+                .WriteTo.RollingFile(logLocation, retainedFileCountLimit: 7)
+                .MinimumLevel.Verbose()
+                .CreateLogger();
+        }
+
+        public string GetAddinFolder()
+        {
+            var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+            var arcGisProLocation = Path.Combine(myDocs, "ArcGIS", "AddIns", "ArcGISPro");
+
+            var attribute = (GuidAttribute) Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), true)[0];
+            var proAddinFolder = $"{{{attribute.Value}}}";
+
+            var addinFolder = Path.Combine(arcGisProLocation, proAddinFolder);
+
+            return addinFolder;
         }
 
         protected override async Task OnReadSettingsAsync(ModuleSettingsReader settings) {

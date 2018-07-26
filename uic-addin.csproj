@@ -154,6 +154,10 @@
     </Compile>
     <Compile Include="Controls\CreateNewFacilityControlViewModel.cs" />
     <Compile Include="Controls\FacilitySelectTool.cs" />
+    <Compile Include="Controls\FeedbackControl.xaml.cs">
+      <DependentUpon>FeedbackControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\FeedbackControlViewModel.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\EvergreenSettings.cs" />
@@ -182,6 +186,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\CreateNewFacilityControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\FeedbackControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
