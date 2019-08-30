@@ -41,6 +41,57 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ArcGIS.Core">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Catalog">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Catalog.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Core">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.DataGrid.Contrib.Wpf">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.DataGrid.Contrib.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.DataReviewer">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.DataReviewer.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Editing">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Editing.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Editors.Wpf">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Editors.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Extensions">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Framework">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.GeoProcessing">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Layouts">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Layouts.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Mapping">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Mapping.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Ribbon.Wpf">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Ribbon.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Shared.Wpf">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.TaskAssistant">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.TaskAssistant.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Workflow">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ArcGIS.Desktop.Workflow.dll</HintPath>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ItemIndex">
+      <HintPath>packages\Esri.ArcGISPro.Extensions.2.4.0.19948\ref\net461\ESRI.ArcGIS.ItemIndex.dll</HintPath>
+    </Reference>
     <Reference Include="ExcelDataReader, Version=3.4.0.0, Culture=neutral, PublicKeyToken=93517dbe6a4012fa, processorArchitecture=MSIL">
       <HintPath>packages\ExcelDataReader.3.4.0\lib\net45\ExcelDataReader.dll</HintPath>
     </Reference>
@@ -99,46 +150,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsBase" />
     <Reference Include="System.Xaml" />
-    <Reference Include="ArcGIS.Desktop.Framework">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Core">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Core">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Core\ArcGIS.Desktop.Core.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Mapping">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Catalog">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Catalog\ArcGIS.Desktop.Catalog.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Editing">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Extensions">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.GeoProcessing">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\GeoProcessing\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Layouts.dll">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Layout\ArcGIS.Desktop.Layouts.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="ArcGIS.Desktop.Shared.Wpf.dll">
-      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <AddInContent Include="Config.daml" />
@@ -267,6 +278,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.props'))" />
     <Error Condition="!Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets'))" />
+    <Error Condition="!Exists('packages\Esri.ArcGISPro.Extensions.2.4.0.19948\build\net461\Esri.ArcGISPro.Extensions.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Esri.ArcGISPro.Extensions.2.4.0.19948\build\net461\Esri.ArcGISPro.Extensions.targets'))" />
   </Target>
   <Import Project="packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets" Condition="Exists('packages\SourceLink.Create.GitHub.2.8.0\build\SourceLink.Create.GitHub.targets')" />
+  <Import Project="packages\Esri.ArcGISPro.Extensions.2.4.0.19948\build\net461\Esri.ArcGISPro.Extensions.targets" Condition="Exists('packages\Esri.ArcGISPro.Extensions.2.4.0.19948\build\net461\Esri.ArcGISPro.Extensions.targets')" />
 </Project>
