@@ -14,59 +14,64 @@
     <insertModule id="UICModule" className="UicModule" autoLoad="true" caption="UIC Module">
       <tabs>
         <tab id="UICTab" keytip="UIC Tools" caption="UIC Tools">
-          <group refID="UICMainGroup" />
-          <group refID="UICCreationGroup" />
+          <group refID="UICValidationGroup"/>
           <group refID="UICToolGroup" />
+          <group refID="UICCreationGroup" />
           <group refID="UICHelp" />
         </tab>
       </tabs>
       <groups>
-        <group id="UICMainGroup" caption="Main" keytip="u" appearsOnAddInTab="false">
-          <button refID="ShowWorkflowPane" size="large" />
+        <group id="UICValidationGroup" caption="Validation" keytip="uicvalidtion" appearsOnAddInTab="false">
+          <button refID="WellChecksPaneOpenButton" size="large" />
+          <button refID="AoRChecksPaneOpenButton" size="large" />
         </group>
         <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
-          <tool refID="SelectFacilityFeaturesTool" size="middle" />
-          <button refID="CreateNewFacilityButton" size="middle" />
-          <button refID="NaicsFinderPaneOpenButton" size="middle" />
+          <button refID="NaicsFinderPaneOpenButton" size="large" />
+          <button refID="CreateAoRButton" size="large" />
         </group>
         <group id="UICCreationGroup" caption="Editing" keytip="uiccreate" appearsOnAddInTab="false">
-          <customControl refID="CreateNewFacilityControl" size="large" />
-          <button refID="esri_editing_SaveEditsBtn" size="middle" />
-          <button refID="esri_editing_DiscardEditsBtn" size="middle" />
+          <button refID="esri_editing_SaveEditsBtn" size="large" />
+          <button refID="esri_editing_DiscardEditsBtn" size="large" />
         </group>
         <group id="UICHelp" caption ="Help" keytip="uh" appearsOnAddInTab="false">
-          <customControl refID="FeedbackControl" size="middle" />
+          <button refID="ShowWorkflowPane" size="large" />
+          <customControl refID="FeedbackControl" size="large" />
         </group>
       </groups>
       <controls>
-        <button id="ShowWorkflowPane" caption="Main" keytip="uu" className="uic_addin.Controls.ShowWorkflowPane"
+        <button id="ShowWorkflowPane" caption="About" keytip="uu" className="uic_addin.Controls.ShowWorkflowPane"
                 loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
                 condition="workflow_pane_created">
-          <tooltip heading="Show Dockpane">UIC Validation<disabledText /></tooltip>
+          <tooltip heading="Show Dockpane">About UIC<disabledText /></tooltip>
         </button>
-        <tool id="SelectFacilityFeaturesTool" caption="Select Facility"
-              className="uic_addin.Controls.FacilitySelectTool" smallImage="Images\UIC16.png"
-              largeImage="Images\UIC32.png" loadOnClick="true" condition="esri_mapping_mapPane" keytip="us">
-          <tooltip heading="Select Facility Features">
-            Select facility features to start the UIC workflow<disabledText />
-          </tooltip>
-        </tool>
-        <customControl isDropDown="true" id="CreateNewFacilityControl" caption="Create New Facility" keytip="uf"
-                       className="uic_addin.Controls.CreateNewFacilityControlViewModel" loadOnClick="true"
-                       smallImage="Images\UIC16.png" largeImage="Images\UIC32.png" condition="esri_mapping_mapPane">
-          <content className="uic_addin.Controls.CreateNewFacilityControlView" />
-          <tooltip heading="Create Facility Record">Create Facility Record<disabledText /></tooltip>
-        </customControl>
         <button id="NaicsFinderPaneOpenButton" caption="Find NAICS Code" keytip="un"
                 className="uic_addin.Controls.NaicsFinderPaneOpenButton" loadOnClick="true"
-                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Filter16.png" largeImage="Images\UIC32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Filter16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Filter32.png">
           <tooltip heading="Find NAICS Code">
             NAICS Code Finder<disabledText />
           </tooltip>
         </button>
+        <button id="WellChecksPaneOpenButton" caption="Find Well Issues" keytip="uw"
+                className="uic_addin.Controls.WellButton" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+          <tooltip heading="Find Well Issues">Well Issue Finder<disabledText />
+          </tooltip>
+        </button>
+        <button id="AoRChecksPaneOpenButton" caption="Find AOR Issues" keytip="ua"
+                className="uic_addin.Controls.AoRButton" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+          <tooltip heading="Find AOR Issues">AOR Issue Finder<disabledText />
+          </tooltip>
+        </button>
+        <button id="CreateAoRButton" caption="Create AOR Polygon" keytip="ua"
+                className="uic_addin.Controls.AoRButton" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer32.png">
+          <tooltip heading="Find AOR Issues">AOR Issue Finder<disabledText />
+          </tooltip>
+        </button>
         <customControl isDropDown="true" id="FeedbackControl" caption="Provide Feedback" keytip="uf"
                        className="uic_addin.Controls.FeedbackControlViewModel" loadOnClick="true"
-                       smallImage="Images\UIC16.png" largeImage="Images\UIC32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Emailuser16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EmailUser32.png">
           <content className="uic_addin.Controls.FeedbackControlView" />
           <tooltip heading="Send Feedback">Send Feedback<disabledText /></tooltip>
         </customControl>
