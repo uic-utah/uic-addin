@@ -48,67 +48,6 @@
                 Style="{DynamicResource Esri_Button}"
                 Width="Auto" />
       </StackPanel>
-      <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10">
-        <Run Text="Start with a Facility Id" />
-      </TextBlock>
-      <TextBox Text="{Binding FacilityId.Value, UpdateSourceTrigger=PropertyChanged}" Width="278"
-               HorizontalAlignment="Center" />
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,10">
-        <Button Command="{Binding UseSelection}"
-                ToolTip="Use Selected Facility"
-                Content="Load Selected"
-                Style="{DynamicResource Esri_Button}"
-                Width="Auto" />
-        <Button Command="{Binding ShowAttributeEditorForSelectedRecord}"
-                ToolTip="Edit Selected Feature"
-                Content="Edit Selected"
-                Style="{DynamicResource Esri_Button}"
-                Width="Auto" />
-        <Button Command="{Binding ZoomToFacility}"
-                ToolTip="Select and Zoom"
-                Content="Zoom"
-                Style="{DynamicResource Esri_Button}"
-                Width="Auto" />
-      </StackPanel>
-      <Separator />
-      <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,5,0,0">
-        <Run Text="{Binding Caption}" />
-      </TextBlock>
-      <TextBlock Margin="10,0,0,10"
-                 Visibility="{Binding Model.Value.FacilityId, FallbackValue=Collapsed, Converter={converters:StringNullOrEmptyToVisibilityConverter}}">
-        <TextBlock.Inlines>
-          <Run Foreground="{DynamicResource Esri_Gray145}" FontSize="13pt" FontWeight="SemiBold" FontFamily="Segoe UI"
-               Text="Current Facility: " />
-          <Run Foreground="{DynamicResource Esri_Gray160}" FontSize="11pt" FontFamily="Segoe UI"
-               Text="{Binding Model.Value.FacilityId}" />
-        </TextBlock.Inlines>
-      </TextBlock>
-      <Separator />
     </StackPanel>
-    <Grid Grid.Row="1">
-      <StackPanel>
-        <TextBlock Style="{DynamicResource Esri_TextBlockH1}" Margin="5,0,0,10"
-                   Foreground="{DynamicResource Esri_TextCaptionActiveBrush}"
-                   Visibility="{Binding Model.Value.HasErrors, Converter={StaticResource BoolToVis}, FallbackValue=Collapsed}">
-          <Run Text="Facility Validation Issues" />
-        </TextBlock>
-        <Grid Margin="10">
-          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Hidden">
-            <ItemsControl ItemsSource="{Binding Model.Value.ErrorValues}" Margin="5,0,0,0">
-              <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                  <TextBlock Style="{DynamicResource Esri_TextBlockRegular}">
-                    <TextBlock.Inlines>
-                      <Run Text="•" />
-                      <Run Text="{Binding Path=.}" />
-                    </TextBlock.Inlines>
-                  </TextBlock>
-                </DataTemplate>
-              </ItemsControl.ItemTemplate>
-            </ItemsControl>
-          </ScrollViewer>
-        </Grid>
-      </StackPanel>
-    </Grid>
   </Grid>
 </UserControl>

@@ -51,116 +51,11 @@ namespace uic_addin.Views {
 
             ShowUpdate = UicModule.Current.IsCurrent.Select(x => !x)
                                   .ToReactiveProperty();
-
-            UseSelection = new RelayCommand(async () => {
-                var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName];
-                var ids = await LayerService.GetSelectedIdsFor(facilityLayer);
-
-                var selectedIds = await QueryService.GetFacilityIdsFor(ids, facilityLayer.Map);
-                if (selectedIds.Count() > 1) {
-                    FrameworkApplication.AddNotification(new Notification {
-                        Message = $"Selected {selectedIds.Count()} facilities. Showing {selectedIds.FirstOrDefault()}"
-                    });
-                }
-
-                Facilities.Value = new[] {selectedIds.FirstOrDefault()};
-            }, () => MapView.Active?.Map.SelectionCount > 0);
-
-            ZoomToFacility = new RelayCommand(async () => {
-                var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName] as BasicFeatureLayer;
-
-                await MapView.Active.ZoomToAsync(facilityLayer, Model.Value.ObjectId, TimeSpan.FromMilliseconds(250));
-            }, () => {
-                if (MapView.Active == null) {
-                    return false;
-                }
-
-                return Model?.Value?.ObjectId > 0;
-            });
-
-            ShowAttributeEditorForSelectedRecord = new RelayCommand(() => {
-                var edits = FrameworkApplication.DockPaneManager.Find("esri_editing_AttributesDockPane");
-                edits.Activate(true);
-            }, () => MapView.Active?.Map.SelectionCount > 0);
-
-            Facilities = FacilityId.Select(async id => {
-                                       if (id.Length < 4) {
-                                           return Enumerable.Empty<string>();
-                                       }
-
-                                       return await QueryService.GetFacilityIdsFor(id, MapView.Active.Map);
-                                   })
-                                   .CatchIgnore()
-                                   .Switch()
-                                   .ToReactiveProperty(mode: ReactivePropertyMode.DistinctUntilChanged);
-
-            Facilities.ObserveOn(Application.Current.Dispatcher)
-                      .ForEachAsync(async items => {
-                          if (items?.Count() != 1) {
-                              Model.Value = new FacilityModel();
-
-                              return;
-                          }
-
-                          Model.Value = await QueryService.GetFacilityFor(items.First());
-
-                          var selection = await ThreadService.RunOnBackground(MapView.Active.Map.GetSelection);
-
-                          if (selection.Count(x => x.Key.Name == FacilityModel.TableName) != 0) {
-                              return;
-                          }
-
-                          var facilityLayer = UicModule.Current.Layers[FacilityModel.TableName];
-                          await LayerService.SetSelectionFromId(Model.Value.ObjectId, facilityLayer);
-                      });
-
-            _subscriptionToken = MapSelectionChangedEvent.Subscribe(async args => {
-                if (!FrameworkApplication.State.Contains(UicModule.Current.FacilitySelectionState)) {
-                    return;
-                }
-
-                var facilitySelection = args.Selection?.Where(x => string.Equals(x.Key.Name.SplitAndTakeLast('.'),
-                                                                                 "uicfacility",
-                                                                                 StringComparison
-                                                                                     .InvariantCultureIgnoreCase));
-
-                var facilityObjectIds = facilitySelection?.SelectMany(x => x.Value);
-
-                if (!facilityObjectIds.Any()) {
-                    Facilities.Value = Enumerable.Empty<string>();
-
-                    return;
-                }
-
-                var facilityIds = await QueryService.GetFacilityIdsFor(facilityObjectIds, args.Map);
-                if (facilityIds.Count() > 1) {
-                    FrameworkApplication.AddNotification(new Notification {
-                        Message = $"Selected {facilityIds.Count()} facilities. Showing {facilityIds.FirstOrDefault()}"
-                    });
-                }
-
-                Facilities.Value = new[] {facilityIds.FirstOrDefault()};
-            });
         }
-
-        public RelayCommand UseSelection { get; }
-
-        public RelayCommand ZoomToFacility { get; }
-
-        public RelayCommand ShowAttributeEditorForSelectedRecord { get; }
 
         // todo explore PropertySheet.Show
         public ICommand ShowSettings => FrameworkApplication.GetPlugInWrapper("esri_core_showOptionsSheetButton") as
             ICommand;
-
-        // Exposed Model
-        public ReactiveProperty<FacilityModel> Model { get; set; } =
-            new ReactiveProperty<FacilityModel>(mode: ReactivePropertyMode.DistinctUntilChanged);
-
-        public ReactiveProperty<string> FacilityId { get; set; } =
-            new ReactiveProperty<string>(mode: ReactivePropertyMode.DistinctUntilChanged);
-
-        public ReactiveProperty<IEnumerable<string>> Facilities { get; set; }
 
         public ReactiveProperty<bool> ShowUpdate { get; set; }
 
@@ -279,9 +174,6 @@ namespace uic_addin.Views {
             MapSelectionChangedEvent.Unsubscribe(_subscriptionToken);
             MapViewInitializedEvent.Unsubscribe(_mapLoadToken);
 
-            Facilities.Dispose();
-            FacilityId.Dispose();
-            Model.Dispose();
             ShowUpdate.Dispose();
             UpdateToVersionMessage.Dispose();
             UpdateSelf.Dispose();

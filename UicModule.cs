@@ -78,7 +78,7 @@ namespace uic_addin {
             var email = new EmailConnectionInfo {
                 EmailSubject = "UIC Addin",
                 FromEmail = "noreply@utah.gov",
-                ToEmail = "sgourley@utah.gov;kwalker@utah.gov",
+                ToEmail = "sgourley@utah.gov",
                 MailServer = "send.state.ut.us",
                 Port = 25
             };
@@ -172,8 +172,7 @@ namespace uic_addin {
                 return;
             }
 
-            Layers[FacilityModel.TableName] =
-                LayerService.FindLayer(FacilityModel.TableName, activeView.Map) as FeatureLayer;
+            // Layers[FacilityModel.TableName] = LayerService.FindLayer(FacilityModel.TableName, activeView.Map) as FeatureLayer;
 
             FrameworkApplication.State.Activate(WorkflowModelState);
             var pane = FrameworkApplication.Panes.Find("WorkflowPane").FirstOrDefault();
@@ -184,8 +183,6 @@ namespace uic_addin {
 
         public void CachePanes() {
             Log.Debug("Caching project dock panes");
-
-            
         }
 
         private void FindPaneFromId(string id) {
