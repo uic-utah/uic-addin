@@ -6,6 +6,7 @@ using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Mapping;
+using Serilog;
 using uic_addin.Extensions;
 using uic_addin.Services;
 
@@ -19,6 +20,8 @@ namespace uic_addin.Controls {
             };
 
             var primaryKeys = new Dictionary<string, long>();
+
+            Log.Verbose("Getting well primary keys");
 
             using (var cursor = wells.Search(filter)) {
                 while (cursor.MoveNext()) {
@@ -34,10 +37,14 @@ namespace uic_addin.Controls {
                 }
             }
 
+            Log.Verbose("Found {count} wells", primaryKeys.Count);
+
             var operatingStatus = LayerService.FindLayer("uicWellOperatingStatus", MapView.Active.Map);
             var filter2 = new QueryFilter {
                 SubFields = "WELL_FK"
             };
+
+            Log.Verbose("Getting well operating status fk's");
 
             using (var cursor = operatingStatus.Search(filter2)) {
                 while (cursor.MoveNext()) {
@@ -49,20 +56,31 @@ namespace uic_addin.Controls {
                 }
             }
 
-            var selectionFilter = new QueryFilter {
-                WhereClause = $"OBJECTID IN ({string.Join(",", primaryKeys.Values)})"
-            };
+            Log.Verbose("Found {count} wells without operating status", primaryKeys.Count);
 
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList().FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x).GetTable().GetName().SplitAndTakeLast('.'), "uicWell".SplitAndTakeLast('.'),
-                                                           StringComparison.InvariantCultureIgnoreCase));
+            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
+                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
+                    .GetTable().GetName().SplitAndTakeLast('.'),
+                    "uicWell".SplitAndTakeLast('.'),
+                    StringComparison.InvariantCultureIgnoreCase));
+
+            Log.Verbose("Selecting Wells");
 
             MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
                 { layer, primaryKeys.Select(x => x.Value).ToList() }
             });
 
+            Log.Verbose("Zooming to seleted");
+            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
+
             ThreadService.RunOnUiThread(() => {
+                var message = $"There are {primaryKeys.Count} wells with no Operating Status record. " +
+                               "They have been selected.";
+
+                Log.Verbose("Showing notification: {message}", message);
+
                 var selection = new Notification {
-                    Message = $"There are {primaryKeys.Count} wells with no Operating Status record. They have been selected.",
+                    Message = message,
                     ImageUrl = "",
                     Title = "UIC Add-in"
                 };
@@ -78,12 +96,15 @@ namespace uic_addin.Controls {
     }
 
     internal class PropertiesButton : Button {
-        protected override void OnClick() => PropertySheet.ShowDialog("esri_core_optionsPropertySheet", "EvergreenSettings");
+        protected override void OnClick() => PropertySheet.ShowDialog("esri_core_optionsPropertySheet",
+                                                                      "EvergreenSettings");
     }
 
     internal class UpdateButton : Button {
         public UpdateButton() {
-            Caption = UicModule.Current.IsCurrent.Value ? "Up to date! 💙" : $"Update to {UicModule.Current.EvergreenSettings?.LatestRelease?.TagName}";
+            Caption = UicModule.Current.IsCurrent.Value ?
+                "Up to date! 💙" :
+                $"Update to {UicModule.Current.EvergreenSettings?.LatestRelease?.TagName}";
             Tooltip = UicModule.Current.EvergreenSettings?.LatestRelease?.TagName;
         }
 
