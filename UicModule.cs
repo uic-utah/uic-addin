@@ -13,19 +13,17 @@ using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
 using ProEvergreen;
 using Reactive.Bindings;
-using Reactive.Bindings.ObjectExtensions;
 using Serilog;
 using Serilog.Events;
 using Serilog.Sinks.Email;
 using uic_addin.Models;
-using uic_addin.Services;
 using uic_addin.Views;
 using Module = ArcGIS.Desktop.Framework.Contracts.Module;
 
 namespace uic_addin {
     internal class UicModule : Module {
         private static UicModule _this;
-        private readonly IEnumerable<string> _addinKeys = new[] {"UICAddin.Evergreen.BetaChannel"};
+        private readonly IEnumerable<string> _addinKeys = new[] { "UICAddin.Evergreen.BetaChannel" };
         public readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
         public readonly string HasUpdateState = "has_update";
         public readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
@@ -41,8 +39,7 @@ namespace uic_addin {
             BetaChannel = true
         };
 
-        public static UicModule Current => _this ?? (_this =
-                                               (UicModule)FrameworkApplication.FindModule("UICModule"));
+        public static UicModule Current => _this ?? (_this = (UicModule)FrameworkApplication.FindModule("UICModule"));
 
         public Dictionary<string, string> Settings { get; set; } = new Dictionary<string, string>();
 
@@ -51,8 +48,6 @@ namespace uic_addin {
 
             QueuedTask.Run(async () => {
                 await CheckForLastest();
-
-
 
                 Log.Debug("Initializing UIC Workflow Addin {version}", EvergreenSettings.CurrentVersion.AddInVersion);
             });
@@ -89,12 +84,12 @@ namespace uic_addin {
                 .CreateLogger();
         }
 
-        public string GetAddinFolder()
-        {
+        public string GetAddinFolder() {
             var myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             var arcGisProLocation = Path.Combine(myDocs, "ArcGIS", "AddIns", "ArcGISPro");
 
-            var attribute = (GuidAttribute) Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute), true)[0];
+            var attribute = (GuidAttribute)Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(GuidAttribute),
+                                                                                               true)[0];
             var proAddinFolder = $"{{{attribute.Value}}}";
 
             var addinFolder = Path.Combine(arcGisProLocation, proAddinFolder);
@@ -171,12 +166,8 @@ namespace uic_addin {
                 return;
             }
 
-            // Layers[FacilityModel.TableName] = LayerService.FindLayer(FacilityModel.TableName, activeView.Map) as FeatureLayer;
-
-            var pane = FrameworkApplication.Panes.Find("WorkflowPane").FirstOrDefault();
-            if (pane != null && pane is WorkflowViewModel workflow) {
-                workflow.IsReady.Value = true;
-            }
+            // Layers[FacilityModel.TableName] = LayerService.FindLayer(FacilityModel.TableName, activeView.Map)
+            //                                    as FeatureLayer;
         }
 
         public void CachePanes() {
@@ -199,6 +190,7 @@ namespace uic_addin {
 
             EvergreenSettings.LatestRelease = await Evergreen.Value.GetLatestReleaseFromGithub(useBetaChannel);
             EvergreenSettings.CurrentVersion = Evergreen.Value.GetCurrentAddInVersion();
+
             try {
                 IsCurrent.Value = Evergreen.Value.IsCurrent(EvergreenSettings.CurrentVersion.AddInVersion,
                                                             EvergreenSettings.LatestRelease);

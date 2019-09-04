@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Net.Mail;
-using System.Net.Mime;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using ArcGIS.Desktop.Framework;
@@ -36,8 +35,6 @@ namespace uic_addin.Controls {
 
             using (var message = new MailMessage(from, to, subject, content))
             using (var client = new SmtpClient("send.state.ut.us")) {
-                message.To.Add("kwalker@utah.gov");
-
                 client.Timeout = 100;
 #if DEBUG
                 client.DeliveryMethod = SmtpDeliveryMethod.SpecifiedPickupDirectory;

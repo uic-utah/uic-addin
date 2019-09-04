@@ -10,9 +10,8 @@ namespace uic_addin.Views {
         private bool _betaChannel;
 
         public EvergreenSettingsViewModel() {
-            CurrentVersion = UicModule
-                .Current.Evergreen.Select(x => UicModule.Current.EvergreenSettings.CurrentVersion.AddInVersion)
-                .ToReactiveProperty();
+            CurrentVersion = UicModule.Current.Evergreen.Select(x =>
+                             UicModule.Current.EvergreenSettings.CurrentVersion.AddInVersion).ToReactiveProperty();
 
             OpenRepository.Subscribe(() => Process.Start("https://github.com/agrc/uic-addin"));
         }
@@ -41,6 +40,7 @@ namespace uic_addin.Views {
             var settings = UicModule.Current.Settings;
 
             settings["UICAddin.Evergreen.BetaChannel"] = BetaChannel.ToString();
+
             if (BetaChannel != UicModule.Current.EvergreenSettings.BetaChannel) {
                 Project.Current.SetDirty();
             }
@@ -61,6 +61,7 @@ namespace uic_addin.Views {
         protected override Task InitializeAsync() {
             var useBetaChannel = false;
             var settings = UicModule.Current.Settings;
+
             if (settings.TryGetValue("UICAddin.Evergreen.BetaChannel", out var value)) {
                 bool.TryParse(value, out useBetaChannel);
             }

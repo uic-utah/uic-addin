@@ -13,20 +13,34 @@ namespace uic_addin.Services {
             Log.Verbose("finding feature layer {layer}", layerName);
 
             Table filter(string name, IEnumerable<Table> l) {
-                return l.FirstOrDefault(x => string.Equals(x.GetName().SplitAndTakeLast('.'), name.SplitAndTakeLast('.'),
-                                                           StringComparison.InvariantCultureIgnoreCase));
+                return l.FirstOrDefault(x => string.Equals(x.GetName()
+                                                            .SplitAndTakeLast('.'), name.SplitAndTakeLast('.'),
+                                                            StringComparison.InvariantCultureIgnoreCase));
             };
 
             var layers = map.GetLayersAsFlattenedList().Select(x => ((BasicFeatureLayer)x).GetTable());
             var layer = filter(layerName, layers);
 
             if (layer != null) {
+                Log.Verbose("found {layer}", layer.GetName());
+
                 return layer;
             }
 
-            var tables = map.StandaloneTables.Select(x => x.GetTable());
+            Log.Verbose("missed feature classes checking tables");
 
-            return filter(layerName, tables);
+            var tables = map.StandaloneTables.Select(x => x.GetTable());
+            var table = filter(layerName, tables);
+
+            if (table == null) {
+                Log.Verbose("missed table also");
+
+                return null;
+            }
+
+            Log.Verbose("found {layer}", table.GetName());
+
+            return table;
         }
 
         public static async Task<IEnumerable<long>> GetSelectedIdsFor(MapMember layer) {
@@ -67,12 +81,12 @@ namespace uic_addin.Services {
         }
 
         public static async Task SetSelectionFromId(long id, Layer layer) => await
-                ThreadService.RunOnBackground(() => layer.Map.SetSelection(new Dictionary<MapMember, List<long>> {
-                    {
-                        layer, new List<long> {
-                            id
-                        }
+            ThreadService.RunOnBackground(() => layer.Map.SetSelection(new Dictionary<MapMember, List<long>> {
+                {
+                    layer, new List<long> {
+                        id
                     }
-                }));
+                }
+            }));
     }
 }

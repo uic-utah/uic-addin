@@ -47,7 +47,7 @@ namespace uic_addin.Views {
                 new KeyValuePair<object, string>(54, "Professional, Scientific, and Technical Services"),
                 new KeyValuePair<object, string>(55, "Management of Companies and Enterprises"),
                 new KeyValuePair<object, string>(56,
-                                                 "Administrative and Support and Waste Management and Remediation Services"),
+                    "Administrative and Support and Waste Management and Remediation Services"),
                 new KeyValuePair<object, string>(61, "Educational Services"),
                 new KeyValuePair<object, string>(62, "Health Care and Social Assistance"),
                 new KeyValuePair<object, string>(71, "Arts, Entertainment, and Recreation"),
@@ -87,7 +87,6 @@ namespace uic_addin.Views {
 
         public List<NaicsModel> AllNaicsCodes { get; set; } = new List<NaicsModel>();
 
-
         public ReactiveProperty<string> UpdateSearch { get; set; }
 
         public ReactiveProperty<bool> HasValue { get; set; }
@@ -101,6 +100,7 @@ namespace uic_addin.Views {
             var view = new CIMGenericView {
                 ViewType = ViewPaneId
             };
+
             return FrameworkApplication.Panes.Create(ViewPaneId, view) as NaicsFinderPaneViewModel;
         }
 
@@ -111,12 +111,10 @@ namespace uic_addin.Views {
             await base.InitializeAsync();
 
             ShowCategory = new RelayCommand(SetActive, () => true);
-            HasValue = CurrentCode.Select(x => x.ToString().Length == 6)
-                                  .ToReactiveProperty();
+            HasValue = CurrentCode.Select(x => x.ToString().Length == 6).ToReactiveProperty();
             SetClipboard = HasValue.ToReactiveCommand()
                                    .WithSubscribe(() => Clipboard.SetText(CurrentCode.Value.ToString()));
-            Expanded = CurrentCode.Select(x => x < 10)
-                                  .ToReactiveProperty();
+            Expanded = CurrentCode.Select(x => x < 10).ToReactiveProperty();
             UpdateSearch = InputCode.Select(x => x)
                                     .Throttle(TimeSpan.FromMilliseconds(200))
                                     .ObserveOn(Application.Current.Dispatcher)

@@ -13,7 +13,6 @@ namespace uic_addin.Models {
         public int Code { get; set; }
         public string Title { get; set; }
 
-
         public static IEnumerable<NaicsModel> CreateNaicsFromRange(string range, string title) {
             if (!range.Contains("-")) {
                 return Enumerable.Empty<NaicsModel>();
