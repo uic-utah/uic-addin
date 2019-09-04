@@ -27,8 +27,7 @@ namespace uic_addin {
         private static UicModule _this;
         private readonly IEnumerable<string> _addinKeys = new[] {"UICAddin.Evergreen.BetaChannel"};
         public readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
-        public readonly string FacilitySelectionState = "0";
-        public readonly string WorkflowModelState = "workflow_pane_enabled";
+        public readonly string HasUpdateState = "has_update";
         public readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
         private SubscriptionToken _token;
 
@@ -53,6 +52,8 @@ namespace uic_addin {
             QueuedTask.Run(async () => {
                 await CheckForLastest();
 
+
+
                 Log.Debug("Initializing UIC Workflow Addin {version}", EvergreenSettings.CurrentVersion.AddInVersion);
             });
 
@@ -65,8 +66,6 @@ namespace uic_addin {
                     return false;
                 }
             }
-
-            FrameworkApplication.State.Activate(WorkflowModelState);
 
             return true;
         }
@@ -174,7 +173,6 @@ namespace uic_addin {
 
             // Layers[FacilityModel.TableName] = LayerService.FindLayer(FacilityModel.TableName, activeView.Map) as FeatureLayer;
 
-            FrameworkApplication.State.Activate(WorkflowModelState);
             var pane = FrameworkApplication.Panes.Find("WorkflowPane").FirstOrDefault();
             if (pane != null && pane is WorkflowViewModel workflow) {
                 workflow.IsReady.Value = true;
@@ -212,6 +210,12 @@ namespace uic_addin {
 
                 // github doesn't have a version. most likely only prereleases and no stable
                 IsCurrent.Value = true;
+            }
+
+            if (IsCurrent.Value) {
+                FrameworkApplication.State.Deactivate(HasUpdateState);
+            } else {
+                FrameworkApplication.State.Activate(HasUpdateState);
             }
         }
     }

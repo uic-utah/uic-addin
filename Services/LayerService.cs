@@ -2,21 +2,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Mapping;
 using Serilog;
 using uic_addin.Extensions;
 
 namespace uic_addin.Services {
     public static class LayerService {
-        public static BasicFeatureLayer FindLayer(string layerName, Map map) {
+        public static Table FindLayer(string layerName, Map map) {
             Log.Verbose("finding feature layer {layer}", layerName);
 
-            var layers = map.GetLayersAsFlattenedList();
+            Table filter(string name, IEnumerable<Table> l) {
+                return l.FirstOrDefault(x => string.Equals(x.GetName().SplitAndTakeLast('.'), name.SplitAndTakeLast('.'),
+                                                           StringComparison.InvariantCultureIgnoreCase));
+            };
 
-            return (BasicFeatureLayer)layers.FirstOrDefault(x => string.Equals(x.Name.SplitAndTakeLast('.'),
-                                                                               layerName.SplitAndTakeLast('.'),
-                                                                               StringComparison
-                                                                                   .InvariantCultureIgnoreCase));
+            var layers = map.GetLayersAsFlattenedList().Select(x => ((BasicFeatureLayer)x).GetTable());
+            var layer = filter(layerName, layers);
+
+            if (layer != null) {
+                return layer;
+            }
+
+            var tables = map.StandaloneTables.Select(x => x.GetTable());
+
+            return filter(layerName, tables);
         }
 
         public static async Task<IEnumerable<long>> GetSelectedIdsFor(MapMember layer) {

@@ -34,15 +34,25 @@
           <button refID="esri_editing_DiscardEditsBtn" size="large" />
         </group>
         <group id="UICHelp" caption ="Help" keytip="uh" appearsOnAddInTab="false">
-          <button refID="ShowWorkflowPane" size="large" />
+          <button refID="UpdateAvailableButton" size="large" />
+          <button refID="PropertiesButton" size="large" />
           <customControl refID="FeedbackControl" size="large" />
         </group>
       </groups>
       <controls>
-        <button id="ShowWorkflowPane" caption="About" keytip="uu" className="uic_addin.Controls.ShowWorkflowPane"
-                loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
-                condition="workflow_pane_created">
-          <tooltip heading="Show Dockpane">About UIC<disabledText /></tooltip>
+        <button id="UpdateAvailableButton" caption="Updates" keytip="uu" className="uic_addin.Controls.UpdateButton"
+                loadOnClick="false" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
+                 condition="has_updates">
+          <tooltip heading="Stay Current">
+            Stay Current!<disabledText />
+          </tooltip>
+        </button>
+        <button id="PropertiesButton" caption="Settings" keytip="us" className="uic_addin.Controls.PropertiesButton"
+                loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericProperties16.png"
+                largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericProperties32.png">
+          <tooltip heading="Stay Current">
+            Stay Current!<disabledText />
+          </tooltip>
         </button>
         <button id="NaicsFinderPaneOpenButton" caption="Find NAICS Code" keytip="un"
                 className="uic_addin.Controls.NaicsFinderPaneOpenButton" loadOnClick="true"
@@ -54,34 +64,34 @@
         <button id="WellChecksPaneOpenButton" caption="Find Well Issues" keytip="uw"
                 className="uic_addin.Controls.WellButton" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
-          <tooltip heading="Find Well Issues">Well Issue Finder<disabledText />
+          <tooltip heading="Find Well Issues">
+            Well Issue Finder<disabledText />
           </tooltip>
         </button>
         <button id="AoRChecksPaneOpenButton" caption="Find AOR Issues" keytip="ua"
                 className="uic_addin.Controls.AoRButton" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
-          <tooltip heading="Find AOR Issues">AOR Issue Finder<disabledText />
+          <tooltip heading="Find AOR Issues">
+            AOR Issue Finder<disabledText />
           </tooltip>
         </button>
         <button id="CreateAoRButton" caption="Create AOR Polygon" keytip="ua"
                 className="uic_addin.Controls.AoRButton" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer32.png">
-          <tooltip heading="Find AOR Issues">AOR Issue Finder<disabledText />
+          <tooltip heading="Find AOR Issues">
+            AOR Issue Finder<disabledText />
           </tooltip>
         </button>
         <customControl isDropDown="true" id="FeedbackControl" caption="Provide Feedback" keytip="uf"
                        className="uic_addin.Controls.FeedbackControlViewModel" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Emailuser16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EmailUser32.png">
           <content className="uic_addin.Controls.FeedbackControlView" />
-          <tooltip heading="Send Feedback">Send Feedback<disabledText /></tooltip>
+          <tooltip heading="Send Feedback">
+            Send Feedback<disabledText />
+          </tooltip>
         </customControl>
       </controls>
       <panes>
-        <pane id="WorkflowPane" caption="UIC Workflow" className="uic_addin.Views.WorkflowViewModel"
-              smallImage="Images\UIC16.png" defaultTab="esri_mapping_homeTab"
-              defaultTool="esri_mapping_navigateTool">
-          <content className="uic_addin.Views.WorkflowView" />
-        </pane>
         <pane id="NaicsFinderPane" caption="Naics Finder" className="uic_addin.Views.NaicsFinderPaneViewModel"
               smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Filter16.png" defaultTab="esri_mapping_homeTab"
               defaultTool="esri_mapping_navigateTool">
@@ -99,8 +109,8 @@
     </updateSheet>
   </propertySheets>
   <conditions>
-    <insertCondition id="workflow_pane_created" caption="has the workflow pane model been created yet?">
-      <state id="workflow_pane_enabled" />
+    <insertCondition id="has_updates" caption="does the add-in have an update?">
+      <state id="has_update" />
     </insertCondition>
   </conditions>
 </ArcGIS>

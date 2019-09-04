@@ -20,7 +20,6 @@ using uic_addin.Services;
 namespace uic_addin.Views {
     internal class WorkflowViewModel : TOCMapPaneProviderPane {
         private const string ViewPaneId = "WorkflowPane";
-        private readonly SubscriptionToken _subscriptionToken;
         private SubscriptionToken _mapLoadToken;
 
         /// <summary>
@@ -163,7 +162,6 @@ namespace uic_addin.Views {
 
             await base.InitializeAsync();
 
-            FrameworkApplication.State.Deactivate(UicModule.Current.WorkflowModelState);
             _mapLoadToken = MapViewInitializedEvent.Subscribe(args => PromptForProjection(args.MapView.Map));
         }
 
@@ -171,14 +169,11 @@ namespace uic_addin.Views {
         ///     Called when the pane is uninitialized.
         /// </summary>
         protected override async Task UninitializeAsync() {
-            MapSelectionChangedEvent.Unsubscribe(_subscriptionToken);
             MapViewInitializedEvent.Unsubscribe(_mapLoadToken);
 
             ShowUpdate.Dispose();
             UpdateToVersionMessage.Dispose();
             UpdateSelf.Dispose();
-
-            FrameworkApplication.State.Activate(UicModule.Current.WorkflowModelState);
 
             await base.UninitializeAsync();
         }

@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ArcGIS.Core.Data;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Mapping;
 
 namespace uic_addin.Services {
     public class QueryService {
@@ -14,5 +17,23 @@ namespace uic_addin.Services {
 
             return domain?.GetCodedValuePairs();
         }
+
+        //public static async Task<IEnumerable<string>> GetFacilityIdsFor(string id, Map map) => await QueuedTask.Run(() => {
+        //    var layer = UicModule.Current.Layers[FacilityModel.TableName] as FeatureLayer;
+
+        //    var filter = new QueryFilter {
+        //        WhereClause = $"FacilityID LIKE '{id}%'"
+        //    };
+
+        //    var collection = new List<string>();
+
+        //    using (var cursor = layer.Search(filter)) {
+        //        while (cursor.MoveNext()) {
+        //            collection.Add(cursor.Current["FacilityID"].ToString());
+        //        }
+        //    }
+
+        //    return collection;
+        //});
     }
 }
