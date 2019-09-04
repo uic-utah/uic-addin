@@ -1,3 +1,17 @@
+# [2.0.0-beta.1](https://github.com/agrc/uic-addin/compare/1.1.0-beta.3...2.0.0-beta.1) (2019-09-04)
+
+
+### Bug Fixes
+
+* disable workflow ui when map is not initialized ([c048ca1](https://github.com/agrc/uic-addin/commit/c048ca1))
+
+
+### Features
+
+* wells without operating status are selected ([36b60ca](https://github.com/agrc/uic-addin/commit/36b60ca))
+
+
+
 <a name="1.1.0-beta.3"></a>
 # [1.1.0-beta.3](https://github.com/agrc/uic-addin/compare/1.1.0-beta.2...1.1.0-beta.3) (2018-07-26)
 

@@ -1,7 +1,7 @@
 <ArcGIS defaultAssembly="uic-addin.dll" defaultNamespace="uic_addin" xmlns="http://schemas.esri.com/DADF/Registry"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="1.1.0-beta.3" desktopVersion="2.2.12813">
+  <AddInInfo id="{428cf60b-128f-46c6-bf06-dc663015d455}" version="2.0.0-beta.1" desktopVersion="2.2.12813">
     <Name>UIC Workflow</Name>
     <Description>An ArcGIS Pro add-in to help manage, create, and validate the UIC GIS database</Description>
     <Image>Images\AddinDesktop32.png</Image>
