@@ -60,9 +60,15 @@ namespace uic_addin.Controls {
                 { layer, primaryKeys.Select(x => x.Value).ToList() }
             });
 
-            ThreadService.RunOnUiThread(() =>
-                NotificationManager.AddNotification(new NotificationItem("WellIssues", false, $"There are {primaryKeys.Count} wells with no Operating Status record.", NotificationType.Information))
-            );
+            ThreadService.RunOnUiThread(() => {
+                var selection = new Notification {
+                    Message = $"There are {primaryKeys.Count} wells with no Operating Status record. They have been selected.",
+                    ImageUrl = "",
+                    Title = "UIC Add-in"
+                };
+
+                FrameworkApplication.AddNotification(selection);
+            });
         });
 
         internal class AoRButton : Button {
