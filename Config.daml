@@ -40,11 +40,8 @@
       </groups>
       <controls>
         <button id="UpdateAvailableButton" caption="Updates" keytip="uu" className="uic_addin.Controls.UpdateButton"
-                loadOnClick="false" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
+                loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
                  condition="has_updates">
-          <tooltip heading="Stay Current">
-            Stay Current!<disabledText />
-          </tooltip>
         </button>
         <button id="PropertiesButton" caption="Settings" keytip="us" className="uic_addin.Controls.PropertiesButton"
                 loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericProperties16.png"

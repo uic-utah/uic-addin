@@ -200,10 +200,19 @@ namespace uic_addin {
                 IsCurrent.Value = true;
             }
 
+            var wrapper = FrameworkApplication.GetPlugInWrapper("UpdateAvailableButton");
+
             if (IsCurrent.Value) {
                 FrameworkApplication.State.Deactivate(HasUpdateState);
+                wrapper.Caption = "Up to date! 💙";
+                wrapper.DisabledTooltip = $"You are using the most recent version: {Current.EvergreenSettings?.LatestRelease?.TagName}!";
+                wrapper.TooltipHeading = "UIC Add-in";
+
             } else {
                 FrameworkApplication.State.Activate(HasUpdateState);
+                wrapper.Caption = "Update Available";
+                wrapper.TooltipHeading = "Stay Current!";
+                wrapper.Tooltip = $"Update to {Current.EvergreenSettings?.LatestRelease?.TagName}";
             }
         }
     }

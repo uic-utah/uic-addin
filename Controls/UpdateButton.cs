@@ -4,13 +4,6 @@ using ArcGIS.Desktop.Framework.Contracts;
 
 namespace uic_addin.Controls {
     internal class UpdateButton : Button {
-        public UpdateButton() {
-            Caption = UicModule.Current.IsCurrent.Value ?
-                "Up to date! 💙" :
-                $"Update to {UicModule.Current.EvergreenSettings?.LatestRelease?.TagName}";
-            Tooltip = UicModule.Current.EvergreenSettings?.LatestRelease?.TagName;
-        }
-
         protected override async void OnClick() {
             if (UicModule.Current.EvergreenSettings.LatestRelease == null) {
                 return;
