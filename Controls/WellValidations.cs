@@ -14,6 +14,8 @@ using uic_addin.Services;
 namespace uic_addin.Controls {
     internal class WellOperatingStatus : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(() => {
+            Log.Debug("Running Well Operating Status Validation");
+
             var table = LayerService.FindLayer("uicWell", MapView.Active.Map);
 
             if (table == null) {
@@ -94,11 +96,15 @@ namespace uic_addin.Controls {
 
                 FrameworkApplication.AddNotification(selection);
             });
+
+            Log.Debug("Finished Well Operating Status Validation");
         });
     }
 
     internal class Authorization : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(() => {
+            Log.Debug("Running Authorization Validation");
+
             var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
             var filter = new QueryFilter {
                 SubFields = "OBJECTID",
@@ -147,11 +153,15 @@ namespace uic_addin.Controls {
 
                 FrameworkApplication.AddNotification(selection);
             });
+
+            Log.Debug("Finished Authorization Validation");
         });
     }
 
     internal class AreaOfReview : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(() => {
+            Log.Debug("Running Area of Review Validation");
+
             var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
             var filter = new QueryFilter {
                 SubFields = "OBJECTID,AUTHORIZATION_FK",
@@ -225,6 +235,8 @@ namespace uic_addin.Controls {
 
                 FrameworkApplication.AddNotification(selection);
             });
+
+            Log.Debug("Finished Authorization Validation");
         });
     }
 }
