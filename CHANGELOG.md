@@ -1,3 +1,17 @@
+# [2.0.0-beta.2](https://github.com/agrc/uic-addin/compare/2.0.0-beta.1...2.0.0-beta.2) (2019-09-05)
+
+
+### Bug Fixes
+
+* denest settings and update buttons ([900ae31](https://github.com/agrc/uic-addin/commit/900ae31))
+
+
+### Features
+
+* create well validations in a dropdown ([6052351](https://github.com/agrc/uic-addin/commit/6052351))
+
+
+
 # [2.0.0-beta.1](https://github.com/agrc/uic-addin/compare/1.1.0-beta.3...2.0.0-beta.1) (2019-09-04)
 
 
