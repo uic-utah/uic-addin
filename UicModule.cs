@@ -170,10 +170,6 @@ namespace uic_addin {
             //                                    as FeatureLayer;
         }
 
-        public void CachePanes() {
-            Log.Debug("Caching project dock panes");
-        }
-
         private void FindPaneFromId(string id) {
             if (DockPanes.ContainsKey(id)) {
                 return;
