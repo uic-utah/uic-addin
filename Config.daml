@@ -23,6 +23,8 @@
       <groups>
         <group id="UICValidationGroup" caption="Validation" keytip="uicvalidtion" appearsOnAddInTab="false">
           <toolPalette refID="Well_Tools" size="large" />
+          <toolPalette refID="Authorization_Tools" size="large" />
+          <toolPalette refID="AreaOfReaviw_Tools" size="large" />
         </group>
         <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
           <button refID="NaicsFinderPaneOpenButton" size="large" />
@@ -41,7 +43,7 @@
       <controls>
         <button id="UpdateAvailableButton" caption="Updates" keytip="uu" className="uic_addin.Controls.UpdateButton"
                 loadOnClick="true" smallImage="Images\UIC16.png" largeImage="Images\UIC32.png"
-                 condition="has_updates">
+                condition="has_updates">
         </button>
         <button id="PropertiesButton" caption="Settings" keytip="us" className="uic_addin.Controls.PropertiesButton"
                 loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericProperties16.png"
@@ -59,35 +61,48 @@
         </button>
         <button id="Well_Missing_WellOperatingStatus" caption="Find wells without an operating status records" keytip="uw"
                 className="uic_addin.Controls.WellOperatingStatus" loadOnClick="true"
-                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="esri_mapping_mapPane">
           <tooltip heading="Check for no well operating status record">
             Well Operating Status<disabledText />
           </tooltip>
         </button>
         <button id="Well_Missing_Authorization" caption="Find wells without an authorization" keytip="uw"
                 className="uic_addin.Controls.Authorization" loadOnClick="true"
-                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="esri_mapping_mapPane">
           <tooltip heading="Check for no authorization record">
             Authorization<disabledText />
           </tooltip>
         </button>
         <button id="Well_Missing_AoR" caption="Find wells without an Area of Review" keytip="uw"
                 className="uic_addin.Controls.AreaOfReview" loadOnClick="true"
-                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="esri_mapping_mapPane">
           <tooltip heading="Check for no AOR record if AuthorizationTYpe is IP or AP">
             Area of Review<disabledText />
           </tooltip>
         </button>
-        <button id="AoRChecksPaneOpenButton" caption="Find AOR Issues" keytip="ua"
+        <button id="Authorization_Missing_Action" caption="Find Authorizations without an Authorization Action" keytip="ua"
+                className="uic_addin.Controls.AuthorizationAction" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="esri_mapping_mapPane">
+          <tooltip heading="Check for no AuthorizationAction record">
+            Authorization Action<disabledText />
+          </tooltip>
+        </button>
+        <button id="AoR_Missing_ArtPen" caption="Find AOR Issues" keytip="ua"
                 className="uic_addin.Controls.AoRButton" loadOnClick="true"
-                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="has_map_and_implementation">
           <tooltip heading="Find AOR Issues">
             AOR Issue Finder<disabledText />
           </tooltip>
         </button>
         <button id="CreateAoRButton" caption="Create AOR Polygon" keytip="ua"
                 className="uic_addin.Controls.AoRButton" loadOnClick="true"
-                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer32.png">
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer32.png"
+                condition="has_map_and_implementation">
           <tooltip heading="Find AOR Issues">
             AOR Issue Finder<disabledText />
           </tooltip>
@@ -114,6 +129,13 @@
           <button refID="Well_Missing_Authorization" />
           <button refID="Well_Missing_AoR" />
         </buttonPalette>
+        <buttonPalette id="Authorization_Tools" caption="Authorization Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
+          <button refID="Authorization_Missing_Action" />
+          <button refID="Well_Missing_AoR" />
+        </buttonPalette>
+        <buttonPalette id="AreaOfReaviw_Tools" caption="Area of Reaviw Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
+          <button refID="AoR_Missing_ArtPen" />
+        </buttonPalette>
       </palettes>
     </insertModule>
   </modules>
@@ -126,8 +148,17 @@
     </updateSheet>
   </propertySheets>
   <conditions>
+    <insertCondition id="has_implementation" caption="should this feature work yet?">
+      <state id="has_implemented"/>
+    </insertCondition>
     <insertCondition id="has_updates" caption="does the add-in have an update?">
       <state id="has_update" />
+    </insertCondition>
+    <insertCondition id="has_map_and_implementation" caption="shoudl this feature work yet?">
+      <and>
+        <state id="has_implemented" />
+        <state id="esri_mapping_mapPane" />
+      </and>
     </insertCondition>
   </conditions>
 </ArcGIS>

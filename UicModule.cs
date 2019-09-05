@@ -26,6 +26,7 @@ namespace uic_addin {
         private readonly IEnumerable<string> _addinKeys = new[] { "UICAddin.Evergreen.BetaChannel" };
         public readonly Dictionary<string, DockPane> DockPanes = new Dictionary<string, DockPane>(2);
         public readonly string HasUpdateState = "has_update";
+        public readonly string HasImplementationState = "has_implemented";
         public readonly Dictionary<string, Layer> Layers = new Dictionary<string, Layer>(1);
         private SubscriptionToken _token;
 
@@ -45,6 +46,8 @@ namespace uic_addin {
 
         protected override bool Initialize() {
             SetupLogging();
+
+            FrameworkApplication.State.Deactivate(HasImplementationState);
 
             QueuedTask.Run(async () => {
                 await CheckForLastest();
