@@ -18,7 +18,8 @@ namespace uic_addin.Services {
                                                             StringComparison.InvariantCultureIgnoreCase));
             };
 
-            var layers = map.GetLayersAsFlattenedList().Select(x => ((BasicFeatureLayer)x).GetTable());
+            var layers = map.GetLayersAsFlattenedList().Where(x => x.MapLayerType == ArcGIS.Core.CIM.MapLayerType.Operational)
+                                                       .Select(x => ((BasicFeatureLayer)x).GetTable());
             var layer = filter(layerName, layers);
 
             if (layer != null) {
