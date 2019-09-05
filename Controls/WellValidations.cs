@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -21,7 +20,22 @@ namespace uic_addin.Controls {
             if (table == null) {
                 Log.Warning("Could not find well");
 
-                throw new NullReferenceException("layer to query was not found");
+                ThreadService.RunOnUiThread(() => {
+                    var message = "The uicWell table could not be found. " +
+                                "Please add it to your map.";
+
+                    Log.Verbose("Showing notification: {message}", message);
+
+                    var selection = new Notification {
+                        Message = message,
+                        ImageUrl = "",
+                        Title = "UIC Add-in"
+                    };
+
+                    FrameworkApplication.AddNotification(selection);
+                });
+
+                return;
             }
 
             var filter = new QueryFilter {
@@ -49,6 +63,27 @@ namespace uic_addin.Controls {
             Log.Verbose("Found {count} wells", primaryKeys.Count);
 
             var operatingStatus = LayerService.FindLayer("uicWellOperatingStatus", MapView.Active.Map);
+
+            if (operatingStatus == null) {
+                Log.Warning("Could not find uicWellOperatingStatus!");
+
+                ThreadService.RunOnUiThread(() => {
+                    var message = "The uicWellOperatingStatus table could not be found. " +
+                                "Please add it to your map.";
+
+                    Log.Verbose("Showing notification: {message}", message);
+
+                    var selection = new Notification {
+                        Message = message,
+                        ImageUrl = "",
+                        Title = "UIC Add-in"
+                    };
+
+                    FrameworkApplication.AddNotification(selection);
+                });
+
+                return;
+            }
             var filter2 = new QueryFilter {
                 SubFields = "WELL_FK"
             };
@@ -106,6 +141,28 @@ namespace uic_addin.Controls {
             Log.Debug("Running Authorization Validation");
 
             var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
+
+            if (wells == null) {
+                Log.Warning("Could not find well");
+
+                ThreadService.RunOnUiThread(() => {
+                    var message = "The uicWell table could not be found. " +
+                                "Please add it to your map.";
+
+                    Log.Verbose("Showing notification: {message}", message);
+
+                    var selection = new Notification {
+                        Message = message,
+                        ImageUrl = "",
+                        Title = "UIC Add-in"
+                    };
+
+                    FrameworkApplication.AddNotification(selection);
+                });
+
+                return;
+            }
+
             var filter = new QueryFilter {
                 SubFields = "OBJECTID",
                 WhereClause = "Authorization_FK is null"
@@ -163,6 +220,28 @@ namespace uic_addin.Controls {
             Log.Debug("Running Area of Review Validation");
 
             var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
+
+            if (wells == null) {
+                Log.Warning("Could not find well");
+
+                ThreadService.RunOnUiThread(() => {
+                    var message = "The uicWell table could not be found. " +
+                                "Please add it to your map.";
+
+                    Log.Verbose("Showing notification: {message}", message);
+
+                    var selection = new Notification {
+                        Message = message,
+                        ImageUrl = "",
+                        Title = "UIC Add-in"
+                    };
+
+                    FrameworkApplication.AddNotification(selection);
+                });
+
+                return;
+            }
+
             var filter = new QueryFilter {
                 SubFields = "OBJECTID,AUTHORIZATION_FK",
                 WhereClause = "Authorization_FK is not null AND AOR_FK is null"
@@ -187,6 +266,28 @@ namespace uic_addin.Controls {
             }
 
             var authorization = LayerService.FindLayer("uicAuthorization", MapView.Active.Map);
+
+            if (authorization == null) {
+                Log.Warning("Could not find uicAuthorization!");
+
+                ThreadService.RunOnUiThread(() => {
+                    var message = "The uicAuthorization table could not be found. " +
+                                "Please add it to your map.";
+
+                    Log.Verbose("Showing notification: {message}", message);
+
+                    var selection = new Notification {
+                        Message = message,
+                        ImageUrl = "",
+                        Title = "UIC Add-in"
+                    };
+
+                    FrameworkApplication.AddNotification(selection);
+                });
+
+                return;
+            }
+
             filter = new QueryFilter {
                 SubFields = "GUID",
                 WhereClause = $"AuthorizationType IN ('IP', 'AP') AND GUID IN ({string.Join(",", authorizations.Keys.Select(x => $"'{x}'"))})"
