@@ -176,6 +176,7 @@
     </Compile>
     <Compile Include="Controls\FeedbackControlViewModel.cs" />
     <Compile Include="Controls\WellButton.cs" />
+    <Compile Include="Controls\WellValidations.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Models\EvergreenSettings.cs" />

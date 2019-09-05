@@ -22,8 +22,7 @@
       </tabs>
       <groups>
         <group id="UICValidationGroup" caption="Validation" keytip="uicvalidtion" appearsOnAddInTab="false">
-          <button refID="WellChecksPaneOpenButton" size="large" />
-          <button refID="AoRChecksPaneOpenButton" size="large" />
+          <toolPalette refID="Well_Tools" size="large" />
         </group>
         <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
           <button refID="NaicsFinderPaneOpenButton" size="large" />
@@ -61,11 +60,25 @@
             NAICS Code Finder<disabledText />
           </tooltip>
         </button>
-        <button id="WellChecksPaneOpenButton" caption="Find Well Issues" keytip="uw"
-                className="uic_addin.Controls.WellButton" loadOnClick="true"
+        <button id="Well_Missing_WellOperatingStatus" caption="Find wells without an operating status records" keytip="uw"
+                className="uic_addin.Controls.WellOperatingStatus" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
-          <tooltip heading="Find Well Issues">
-            Well Issue Finder<disabledText />
+          <tooltip heading="Check for no well operating status record">
+            Well Operating Status<disabledText />
+          </tooltip>
+        </button>
+        <button id="Well_Missing_Authorization" caption="Find wells without an authorization" keytip="uw"
+                className="uic_addin.Controls.Authorization" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+          <tooltip heading="Check for no authorization record">
+            Authorization<disabledText />
+          </tooltip>
+        </button>
+        <button id="Well_Missing_AoR" caption="Find wells without an Area of Review" keytip="uw"
+                className="uic_addin.Controls.AreaOfReview" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png">
+          <tooltip heading="Check for no AOR record if AuthorizationTYpe is IP or AP">
+            Area of Review<disabledText />
           </tooltip>
         </button>
         <button id="AoRChecksPaneOpenButton" caption="Find AOR Issues" keytip="ua"
@@ -83,7 +96,7 @@
           </tooltip>
         </button>
         <customControl isDropDown="true" id="FeedbackControl" caption="Provide Feedback" keytip="uf"
-                       className="uic_addin.Controls.FeedbackControlViewModel" loadOnClick="true"
+                className="uic_addin.Controls.FeedbackControlViewModel" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/Emailuser16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EmailUser32.png">
           <content className="uic_addin.Controls.FeedbackControlView" />
           <tooltip heading="Send Feedback">
@@ -98,6 +111,13 @@
           <content className="uic_addin.Views.NaicsFinderPaneView" />
         </pane>
       </panes>
+      <palettes>
+        <buttonPalette id="Well_Tools" caption="Well Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
+          <button refID="Well_Missing_WellOperatingStatus" />
+          <button refID="Well_Missing_Authorization" />
+          <button refID="Well_Missing_AoR" />
+        </buttonPalette>
+      </palettes>
     </insertModule>
   </modules>
   <propertySheets>
