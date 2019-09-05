@@ -1,3 +1,13 @@
+# [2.0.0-beta.3](https://github.com/agrc/uic-addin/compare/1.0.0-beta.1...2.0.0-beta.3) (2019-09-05)
+
+
+### Bug Fixes
+
+* **well-validation:** only worry about operational layers ([3eb4472](https://github.com/agrc/uic-addin/commit/3eb4472))
+* arcgis dlls should be copy local false ([da4942a](https://github.com/agrc/uic-addin/commit/da4942a))
+
+
+
 # [2.0.0-beta.2](https://github.com/agrc/uic-addin/compare/2.0.0-beta.1...2.0.0-beta.2) (2019-09-05)
 
 
