@@ -175,7 +175,8 @@
       <DependentUpon>FeedbackControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FeedbackControlViewModel.cs" />
-    <Compile Include="Controls\WellButton.cs" />
+    <Compile Include="Controls\PropertiesButton.cs" />
+    <Compile Include="Controls\UpdateButton.cs" />
     <Compile Include="Controls\WellValidations.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -227,7 +228,9 @@
     <AddInContent Include="DarkImages\GenericButtonGreen32.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="app.config" />
+    <None Include="CHANGELOG.md" />
     <None Include="LICENSE" />
     <Content Include="NaicsDocuments\2017_NAICS_Index_File.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -235,6 +238,8 @@
     <Content Include="NaicsDocuments\2_6_digit_2017_Codes.xlsx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="omnisharp.json" />
+    <None Include="package.json" />
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
