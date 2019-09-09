@@ -1,3 +1,18 @@
+# [2.0.0-beta.4](https://github.com/agrc/uic-addin/compare/2.0.0-beta.3...2.0.0-beta.4) (2019-09-09)
+
+
+### Bug Fixes
+
+* spelling ([f6a6f7e](https://github.com/agrc/uic-addin/commit/f6a6f7e))
+
+
+### Features
+
+* create authorization validations ([a5df6e9](https://github.com/agrc/uic-addin/commit/a5df6e9))
+* deactivate buttons when there is no map or no implementation ([eebd4e8](https://github.com/agrc/uic-addin/commit/eebd4e8))
+
+
+
 # [2.0.0-beta.3](https://github.com/agrc/uic-addin/compare/1.0.0-beta.1...2.0.0-beta.3) (2019-09-05)
 
 
