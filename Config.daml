@@ -151,10 +151,10 @@
     <insertCondition id="has_implementation" caption="should this feature work yet?">
       <state id="has_implemented"/>
     </insertCondition>
-    <insertCondition id="has_updates" caption="does the add-in have an update?">
+    <insertCondition id="has_updates" caption="is there an update available?">
       <state id="has_update" />
     </insertCondition>
-    <insertCondition id="has_map_and_implementation" caption="shoudl this feature work yet?">
+    <insertCondition id="has_map_and_implementation" caption="should this feature work yet?">
       <and>
         <state id="has_implemented" />
         <state id="esri_mapping_mapPane" />
