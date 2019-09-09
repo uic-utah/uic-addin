@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ArcGIS.Core.Data;
+using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Mapping;
@@ -137,16 +138,20 @@ namespace uic_addin.Controls {
     }
 
     internal class Authorization : Button {
-        protected override void OnClick() => ThreadService.RunOnBackground(() => {
+        protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Authorization Validation");
 
-            var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
+            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
+                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
+                    .GetTable().GetName().SplitAndTakeLast('.'),
+                    "uicWell".SplitAndTakeLast('.'),
+                    StringComparison.InvariantCultureIgnoreCase));
 
-            if (wells == null) {
+            if (layer == null) {
                 Log.Warning("Could not find well");
 
                 ThreadService.RunOnUiThread(() => {
-                    var message = "The uicWell table could not be found. " +
+                    var message = "🔍 The uicWell table could not be found. " +
                                 "Please add it to your map.";
 
                     Log.Verbose("Showing notification: {message}", message);
@@ -163,42 +168,44 @@ namespace uic_addin.Controls {
                 return;
             }
 
-            var filter = new QueryFilter {
-                SubFields = "OBJECTID",
-                WhereClause = "Authorization_FK is null"
-            };
-
-            Log.Verbose("Getting wells with no authorization record");
-
-            var ids = new List<long>();
-            using (var cursor = wells.Search(filter)) {
-                while (cursor.MoveNext()) {
-                    var oid = Convert.ToInt64(cursor.Current["OBJECTID"]);
-
-                    ids.Add(oid);
-                }
-            }
-
-            Log.Verbose("Found {count} wells without an Authorization", ids.Count);
-
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                    .GetTable().GetName().SplitAndTakeLast('.'),
-                    "uicWell".SplitAndTakeLast('.'),
-                    StringComparison.InvariantCultureIgnoreCase));
-
             Log.Verbose("Selecting Wells");
 
-            MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
-                { layer, ids }
-            });
+            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK is null");
+            var results = await Geoprocessing.ExecuteToolAsync(
+                "management.SelectLayerByAttribute",
+                parameters,
+                null,
+                null,
+                GPExecuteToolFlags.Default
+            );
+
+            var problems = Convert.ToInt32(results.Values[1]);
+
+            if (problems == 0) {
+                ThreadService.RunOnUiThread(() => {
+                    var message = "🚀 Every Well has an Authorization record 🚀";
+
+                    Log.Verbose("Showing notification: {message}", message);
+
+                    var selection = new Notification {
+                        Message = message,
+                        ImageUrl = "",
+                        Title = "UIC Add-in"
+                    };
+
+                    FrameworkApplication.AddNotification(selection);
+                });
+
+                return;
+            }
 
             Log.Verbose("Zooming to seleted");
+
             MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
 
             ThreadService.RunOnUiThread(() => {
-                var message = $"There are {ids.Count} wells with no Authorization. " +
-                               "They have been selected.";
+                var message = $"There are {problems} wells with no Authorization. " +
+                               "They problem wells have been selected.";
 
                 Log.Verbose("Showing notification: {message}", message);
 
