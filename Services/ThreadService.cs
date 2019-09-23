@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using Serilog;
 
 namespace uic_addin.Services {
     public class ThreadService {
@@ -16,7 +17,8 @@ namespace uic_addin.Services {
                 } else {
                     Application.Current.Dispatcher.Invoke(action);
                 }
-            } catch (Exception) {
+            } catch (Exception ex) {
+                Log.Error(ex, "error running on ui thread");
             }
         }
 
