@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArcGIS.Core.Data;
@@ -201,7 +201,7 @@ namespace uic_addin.Controls {
 
             Log.Verbose("Zooming to seleted");
 
-            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
+            await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
 
             ThreadService.RunOnUiThread(() => {
                 var message = $"There are {problems} wells with no Authorization. " +
