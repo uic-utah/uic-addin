@@ -5,6 +5,7 @@ using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using Serilog;
 using uic_addin.Extensions;
@@ -141,6 +142,9 @@ namespace uic_addin.Controls {
         protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Authorization Validation");
 
+            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            progressDialog.Show();
+
             var layer = MapView.Active.Map.GetLayersAsFlattenedList()
                 .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
                     .GetTable().GetName().SplitAndTakeLast('.'),
@@ -174,6 +178,7 @@ namespace uic_addin.Controls {
 
                 NotificationService.Notify("The tool crashed");
 
+                progressDialog.Hide();
 
                 return;
             }
@@ -190,6 +195,7 @@ namespace uic_addin.Controls {
             Log.Verbose("Zooming to seleted");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
+            progressDialog.Hide();
 
             Log.Debug("Finished Authorization Validation");
         });
