@@ -150,73 +150,46 @@ namespace uic_addin.Controls {
             if (layer == null) {
                 Log.Warning("Could not find well");
 
-                ThreadService.RunOnUiThread(() => {
-                    var message = "🔍 The uicWell table could not be found. " +
-                                "Please add it to your map.";
-
-                    Log.Verbose("Showing notification: {message}", message);
-
-                    var selection = new Notification {
-                        Message = message,
-                        ImageUrl = "",
-                        Title = "UIC Add-in"
-                    };
-
-                    FrameworkApplication.AddNotification(selection);
-                });
+                NotificationService.Notify("🔍 The uicWell table could not be found. " +
+                                           "Please add it to your map.");
 
                 return;
             }
 
             Log.Verbose("Selecting Wells");
 
-            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK is null");
-            var results = await Geoprocessing.ExecuteToolAsync(
-                "management.SelectLayerByAttribute",
-                parameters,
-                null,
-                null,
-                GPExecuteToolFlags.Default
-            );
+            IGPResult results;
+            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK IS NULL");
+            var progSrc = new CancelableProgressorSource(progressDialog);
+   
+            try {
+                results = await Geoprocessing.ExecuteToolAsync(
+                    "management.SelectLayerByAttribute",
+                    parameters,
+                    null,
+                    new CancelableProgressorSource(progressDialog).Progressor,
+                    GPExecuteToolFlags.Default);
+            } catch (Exception ex) {
+                Log.Error(ex, "Select layer by attribute {@parameters}", parameters);
 
-            var problems = Convert.ToInt32(results.Values[1]);
+                NotificationService.Notify("The tool crashed");
 
-            if (problems == 0) {
-                ThreadService.RunOnUiThread(() => {
-                    var message = "🚀 Every Well has an Authorization record 🚀";
-
-                    Log.Verbose("Showing notification: {message}", message);
-
-                    var selection = new Notification {
-                        Message = message,
-                        ImageUrl = "",
-                        Title = "UIC Add-in"
-                    };
-
-                    FrameworkApplication.AddNotification(selection);
-                });
 
                 return;
             }
+            
+            var problems = Convert.ToInt32(results.Values[1]);
+
+            if (problems == 0) {
+                NotificationService.Notify("🚀 Every Well has an Authorization record 🚀");
+            }
+
+            NotificationService.Notify($"There are {problems} wells with no Authorization. " +
+                                       "They problem wells have been selected.");
 
             Log.Verbose("Zooming to seleted");
 
-            await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
-
-            ThreadService.RunOnUiThread(() => {
-                var message = $"There are {problems} wells with no Authorization. " +
-                               "They problem wells have been selected.";
-
-                Log.Verbose("Showing notification: {message}", message);
-
-                var selection = new Notification {
-                    Message = message,
-                    ImageUrl = "",
-                    Title = "UIC Add-in"
-                };
-
-                FrameworkApplication.AddNotification(selection);
-            });
+            await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
 
             Log.Debug("Finished Authorization Validation");
         });

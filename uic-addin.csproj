@@ -199,6 +199,7 @@
     <Compile Include="Models\EvergreenSettings.cs" />
     <Compile Include="Models\NaicsModel.cs" />
     <Compile Include="Services\LayerService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Services\QueryService.cs" />
     <Compile Include="Services\ThreadService.cs" />
     <Compile Include="ViewModels\PropertyChangedWithValidation.cs" />
