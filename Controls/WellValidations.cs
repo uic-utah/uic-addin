@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Core.Geoprocessing;
-using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
@@ -130,7 +129,7 @@ namespace uic_addin.Controls {
             IGPResult results;
             var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK IS NULL");
             var progSrc = new CancelableProgressorSource(progressDialog);
-   
+
             try {
                 results = await Geoprocessing.ExecuteToolAsync(
                     "management.SelectLayerByAttribute",
@@ -147,7 +146,7 @@ namespace uic_addin.Controls {
 
                 return;
             }
-            
+
             var problems = Convert.ToInt32(results.Values[1]);
 
             if (problems == 0) {
