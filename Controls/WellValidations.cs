@@ -22,20 +22,8 @@ namespace uic_addin.Controls {
             if (table == null) {
                 Log.Warning("Could not find well");
 
-                ThreadService.RunOnUiThread(() => {
-                    var message = "The uicWell table could not be found. " +
-                                "Please add it to your map.";
-
-                    Log.Verbose("Showing notification: {message}", message);
-
-                    var selection = new Notification {
-                        Message = message,
-                        ImageUrl = "",
-                        Title = "UIC Add-in"
-                    };
-
-                    FrameworkApplication.AddNotification(selection);
-                });
+                NotificationService.Notify("The uicWell table could not be found. " +
+                            "Please add it to your map.");
 
                 return;
             }
@@ -69,23 +57,12 @@ namespace uic_addin.Controls {
             if (operatingStatus == null) {
                 Log.Warning("Could not find uicWellOperatingStatus!");
 
-                ThreadService.RunOnUiThread(() => {
-                    var message = "The uicWellOperatingStatus table could not be found. " +
-                                "Please add it to your map.";
-
-                    Log.Verbose("Showing notification: {message}", message);
-
-                    var selection = new Notification {
-                        Message = message,
-                        ImageUrl = "",
-                        Title = "UIC Add-in"
-                    };
-
-                    FrameworkApplication.AddNotification(selection);
-                });
+                NotificationService.Notify("The uicWellOperatingStatus table could not be found. " +
+                            "Please add it to your map.");
 
                 return;
             }
+
             var filter2 = new QueryFilter {
                 SubFields = "WELL_FK"
             };
@@ -119,20 +96,8 @@ namespace uic_addin.Controls {
             Log.Verbose("Zooming to seleted");
             MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
 
-            ThreadService.RunOnUiThread(() => {
-                var message = $"There are {primaryKeys.Count} wells with no Operating Status record. " +
-                               "They have been selected.";
-
-                Log.Verbose("Showing notification: {message}", message);
-
-                var selection = new Notification {
-                    Message = message,
-                    ImageUrl = "",
-                    Title = "UIC Add-in"
-                };
-
-                FrameworkApplication.AddNotification(selection);
-            });
+            NotificationService.Notify($"There are {primaryKeys.Count} wells with no Operating Status record. " +
+                            "They have been selected.");
 
             Log.Debug("Finished Well Operating Status Validation");
         });
@@ -210,20 +175,8 @@ namespace uic_addin.Controls {
             if (wells == null) {
                 Log.Warning("Could not find well");
 
-                ThreadService.RunOnUiThread(() => {
-                    var message = "The uicWell table could not be found. " +
-                                "Please add it to your map.";
-
-                    Log.Verbose("Showing notification: {message}", message);
-
-                    var selection = new Notification {
-                        Message = message,
-                        ImageUrl = "",
-                        Title = "UIC Add-in"
-                    };
-
-                    FrameworkApplication.AddNotification(selection);
-                });
+                NotificationService.Notify("The uicWell table could not be found. " +
+                            "Please add it to your map.");
 
                 return;
             }
@@ -256,20 +209,8 @@ namespace uic_addin.Controls {
             if (authorization == null) {
                 Log.Warning("Could not find uicAuthorization!");
 
-                ThreadService.RunOnUiThread(() => {
-                    var message = "The uicAuthorization table could not be found. " +
-                                "Please add it to your map.";
-
-                    Log.Verbose("Showing notification: {message}", message);
-
-                    var selection = new Notification {
-                        Message = message,
-                        ImageUrl = "",
-                        Title = "UIC Add-in"
-                    };
-
-                    FrameworkApplication.AddNotification(selection);
-                });
+                NotificationService.Notify("The uicAuthorization table could not be found. " +
+                            "Please add it to your map.");
 
                 return;
             }
@@ -308,20 +249,8 @@ namespace uic_addin.Controls {
             Log.Verbose("Zooming to seleted");
             MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
 
-            ThreadService.RunOnUiThread(() => {
-                var message = $"There are {noAors.Count} wells with an AuthorizationType of IP or AP that do not " +
-                               "have an Area of review polygon. They have been selected.";
-
-                Log.Verbose("Showing notification: {message}", message);
-
-                var selection = new Notification {
-                    Message = message,
-                    ImageUrl = "",
-                    Title = "UIC Add-in"
-                };
-
-                FrameworkApplication.AddNotification(selection);
-            });
+            NotificationService.Notify($"There are {noAors.Count} wells with an AuthorizationType of IP or AP that do not " +
+                            "have an Area of review polygon. They have been selected.");
 
             Log.Debug("Finished Authorization Validation");
         });
