@@ -20,10 +20,13 @@ namespace uic_addin.Controls {
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
-            var table = LayerService.FindLayer("uicWell", MapView.Active.Map);
-            progressor.Value = 10;
+            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
+                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
+                    .GetTable().GetName().SplitAndTakeLast('.'),
+                    "uicWell".SplitAndTakeLast('.'),
+                    StringComparison.InvariantCultureIgnoreCase));
 
-            if (table == null) {
+            if (layer == null) {
                 Log.Warning("Could not find well");
 
                 NotificationService.Notify("The uicWell table could not be found. " +
@@ -34,87 +37,42 @@ namespace uic_addin.Controls {
                 return;
             }
 
-            var filter = new QueryFilter {
-                SubFields = "OBJECTID,GUID"
-            };
+            Log.Verbose("Selecting wells");
 
-            var primaryKeys = new Dictionary<string, long>();
+            IGPResult results;
+            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "not exists (select 1 from UIC.DBO.UICWellOperatingStatus b where b.WELL_FK = UIC.DBO.UICWell.GUID)");
+            var progSrc = new CancelableProgressorSource(progressDialog);
 
-            Log.Verbose("Getting well primary keys");
+            try {
+                results = await Geoprocessing.ExecuteToolAsync(
+                    "management.SelectLayerByAttribute",
+                    parameters,
+                    null,
+                    new CancelableProgressorSource(progressDialog).Progressor,
+                    GPExecuteToolFlags.Default);
+            } catch (Exception ex) {
+                Log.Error(ex, "Select layer by attribute {@parameters}", parameters);
 
-            using (var cursor = table.Search(filter)) {
-                while (cursor.MoveNext()) {
-                    var guid = Convert.ToString(cursor.Current["GUID"]);
-
-                    if (string.IsNullOrEmpty(guid)) {
-                        continue;
-                    }
-
-                    var oid = Convert.ToInt64(cursor.Current["OBJECTID"]);
-
-                    primaryKeys.Add(guid, oid);
-                }
-            }
-
-            progressor.Value = 50;
-
-            Log.Verbose("Found {count} wells", primaryKeys.Count);
-
-            var operatingStatus = LayerService.FindLayer("uicWellOperatingStatus", MapView.Active.Map);
-
-            if (operatingStatus == null) {
-                Log.Warning("Could not find uicWellOperatingStatus!");
-
-                NotificationService.Notify("The uicWellOperatingStatus table could not be found. " +
-                            "Please add it to your map.");
+                NotificationService.Notify("The tool crashed");
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            var filter2 = new QueryFilter {
-                SubFields = "WELL_FK"
-            };
+            var problems = Convert.ToInt32(results.Values[1]);
 
-            Log.Verbose("Getting well operating status fk's");
-
-            using (var cursor = operatingStatus.Search(filter2)) {
-                while (cursor.MoveNext()) {
-                    var parent = cursor.Current["WELL_FK"].ToString();
-
-                    if (primaryKeys.ContainsKey(parent)) {
-                        primaryKeys.Remove(parent);
-                    }
-                }
+            if (problems == 0) {
+                NotificationService.Notify("🚀 Every Well has an Operating Status record 🚀");
             }
 
-            progressor.Value = 75;
-
-            Log.Verbose("Found {count} wells without operating status", primaryKeys.Count);
-
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                    .GetTable().GetName().SplitAndTakeLast('.'),
-                    "uicWell".SplitAndTakeLast('.'),
-                    StringComparison.InvariantCultureIgnoreCase));
-
-            Log.Verbose("Selecting Wells");
-
-            MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
-                { layer, primaryKeys.Select(x => x.Value).ToList() }
-            });
-
-            progressor.Value = 100;
-
-            progressDialog.Hide();
+            NotificationService.Notify($"There are {problems} wells with no Operating Status record. " +
+                                       "They problem wells have been selected.");
 
             Log.Verbose("Zooming to seleted");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
-
-            NotificationService.Notify($"There are {primaryKeys.Count} wells with no Operating Status record. " +
-                            "They have been selected.");
+            progressDialog.Hide();
 
             Log.Debug("Finished Well Operating Status Validation");
         });
