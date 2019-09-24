@@ -13,7 +13,7 @@ using uic_addin.Services;
 
 namespace uic_addin.Controls {
     internal class WellOperatingStatus : Button {
-        protected override void OnClick() => ThreadService.RunOnBackground(() => {
+        protected override void OnClick() => ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Well Operating Status Validation");
 
             var table = LayerService.FindLayer("uicWell", MapView.Active.Map);
@@ -93,7 +93,8 @@ namespace uic_addin.Controls {
             });
 
             Log.Verbose("Zooming to seleted");
-            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
+
+            await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
 
             NotificationService.Notify($"There are {primaryKeys.Count} wells with no Operating Status record. " +
                             "They have been selected.");
@@ -246,7 +247,7 @@ namespace uic_addin.Controls {
                 });
 
             Log.Verbose("Zooming to seleted");
-            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
+            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
 
             NotificationService.Notify($"There are {noAors.Count} wells with an AuthorizationType of IP or AP that do not " +
                             "have an Area of review polygon. They have been selected.");

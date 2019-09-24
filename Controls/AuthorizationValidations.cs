@@ -72,7 +72,7 @@ namespace uic_addin.Controls {
 
             Log.Verbose("Zooming to seleted");
 
-            await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(3));
+            await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
             progressDialog.Hide();
 
             Log.Debug("Finished Authorization Validation");
