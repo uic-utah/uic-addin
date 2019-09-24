@@ -1,14 +1,9 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Core.Data;
 using uic_addin.Services;
 using Serilog;
 using ArcGIS.Desktop.Mapping;
-using ArcGIS.Desktop.Framework;
 using uic_addin.Extensions;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
@@ -42,14 +37,14 @@ namespace uic_addin.Controls {
             var progSrc = new CancelableProgressorSource(progressDialog);
 
             try {
-               result = await Geoprocessing.ExecuteToolAsync(
-                    "management.SelectLayerByAttribute",
-                    parameters,
-                    null,
-                    new CancelableProgressorSource(progressDialog).Progressor,
-                    GPExecuteToolFlags.Default
-               );
-            } catch(Exception ex) {
+                result = await Geoprocessing.ExecuteToolAsync(
+                     "management.SelectLayerByAttribute",
+                     parameters,
+                     null,
+                     new CancelableProgressorSource(progressDialog).Progressor,
+                     GPExecuteToolFlags.Default
+                );
+            } catch (Exception ex) {
                 Log.Error(ex, "Select layer by attribute {@parameters}", parameters);
 
                 NotificationService.Notify("The tool crashed");
@@ -70,7 +65,7 @@ namespace uic_addin.Controls {
             NotificationService.Notify($"There are {problems} Authorizations with no AuthorizationAction" +
                    "They problem authorizations have been selected.");
 
-            Log.Verbose("Zooming to seleted");
+            Log.Verbose("Zooming to selected");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
             progressDialog.Hide();

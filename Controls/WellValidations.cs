@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using ArcGIS.Core.Data;
@@ -69,7 +69,7 @@ namespace uic_addin.Controls {
             NotificationService.Notify($"There are {problems} wells with no Operating Status record. " +
                                        "They problem wells have been selected.");
 
-            Log.Verbose("Zooming to seleted");
+            Log.Verbose("Zooming to selected");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
             progressDialog.Hide();
@@ -132,7 +132,7 @@ namespace uic_addin.Controls {
             NotificationService.Notify($"There are {problems} wells with no Authorization. " +
                                        "They problem wells have been selected.");
 
-            Log.Verbose("Zooming to seleted");
+            Log.Verbose("Zooming to selected");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
             progressDialog.Hide();
@@ -211,19 +211,19 @@ namespace uic_addin.Controls {
 
             Log.Verbose("Getting well authorizations with type IP or AP");
 
-            var noAors = new HashSet<long>();
+            var noAreaOfReview = new HashSet<long>();
 
             using (var cursor = authorization.Search(filter)) {
                 while (cursor.MoveNext()) {
                     var guid = Convert.ToString(cursor.Current["GUID"]);
 
-                    authorizations[guid].ForEach(x => noAors.Add(x));
+                    authorizations[guid].ForEach(x => noAreaOfReview.Add(x));
                 }
             }
 
             progressor.Value = 90;
 
-            Log.Verbose("Found {count} wells with no AOR with an authorization of IP or AP", noAors.Count);
+            Log.Verbose("Found {count} wells with no AOR with an authorization of IP or AP", noAreaOfReview.Count);
 
             var layer = MapView.Active.Map.GetLayersAsFlattenedList()
                 .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
@@ -236,17 +236,17 @@ namespace uic_addin.Controls {
             progressor.Value = 95;
 
             MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
-                { layer, noAors.ToList() }
+                { layer, noAreaOfReview.ToList() }
             });
 
             progressor.Value = 100;
 
             progressDialog.Hide();
 
-            Log.Verbose("Zooming to seleted");
+            Log.Verbose("Zooming to selected");
             MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
 
-            NotificationService.Notify($"There are {noAors.Count} wells with an AuthorizationType of IP or AP that do not " +
+            NotificationService.Notify($"There are {noAreaOfReview.Count} wells with an AuthorizationType of IP or AP that do not " +
                             "have an Area of review polygon. They have been selected.");
 
             Log.Debug("Finished Authorization Validation");
