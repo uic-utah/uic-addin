@@ -16,13 +16,20 @@ namespace uic_addin.Controls {
         protected override void OnClick() => ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Well Operating Status Validation");
 
+            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            var progressor = new CancelableProgressorSource(progressDialog).Progressor;
+            progressDialog.Show();
+
             var table = LayerService.FindLayer("uicWell", MapView.Active.Map);
+            progressor.Value = 10;
 
             if (table == null) {
                 Log.Warning("Could not find well");
 
                 NotificationService.Notify("The uicWell table could not be found. " +
                             "Please add it to your map.");
+
+                progressDialog.Hide();
 
                 return;
             }
@@ -49,6 +56,8 @@ namespace uic_addin.Controls {
                 }
             }
 
+            progressor.Value = 50;
+
             Log.Verbose("Found {count} wells", primaryKeys.Count);
 
             var operatingStatus = LayerService.FindLayer("uicWellOperatingStatus", MapView.Active.Map);
@@ -58,6 +67,8 @@ namespace uic_addin.Controls {
 
                 NotificationService.Notify("The uicWellOperatingStatus table could not be found. " +
                             "Please add it to your map.");
+
+                progressDialog.Hide();
 
                 return;
             }
@@ -78,6 +89,8 @@ namespace uic_addin.Controls {
                 }
             }
 
+            progressor.Value = 75;
+
             Log.Verbose("Found {count} wells without operating status", primaryKeys.Count);
 
             var layer = MapView.Active.Map.GetLayersAsFlattenedList()
@@ -91,6 +104,10 @@ namespace uic_addin.Controls {
             MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
                 { layer, primaryKeys.Select(x => x.Value).ToList() }
             });
+
+            progressor.Value = 100;
+
+            progressDialog.Hide();
 
             Log.Verbose("Zooming to seleted");
 
