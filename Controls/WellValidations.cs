@@ -143,15 +143,23 @@ namespace uic_addin.Controls {
 
     internal class AreaOfReview : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(() => {
+            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            var progressor = new CancelableProgressorSource(progressDialog).Progressor;
+            progressDialog.Show();
+
             Log.Debug("Running Area of Review Validation");
 
             var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
+
+            progressor.Value = 10;
 
             if (wells == null) {
                 Log.Warning("Could not find well");
 
                 NotificationService.Notify("The uicWell table could not be found. " +
                             "Please add it to your map.");
+
+                progressDialog.Hide();
 
                 return;
             }
@@ -179,13 +187,19 @@ namespace uic_addin.Controls {
                 }
             }
 
+            progressor.Value = 40;
+
             var authorization = LayerService.FindLayer("uicAuthorization", MapView.Active.Map);
+
+            progressor.Value = 50;
 
             if (authorization == null) {
                 Log.Warning("Could not find uicAuthorization!");
 
                 NotificationService.Notify("The uicAuthorization table could not be found. " +
                             "Please add it to your map.");
+
+                progressDialog.Hide();
 
                 return;
             }
@@ -207,6 +221,8 @@ namespace uic_addin.Controls {
                 }
             }
 
+            progressor.Value = 90;
+
             Log.Verbose("Found {count} wells with no AOR with an authorization of IP or AP", noAors.Count);
 
             var layer = MapView.Active.Map.GetLayersAsFlattenedList()
@@ -217,9 +233,15 @@ namespace uic_addin.Controls {
 
             Log.Verbose("Selecting Wells");
 
+            progressor.Value = 95;
+
             MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
-                    { layer, noAors.ToList() }
-                });
+                { layer, noAors.ToList() }
+            });
+
+            progressor.Value = 100;
+
+            progressDialog.Hide();
 
             Log.Verbose("Zooming to seleted");
             MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
