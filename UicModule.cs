@@ -169,7 +169,7 @@ namespace uic_addin {
                 return;
             }
 
-            // Layers[FacilityModel.TableName] = LayerService.FindLayer(FacilityModel.TableName, activeView.Map)
+            // Layers[FacilityModel.TableName] = LayerService.GetTable(FacilityModel.TableName, activeView.Map)
             //                                    as FeatureLayer;
         }
 

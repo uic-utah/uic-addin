@@ -9,23 +9,69 @@ using uic_addin.Extensions;
 
 namespace uic_addin.Services {
     public static class LayerService {
-        public static Table FindLayer(string layerName, Map map) {
-            Log.Verbose("finding feature layer {layer}", layerName);
+        private static Table filter(string name, IEnumerable<Table> l) {
+            name = name.SplitAndTakeLast('.');
+            return l.FirstOrDefault(table => {
+                var tableName = table.GetName().SplitAndTakeLast('.');
+                if (string.Equals(tableName, name, StringComparison.InvariantCultureIgnoreCase)) {
+                    return true;
+                } else {
+                    table.Dispose();
 
-            Table filter(string name, IEnumerable<Table> l) {
-                return l.FirstOrDefault(x => string.Equals(x.GetName()
-                                                            .SplitAndTakeLast('.'), name.SplitAndTakeLast('.'),
-                                                            StringComparison.InvariantCultureIgnoreCase));
-            };
+                    return false;
+                }
+            });
+        }
 
-            var layers = map.GetLayersAsFlattenedList().Where(x => x.MapLayerType == ArcGIS.Core.CIM.MapLayerType.Operational)
-                                                       .Select(x => ((BasicFeatureLayer)x).GetTable());
-            var layer = filter(layerName, layers);
+        public static Layer GetLayer(string name, Map map) {
+            Log.Verbose("finding feature layer {layer}", name);
+
+            name = name.SplitAndTakeLast('.');
+
+            var match = map.GetLayersAsFlattenedList().FirstOrDefault(layer => {
+                using (var table = ((BasicFeatureLayer)layer).GetTable()) {
+                    var currentTableName = table.GetName().SplitAndTakeLast('.');
+
+                    Log.Verbose("checking {input} vs {current}", name, currentTableName);
+
+                    if (string.Equals(currentTableName, name, StringComparison.InvariantCultureIgnoreCase)) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+
+            return match;
+        }
+
+        public static StandaloneTable GetStandaloneTable(string name, Map map) {
+            Log.Verbose("finding stand alone table {layer}", name);
+
+            name = name.SplitAndTakeLast('.');
+
+            var match = map.StandaloneTables.FirstOrDefault(standAloneTable => {
+                using (var table = standAloneTable.GetTable()) {
+                    var currentTableName = table.GetName().SplitAndTakeLast('.');
+
+                    Log.Verbose("checking {input} vs {current}", name, currentTableName);
+
+                    if (string.Equals(currentTableName, name, StringComparison.InvariantCultureIgnoreCase)) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            });
+
+            return match;
+        }
+
+        public static Table GetTableFromLayersOrTables(string layerName, Map map) {
+            var layer = GetLayer(layerName, map);
 
             if (layer != null) {
-                Log.Verbose("found {layer}", layer.GetName());
-
-                return layer;
+                return ((BasicFeatureLayer)layer).GetTable();
             }
 
             Log.Verbose("missed feature classes checking tables");

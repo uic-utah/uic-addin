@@ -7,7 +7,6 @@ using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using Serilog;
-using uic_addin.Extensions;
 using uic_addin.Services;
 
 namespace uic_addin.Controls {
@@ -15,31 +14,25 @@ namespace uic_addin.Controls {
         protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running area of review missing authorization validation");
 
-            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             progressDialog.Show();
 
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                .GetTable().GetName().SplitAndTakeLast('.'),
-                "UICAreaOfReview".SplitAndTakeLast('.'),
-                StringComparison.InvariantCultureIgnoreCase));
+            var layerName = "UICAreaOfReview";
+            var layer = LayerService.GetLayer(layerName, MapView.Active.Map);
 
             if (layer == null) {
-                Log.Warning("Could not find UICAreaOfReview!");
-
-                NotificationService.Notify("🔍 The UICAreaOfReview table could not be found. " +
-                                "Please add it to your map.");
+                NotificationService.NotifyOfMissingLayer(layerName);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            Log.Verbose("Selecting UICAreaOfReview");
-
             IGPResult result = null;
             var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK IS NULL");
             var progSrc = new CancelableProgressorSource(progressDialog);
+
+            Log.Verbose("management.SelectLayerByAttribute on {layer} with {@params}", layerName, parameters);
 
             try {
                 result = await Geoprocessing.ExecuteToolAsync(
@@ -50,9 +43,15 @@ namespace uic_addin.Controls {
                      GPExecuteToolFlags.Default
                 );
             } catch (Exception ex) {
-                Log.Error(ex, "Select layer by attribute {@parameters}", parameters);
+                NotificationService.NotifyOfGpCrash(ex, parameters);
 
-                NotificationService.Notify("The tool crashed");
+                progressDialog.Hide();
+
+                return;
+            }
+
+            if (result.IsFailed || string.IsNullOrEmpty(result?.ReturnValue)) {
+                NotificationService.NotifyOfGpFailure(result, parameters);
 
                 progressDialog.Hide();
 
@@ -62,18 +61,20 @@ namespace uic_addin.Controls {
             var problems = Convert.ToInt32(result?.Values[1]);
 
             if (problems == 0) {
-                NotificationService.Notify("🚀 Every Area Of Review has an Authorization record 🚀");
+                NotificationService.NotifyOfValidationSuccess();
+
+                progressDialog.Hide();
 
                 return;
             }
 
-            NotificationService.Notify($"There are {problems} Area of Reviews with no Authorization" +
-                   "They problem area of review polygons have been selected.");
+            progressDialog.Hide();
+
+            NotificationService.NotifyOfValidationFailure(problems);
 
             Log.Verbose("Zooming to selected");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
-            progressDialog.Hide();
 
             Log.Debug("Finished aor authorization Validation");
         });
@@ -92,18 +93,16 @@ namespace uic_addin.Controls {
 
             Log.Debug("Running area of review missing artificial penetration validation");
 
-            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
-            using (var table = LayerService.FindLayer("UICAreaOfReview", MapView.Active.Map)) {
+            var tableName = "UICAreaOfReview";
+            using (var table = LayerService.GetTableFromLayersOrTables(tableName, MapView.Active.Map)) {
                 progressor.Value = 10;
 
-                if (table == null) { // || artPenLayer == null) {
-                    Log.Warning("Could not find layer!");
-
-                    NotificationService.Notify("🔍 The UICAreaOfReview or UICArtPen layers could not be found. " +
-                                    "Please add them to your map.");
+                if (table == null) {
+                    NotificationService.NotifyOfMissingLayer(tableName);
 
                     progressDialog.Hide();
 
@@ -115,16 +114,19 @@ namespace uic_addin.Controls {
                     WhereClause = "NoArtPenDate IS NULL"
                 };
 
-                Log.Verbose("Finding area of review records with no art pen date");
+                Log.Verbose("searching for area of review records with no art pen date");
 
                 var problems = new List<long>();
                 using (var gdb = table.GetDatastore() as Geodatabase) {
                     if (gdb == null) {
-                        Log.Warning("Could not get geodatabase object!");
+                        Log.Warning("Could not get geodatabase object");
 
                         progressDialog.Hide();
                     }
 
+                    Log.Verbose("Got datastore as a geodatabase");
+
+                    Log.Verbose("Opening relationship class and selecting {table} records", tableName);
                     using (var relationshipClass = gdb.OpenDataset<RelationshipClass>("UICAreaOfReview_UICArtPen"))
                     using (var selection = table.Select(filter, SelectionType.ObjectID, SelectionOption.Normal)) {
                         progressor.Value = 40;
@@ -132,16 +134,23 @@ namespace uic_addin.Controls {
                         var ids = selection.GetObjectIDs().ToList();
 
                         if (ids.Count == 0) {
-                            NotificationService.Notify("There are no area of review polygons with an empty `NoArtPenDate`");
+                            NotificationService.NotifyOfValidationSuccess();
 
                             progressDialog.Hide();
 
                             return;
                         }
 
+                        Log.Verbose("Finding related records to {ids}", ids);
+
                         foreach (var id in ids) {
-                            if (!relationshipClass.GetRowsRelatedToOriginRows(new[] { id }).Any()) {
+                            var rows = relationshipClass.GetRowsRelatedToOriginRows(new[] { id });
+                            if (!rows.Any()) {
                                 problems.Add(id);
+                            } else {
+                                foreach (var row in rows) {
+                                    row.Dispose();
+                                }
                             }
                         }
 
@@ -149,20 +158,23 @@ namespace uic_addin.Controls {
                     }
 
                     if (problems.Count == 0) {
-                        NotificationService.Notify("🚀 Every Area Of Review with a NoArtPenDate has an ArtPen record 🚀");
+                        NotificationService.NotifyOfValidationSuccess();
 
                         progressDialog.Hide();
-
-                        Log.Debug("Finished aor artpen Validation");
 
                         return;
                     }
 
-                    var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                            .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                            .GetTable().GetName().SplitAndTakeLast('.'),
-                            "UICAreaOfReview".SplitAndTakeLast('.'),
-                            StringComparison.InvariantCultureIgnoreCase));
+                    var layerName = "UICAreaOfReview";
+                    var layer = LayerService.GetLayer(layerName, MapView.Active.Map);
+
+                    if (layer == null) {
+                        NotificationService.NotifyOfMissingLayer(layerName);
+
+                        progressDialog.Hide();
+
+                        return;
+                    }
 
                     MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
                         { layer, problems }
@@ -172,10 +184,11 @@ namespace uic_addin.Controls {
 
                     progressDialog.Hide();
 
-                    Log.Verbose("Zooming to selected");
-                    await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
+                    NotificationService.NotifyOfValidationFailure(problems.Count);
 
-                    NotificationService.Notify($"There are {problems.Count} area of reviews that should have artificial penetration records");
+                    Log.Verbose("Zooming to selected");
+
+                    await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
 
                     Log.Debug("Finished aor artpen Validation");
                 }

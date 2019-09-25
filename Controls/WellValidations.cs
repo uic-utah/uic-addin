@@ -7,72 +7,75 @@ using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using Serilog;
-using uic_addin.Extensions;
 using uic_addin.Services;
 
 
 namespace uic_addin.Controls {
     internal class WellOperatingStatus : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(async () => {
-            Log.Debug("Running Well Operating Status Validation");
+            Log.Debug("Running well operating status validation");
 
-            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                    .GetTable().GetName().SplitAndTakeLast('.'),
-                    "uicWell".SplitAndTakeLast('.'),
-                    StringComparison.InvariantCultureIgnoreCase));
+            const string layerName = "UICWell";
+            var layer = LayerService.GetLayer(layerName, MapView.Active.Map);
 
             if (layer == null) {
-                Log.Warning("Could not find well");
-
-                NotificationService.Notify("The uicWell table could not be found. " +
-                            "Please add it to your map.");
+                NotificationService.NotifyOfMissingLayer(layerName);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            Log.Verbose("Selecting wells");
-
-            IGPResult results;
+            IGPResult result;
             var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "not exists (select 1 from UIC.DBO.UICWellOperatingStatus b where b.WELL_FK = UIC.DBO.UICWell.GUID)");
             var progSrc = new CancelableProgressorSource(progressDialog);
 
+            Log.Verbose("management.SelectLayerByAttribute on {layer} with {@params}", layerName, parameters);
+
             try {
-                results = await Geoprocessing.ExecuteToolAsync(
+                result = await Geoprocessing.ExecuteToolAsync(
                     "management.SelectLayerByAttribute",
                     parameters,
                     null,
                     new CancelableProgressorSource(progressDialog).Progressor,
                     GPExecuteToolFlags.Default);
             } catch (Exception ex) {
-                Log.Error(ex, "Select layer by attribute {@parameters}", parameters);
-
-                NotificationService.Notify("The tool crashed");
+                NotificationService.NotifyOfGpCrash(ex, parameters);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            var problems = Convert.ToInt32(results.Values[1]);
+            if (result.IsFailed || string.IsNullOrEmpty(result?.ReturnValue)) {
+                NotificationService.NotifyOfGpFailure(result, parameters);
 
-            if (problems == 0) {
-                NotificationService.Notify("🚀 Every Well has an Operating Status record 🚀");
+                progressDialog.Hide();
+
+                return;
             }
 
-            NotificationService.Notify($"There are {problems} wells with no Operating Status record. " +
-                                       "They problem wells have been selected.");
+            var problems = Convert.ToInt32(result?.Values[1]);
+
+            if (problems == 0) {
+                NotificationService.NotifyOfValidationSuccess();
+
+                progressDialog.Hide();
+
+                return;
+            }
+
+            progressDialog.Hide();
+
+            NotificationService.NotifyOfValidationFailure(problems);
 
             Log.Verbose("Zooming to selected");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
-            progressDialog.Hide();
 
             Log.Debug("Finished Well Operating Status Validation");
         });
@@ -82,60 +85,66 @@ namespace uic_addin.Controls {
         protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Authorization Validation");
 
-            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             progressDialog.Show();
 
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                    .GetTable().GetName().SplitAndTakeLast('.'),
-                    "uicWell".SplitAndTakeLast('.'),
-                    StringComparison.InvariantCultureIgnoreCase));
+            const string layerName = "UICWell";
+            var layer = LayerService.GetLayer(layerName, MapView.Active.Map);
 
             if (layer == null) {
-                Log.Warning("Could not find well");
-
-                NotificationService.Notify("🔍 The uicWell table could not be found. " +
-                                           "Please add it to your map.");
-
-                return;
-            }
-
-            Log.Verbose("Selecting Wells");
-
-            IGPResult results;
-            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK IS NULL");
-            var progSrc = new CancelableProgressorSource(progressDialog);
-
-            try {
-                results = await Geoprocessing.ExecuteToolAsync(
-                    "management.SelectLayerByAttribute",
-                    parameters,
-                    null,
-                    new CancelableProgressorSource(progressDialog).Progressor,
-                    GPExecuteToolFlags.Default);
-            } catch (Exception ex) {
-                Log.Error(ex, "Select layer by attribute {@parameters}", parameters);
-
-                NotificationService.Notify("The tool crashed");
+                NotificationService.NotifyOfMissingLayer(layerName);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            var problems = Convert.ToInt32(results.Values[1]);
+            IGPResult result;
+            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK IS NULL");
+            var progSrc = new CancelableProgressorSource(progressDialog);
 
-            if (problems == 0) {
-                NotificationService.Notify("🚀 Every Well has an Authorization record 🚀");
+            Log.Verbose("management.SelectLayerByAttribute on {layer} with {@params}", layerName, parameters);
+
+            try {
+                result = await Geoprocessing.ExecuteToolAsync(
+                    "management.SelectLayerByAttribute",
+                    parameters,
+                    null,
+                    new CancelableProgressorSource(progressDialog).Progressor,
+                    GPExecuteToolFlags.Default);
+            } catch (Exception ex) {
+                NotificationService.NotifyOfGpCrash(ex, parameters);
+
+                progressDialog.Hide();
+
+                return;
             }
 
-            NotificationService.Notify($"There are {problems} wells with no Authorization. " +
-                                       "They problem wells have been selected.");
+            if (result.IsFailed || string.IsNullOrEmpty(result?.ReturnValue)) {
+                NotificationService.NotifyOfGpFailure(result, parameters);
+
+                progressDialog.Hide();
+
+                return;
+            }
+
+            var problems = Convert.ToInt32(result?.Values[1]);
+
+            if (problems == 0) {
+                NotificationService.NotifyOfValidationSuccess();
+
+                progressDialog.Hide();
+
+                return;
+            }
+
+            progressDialog.Hide();
+
+            NotificationService.NotifyOfValidationFailure(problems);
 
             Log.Verbose("Zooming to selected");
 
             await MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
-            progressDialog.Hide();
 
             Log.Debug("Finished Authorization Validation");
         });
@@ -143,77 +152,74 @@ namespace uic_addin.Controls {
 
     internal class AreaOfReview : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(() => {
-            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
+            Log.Debug("Running Area of Review Validation");
+
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
-            Log.Debug("Running Area of Review Validation");
-
-            var wells = LayerService.FindLayer("uicWell", MapView.Active.Map);
-
-            progressor.Value = 10;
-
-            if (wells == null) {
-                Log.Warning("Could not find well");
-
-                NotificationService.Notify("The uicWell table could not be found. " +
-                            "Please add it to your map.");
-
-                progressDialog.Hide();
-
-                return;
-            }
-
-            var filter = new QueryFilter {
-                SubFields = "OBJECTID,AUTHORIZATION_FK",
-                WhereClause = "Authorization_FK is not null AND AOR_FK is null"
-            };
-
-            Log.Verbose("Getting wells with an authorization but no area of review");
-
             var authorizations = new Dictionary<string, List<long>>();
-            using (var cursor = wells.Search(filter)) {
-                while (cursor.MoveNext()) {
-                    var oid = Convert.ToInt64(cursor.Current["OBJECTID"]);
-                    var guid = Convert.ToString(cursor.Current["AUTHORIZATION_FK"]);
+            var noAreaOfReview = new HashSet<long>();
 
-                    if (authorizations.ContainsKey(guid)) {
-                        authorizations[guid].Add(oid);
+            var tableName = "UICWell";
+            using (var table = LayerService.GetTableFromLayersOrTables("UICWell", MapView.Active.Map)) {
+                progressor.Value = 10;
 
-                        continue;
+                if (table == null) {
+                    NotificationService.NotifyOfMissingLayer(tableName);
+
+                    progressDialog.Hide();
+
+                    return;
+                }
+
+                var filter = new QueryFilter {
+                    SubFields = "OBJECTID,AUTHORIZATION_FK",
+                    WhereClause = "Authorization_FK is not null AND AOR_FK is null"
+                };
+
+                Log.Verbose("Getting wells with an authorization but no area of review");
+
+                using (var cursor = table.Search(filter)) {
+                    while (cursor.MoveNext()) {
+                        var oid = Convert.ToInt64(cursor.Current["OBJECTID"]);
+                        var guid = Convert.ToString(cursor.Current["AUTHORIZATION_FK"]);
+
+                        if (authorizations.ContainsKey(guid)) {
+                            authorizations[guid].Add(oid);
+
+                            continue;
+                        }
+
+                        authorizations.Add(guid, new List<long> { oid });
                     }
-
-                    authorizations.Add(guid, new List<long> { oid });
                 }
             }
 
+            Log.Verbose("Got authorizations {dict}", authorizations);
+
             progressor.Value = 40;
 
-            var authorization = LayerService.FindLayer("uicAuthorization", MapView.Active.Map);
-
+            tableName = "UICAuthorization";
+            var table2 = LayerService.GetStandaloneTable(tableName, MapView.Active.Map);
             progressor.Value = 50;
 
-            if (authorization == null) {
-                Log.Warning("Could not find uicAuthorization!");
-
-                NotificationService.Notify("The uicAuthorization table could not be found. " +
-                            "Please add it to your map.");
+            if (table2 == null) {
+                NotificationService.NotifyOfMissingLayer(tableName);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            filter = new QueryFilter {
+            var filter2 = new QueryFilter {
                 SubFields = "GUID",
                 WhereClause = $"AuthorizationType IN ('IP', 'AP') AND GUID IN ({string.Join(",", authorizations.Keys.Select(x => $"'{x}'"))})"
             };
 
-            Log.Verbose("Getting well authorizations with type IP or AP");
+            Log.Verbose("searching for well authorizations with type IP or AP");
 
-            var noAreaOfReview = new HashSet<long>();
-
-            using (var cursor = authorization.Search(filter)) {
+            using (var cursor = table2.Search(filter2)) {
                 while (cursor.MoveNext()) {
                     var guid = Convert.ToString(cursor.Current["GUID"]);
 
@@ -221,10 +227,12 @@ namespace uic_addin.Controls {
                 }
             }
 
+            Log.Verbose("got the guids {dict}", authorizations);
+
             progressor.Value = 90;
 
             if (noAreaOfReview.Count == 0) {
-                NotificationService.Notify("🚀 Every Area of Review has an authorization 🚀");
+                NotificationService.NotifyOfValidationSuccess();
 
                 progressDialog.Hide();
 
@@ -233,11 +241,16 @@ namespace uic_addin.Controls {
 
             Log.Verbose("Found {count} wells with no AOR with an authorization of IP or AP", noAreaOfReview.Count);
 
-            var layer = MapView.Active.Map.GetLayersAsFlattenedList()
-                .FirstOrDefault(x => string.Equals(((BasicFeatureLayer)x)
-                    .GetTable().GetName().SplitAndTakeLast('.'),
-                    "uicWell".SplitAndTakeLast('.'),
-                    StringComparison.InvariantCultureIgnoreCase));
+            var layerName = "UICWell";
+            var layer = LayerService.GetLayer(layerName, MapView.Active.Map);
+
+            if (layer == null) {
+                NotificationService.NotifyOfMissingLayer(layerName);
+
+                progressDialog.Hide();
+
+                return;
+            }
 
             Log.Verbose("Selecting Wells");
 
@@ -251,11 +264,11 @@ namespace uic_addin.Controls {
 
             progressDialog.Hide();
 
-            Log.Verbose("Zooming to selected");
-            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
+            NotificationService.NotifyOfValidationFailure(noAreaOfReview.Count);
 
-            NotificationService.Notify($"There are {noAreaOfReview.Count} wells with an AuthorizationType of IP or AP that do not " +
-                            "have an Area of review polygon. They have been selected.");
+            Log.Verbose("Zooming to selected");
+
+            MapView.Active.ZoomToSelectedAsync(TimeSpan.FromSeconds(1.5));
 
             Log.Debug("Finished Authorization Validation");
         });
