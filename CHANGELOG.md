@@ -1,3 +1,12 @@
+# [2.0.0-beta.6](https://github.com/agrc/uic-addin/compare/2.0.0-beta.5...2.0.0-beta.6) (2019-09-25)
+
+
+### Bug Fixes
+
+* spelling ([540dddf](https://github.com/agrc/uic-addin/commit/540dddf)), closes [#41](https://github.com/agrc/uic-addin/issues/41)
+
+
+
 # [2.0.0-beta.5](https://github.com/agrc/uic-addin/compare/2.0.0-beta.4...2.0.0-beta.5) (2019-09-25)
 
 
