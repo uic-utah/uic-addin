@@ -100,9 +100,9 @@
           </tooltip>
         </button>
         <button id="AoR_Missing_ArtPen" caption="no artificial penetration" keytip="ua"
-                className="uic_addin.Controls.AoRButton" loadOnClick="true"
+                className="uic_addin.Controls.AorArtPen" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
-                condition="has_map_and_implementation">
+                condition="esri_mapping_mapPane">
           <tooltip heading="Area of Review Validations">
             Find area of review records without an artificial penetration<disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
           </tooltip>
