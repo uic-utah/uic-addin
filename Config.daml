@@ -24,7 +24,7 @@
         <group id="UICValidationGroup" caption="Validation" keytip="uicvalidtion" appearsOnAddInTab="false">
           <toolPalette refID="Well_Tools" size="large" />
           <toolPalette refID="Authorization_Tools" size="large" />
-          <toolPalette refID="AreaOfReaviw_Tools" size="large" />
+          <toolPalette refID="AreaOfReview_Tools" size="large" />
         </group>
         <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
           <button refID="NaicsFinderPaneOpenButton" size="large" />
@@ -103,7 +103,7 @@
                 className="uic_addin.Controls.AorArtPen" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
                 condition="esri_mapping_mapPane">
-          <tooltip heading="Area of Review Validations">
+          <tooltip heading="AOR Validations">
             Find area of review records without an artificial penetration<disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
           </tooltip>
         </button>
@@ -141,7 +141,7 @@
           <button refID="Authorization_Missing_Action" />
           <button refID="Well_Missing_AoR" />
         </buttonPalette>
-        <buttonPalette id="AreaOfReaviw_Tools" caption="Area of Reaviw Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
+        <buttonPalette id="AreaOfReview_Tools" caption="AOR Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
           <button refID="AoR_Missing_ArtPen" />
           <button refID="AoR_Missing_Authorization" />
         </buttonPalette>
