@@ -91,6 +91,14 @@
             Find authorizations without an authorization action<disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
           </tooltip>
         </button>
+        <button id="Authorization_Missing_Facility" caption="no related facility" keytip="ua"
+                className="uic_addin.Controls.AuthorizationMissingFacilityFk" loadOnClick="true"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="esri_mapping_mapPane">
+          <tooltip heading="Authorization Validations">
+            Find authorizations without a facility<disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
+          </tooltip>
+        </button>
         <button id="AoR_Missing_Authorization" caption="no authorization" keytip="ua"
                 className="uic_addin.Controls.AorAuthorization" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
@@ -139,6 +147,7 @@
         </buttonPalette>
         <buttonPalette id="Authorization_Tools" caption="Authorization Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
           <button refID="Authorization_Missing_Action" />
+          <button refID="Authorization_Missing_Facility" />
           <button refID="Well_Missing_AoR" />
         </buttonPalette>
         <buttonPalette id="AreaOfReview_Tools" caption="AOR Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
