@@ -16,7 +16,7 @@ namespace uic_addin.Controls {
         protected override void OnClick() => ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Well Operating Status Validation");
 
-            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
@@ -82,7 +82,7 @@ namespace uic_addin.Controls {
         protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Authorization Validation");
 
-            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
             progressDialog.Show();
 
             var layer = MapView.Active.Map.GetLayersAsFlattenedList()
@@ -143,7 +143,7 @@ namespace uic_addin.Controls {
 
     internal class AreaOfReview : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(() => {
-            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
@@ -222,6 +222,14 @@ namespace uic_addin.Controls {
             }
 
             progressor.Value = 90;
+
+            if (noAreaOfReview.Count == 0) {
+                NotificationService.Notify("🚀 Every Area of Review has an authorization 🚀");
+
+                progressDialog.Hide();
+
+                return;
+            }
 
             Log.Verbose("Found {count} wells with no AOR with an authorization of IP or AP", noAreaOfReview.Count);
 

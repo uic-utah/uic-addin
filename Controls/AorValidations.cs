@@ -13,7 +13,7 @@ namespace uic_addin.Controls {
         protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Authorization missing Action Validation");
 
-            var progressDialog = new ProgressDialog("Running Tool", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("Finding issues...", "Cancel", 100, false);
             progressDialog.Show();
 
             var layer = MapView.Active.Map.GetLayersAsFlattenedList()
