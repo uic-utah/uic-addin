@@ -1,3 +1,21 @@
+# [2.0.0-beta.5](https://github.com/agrc/uic-addin/compare/2.0.0-beta.4...2.0.0-beta.5) (2019-09-25)
+
+
+### Bug Fixes
+
+* **well:** update gp task signature and refactor notifier ([fc47c6f](https://github.com/agrc/uic-addin/commit/fc47c6f)), closes [#35](https://github.com/agrc/uic-addin/issues/35)
+
+
+### Features
+
+* add progress dialog ([fb45013](https://github.com/agrc/uic-addin/commit/fb45013))
+* **aor:** add aor's without penetratiosn ([eeacba1](https://github.com/agrc/uic-addin/commit/eeacba1)), closes [#31](https://github.com/agrc/uic-addin/issues/31)
+* **aor:** add validation for aor without authorization ([183ff68](https://github.com/agrc/uic-addin/commit/183ff68))
+* **well:** add progress to aor ([0724178](https://github.com/agrc/uic-addin/commit/0724178))
+* **well:** add progress to well operating status ([53ce10f](https://github.com/agrc/uic-addin/commit/53ce10f))
+
+
+
 # [2.0.0-beta.4](https://github.com/agrc/uic-addin/compare/2.0.0-beta.3...2.0.0-beta.4) (2019-09-09)
 
 
