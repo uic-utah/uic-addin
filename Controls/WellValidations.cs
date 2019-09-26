@@ -13,7 +13,7 @@ using uic_addin.Services;
 namespace uic_addin.Controls {
     internal class WellOperatingStatus : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(async () => {
-            Log.Debug("Running well operating status validation");
+            Log.Debug("running well operating status validation");
 
             var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
@@ -31,7 +31,7 @@ namespace uic_addin.Controls {
             }
 
             IGPResult result;
-            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "not exists (select 1 from UIC.DBO.UICWellOperatingStatus b where b.WELL_FK = UIC.DBO.UICWell.GUID)");
+            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "not exists (select 1 from UICWellOperatingStatus b where b.WELL_FK = UICWell.GUID)");
             var progSrc = new CancelableProgressorSource(progressDialog);
 
             Log.Verbose("management.SelectLayerByAttribute on {layer} with {@params}", layerName, parameters);
