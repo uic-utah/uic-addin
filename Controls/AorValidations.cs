@@ -127,7 +127,11 @@ namespace uic_addin.Controls {
                     Log.Verbose("Got datastore as a geodatabase");
 
                     Log.Verbose("Opening relationship class and selecting {table} records", tableName);
-                    using (var relationshipClass = gdb.OpenDataset<RelationshipClass>("UICAreaOfReview_UICArtPen"))
+                    var dbSchema = "UDEQ.UICADMIN.";
+#if DEBUG
+                    dbSchema = "UIC.DBO.";
+#endif
+                    using (var relationshipClass = gdb.OpenDataset<RelationshipClass>($"{dbSchema}UICAreaOfReview_UICArtPen"))
                     using (var selection = table.Select(filter, SelectionType.ObjectID, SelectionOption.Normal)) {
                         progressor.Value = 40;
 
