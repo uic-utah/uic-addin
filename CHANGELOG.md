@@ -1,3 +1,18 @@
+# [2.0.0-beta.7](https://github.com/agrc/uic-addin/compare/2.0.0-beta.6...2.0.0-beta.7) (2019-10-17)
+
+
+### Bug Fixes
+
+* **aor:** use fully qualified name in relationship class ([9be986a](https://github.com/agrc/uic-addin/commit/9be986a))
+* **well:** remove db.schema from where clause ([50cdfda](https://github.com/agrc/uic-addin/commit/50cdfda))
+
+
+### Features
+
+* **authorization:** add validation for no facility ([785058f](https://github.com/agrc/uic-addin/commit/785058f)), closes [#36](https://github.com/agrc/uic-addin/issues/36)
+
+
+
 # [2.0.0-beta.6](https://github.com/agrc/uic-addin/compare/2.0.0-beta.5...2.0.0-beta.6) (2019-09-25)
 
 
