@@ -131,7 +131,7 @@ namespace uic_addin.Controls {
 #if DEBUG
                     dbSchema = "UIC.DBO.";
 #endif
-                    using (var relationshipClass = gdb.OpenDataset<RelationshipClass>($"{dbSchema}UICAreaOfReview_UICArtPen"))
+                    using (var relationshipClass = gdb.OpenDataset<RelationshipClass>($"{dbSchema}AreaOfReviewToArtPen"))
                     using (var selection = table.Select(filter, SelectionType.ObjectID, SelectionOption.Normal)) {
                         progressor.Value = 40;
 
