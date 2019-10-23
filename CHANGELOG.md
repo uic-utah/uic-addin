@@ -1,3 +1,12 @@
+# [2.0.0-beta.8](https://github.com/agrc/uic-addin/compare/2.0.0-beta.7...2.0.0-beta.8) (2019-10-23)
+
+
+### Bug Fixes
+
+* match naming convention ([cb459eb](https://github.com/agrc/uic-addin/commit/cb459eb))
+
+
+
 # [2.0.0-beta.7](https://github.com/agrc/uic-addin/compare/2.0.0-beta.6...2.0.0-beta.7) (2019-10-17)
 
 
