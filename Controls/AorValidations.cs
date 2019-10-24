@@ -127,10 +127,19 @@ namespace uic_addin.Controls {
                     Log.Verbose("Got datastore as a geodatabase");
 
                     Log.Verbose("Opening relationship class and selecting {table} records", tableName);
-                    var dbSchema = "UDEQ.UICADMIN.";
-#if DEBUG
-                    dbSchema = "UIC.DBO.";
-#endif
+
+                    // assumes first layer is from active db
+                    var tempLayer = MapView.Active.Map.GetLayersAsFlattenedList().FirstOrDefault();
+
+                    var dbSchema = "";
+                    using (var tempTable = ((BasicFeatureLayer)tempLayer).GetTable())
+                    {
+                        var parts = tempTable.GetName().Split('.');
+                        dbSchema = $"{parts[0]}.{parts[1]}.";
+                    }
+
+                    Log.Verbose("Using db and schema {schema}", dbSchema);
+
                     using (var relationshipClass = gdb.OpenDataset<RelationshipClass>($"{dbSchema}AreaOfReviewToArtPen"))
                     using (var selection = table.Select(filter, SelectionType.ObjectID, SelectionOption.Normal)) {
                         progressor.Value = 40;
