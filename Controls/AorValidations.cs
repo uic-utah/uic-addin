@@ -128,15 +128,7 @@ namespace uic_addin.Controls {
 
                     Log.Verbose("Opening relationship class and selecting {table} records", tableName);
 
-                    // assumes first layer is from active db
-                    var tempLayer = MapView.Active.Map.GetLayersAsFlattenedList().FirstOrDefault();
-
-                    var dbSchema = "";
-                    using (var tempTable = ((BasicFeatureLayer)tempLayer).GetTable())
-                    {
-                        var parts = tempTable.GetName().Split('.');
-                        dbSchema = $"{parts[0]}.{parts[1]}.";
-                    }
+                    var dbSchema = LayerService.GetDbSchema(MapView.Active.Map);
 
                     Log.Verbose("Using db and schema {schema}", dbSchema);
 
