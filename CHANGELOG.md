@@ -1,3 +1,17 @@
+# [2.0.0-beta.9](https://github.com/agrc/uic-addin/compare/2.0.0-beta.8...2.0.0-beta.9) (2019-10-25)
+
+
+### Bug Fixes
+
+* **aor:** use destination records not origin ([851adb7](https://github.com/agrc/uic-addin/commit/851adb7))
+
+
+### Features
+
+* **enforcement:** pre date violation validation ([78a91f6](https://github.com/agrc/uic-addin/commit/78a91f6)), closes [#32](https://github.com/agrc/uic-addin/issues/32)
+
+
+
 # [2.0.0-beta.8](https://github.com/agrc/uic-addin/compare/2.0.0-beta.7...2.0.0-beta.8) (2019-10-23)
 
 
