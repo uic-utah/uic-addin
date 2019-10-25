@@ -149,7 +149,7 @@ namespace uic_addin.Controls {
                         Log.Verbose("Finding related records to {ids}", ids);
 
                         foreach (var id in ids) {
-                            var rows = relationshipClass.GetRowsRelatedToOriginRows(new[] { id });
+                            var rows = relationshipClass.GetRowsRelatedToDestinationRows(new[] { id });
                             if (!rows.Any()) {
                                 problems.Add(id);
                             } else {
