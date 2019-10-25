@@ -25,6 +25,7 @@
           <toolPalette refID="Well_Tools" size="large" />
           <toolPalette refID="Authorization_Tools" size="large" />
           <toolPalette refID="AreaOfReview_Tools" size="large" />
+          <toolPalette refID="Enforcement_Tools" size="large" />
         </group>
         <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
           <button refID="NaicsFinderPaneOpenButton" size="large" />
@@ -115,6 +116,15 @@
             Find area of review records without an artificial penetration<disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
           </tooltip>
         </button>
+        <button id="Enforcement_Date" caption="enforcement date pre dates violation date" loadOnClick="true"
+                className="uic_addin.Controls.EnforcementDate"
+                smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png"
+                condition="esri_mapping_mapPane">
+          <tooltip heading="Enforcement Violations">
+            Find enforcements where the enforcement date is earlier than the violation date
+            <disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
+          </tooltip>
+        </button>
         <button id="CreateAoRButton" caption="Area of review" keytip="ua"
                 className="uic_addin.Controls.AoRButton" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer32.png"
@@ -153,6 +163,9 @@
         <buttonPalette id="AreaOfReview_Tools" caption="AOR Validations" showItemCaption="true" itemsInRow="1" keytip="uwa">
           <button refID="AoR_Missing_ArtPen" />
           <button refID="AoR_Missing_Authorization" />
+        </buttonPalette>
+        <buttonPalette id="Enforcement_Tools" caption="Enforcement Validations" showItemCaption="true" itemsInRow="1">
+          <button refID="Enforcement_Date" />
         </buttonPalette>
       </palettes>
     </insertModule>

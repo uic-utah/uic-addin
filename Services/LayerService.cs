@@ -135,5 +135,23 @@ namespace uic_addin.Services {
                     }
                 }
             }));
+
+
+        public static string GetDbSchema(Map map) {
+            // assumes first layer is from active db
+            var layer = map.GetLayersAsFlattenedList().FirstOrDefault(x => x.Name.ToLower().Contains("well"));
+
+            if (layer is null) {
+                NotificationService.NotifyOfMissingLayer("UICWell");
+
+                throw new Exception("Could not find well layer. Please add it to your active map.");
+            }
+
+            using (var table = ((BasicFeatureLayer)layer).GetTable()) {
+                var parts = table.GetName().Split('.');
+
+                return $"{parts[0]}.{parts[1]}.";
+            }
+        }
     }
 }
