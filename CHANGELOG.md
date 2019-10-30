@@ -1,3 +1,14 @@
+# [2.0.0-beta.10](https://github.com/agrc/uic-addin/compare/2.0.0-beta.9...2.0.0-beta.10) (2019-10-30)
+
+
+### Bug Fixes
+
+* **authoriztion:** check all fk's against pk's instead of empty fk ([049ed32](https://github.com/agrc/uic-addin/commit/049ed32)), closes [#50](https://github.com/agrc/uic-addin/issues/50)
+* check layer type before casting to avoid freezes ([62f230e](https://github.com/agrc/uic-addin/commit/62f230e))
+* update urls to new github org ([4d53384](https://github.com/agrc/uic-addin/commit/4d53384))
+
+
+
 # [2.0.0-beta.9](https://github.com/agrc/uic-addin/compare/2.0.0-beta.8...2.0.0-beta.9) (2019-10-25)
 
 
