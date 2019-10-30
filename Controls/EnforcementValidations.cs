@@ -11,7 +11,7 @@ using uic_addin.Services;
 
 namespace uic_addin.Controls {
     internal class EnforcementDate : Button {
-        protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
+        protected override async void OnClick() => await ThreadService.RunOnBackground(() => {
             Log.Debug("Running enforcement with older date than violation");
 
             var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
