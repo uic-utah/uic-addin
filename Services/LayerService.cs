@@ -29,6 +29,10 @@ namespace uic_addin.Services {
             name = name.SplitAndTakeLast('.');
 
             var match = map.GetLayersAsFlattenedList().FirstOrDefault(layer => {
+                if (!(layer is BasicFeatureLayer)) {
+                    return false;
+                }
+
                 using (var table = ((BasicFeatureLayer)layer).GetTable()) {
                     var currentTableName = table.GetName().SplitAndTakeLast('.');
 
@@ -135,7 +139,6 @@ namespace uic_addin.Services {
                     }
                 }
             }));
-
 
         public static string GetDbSchema(Map map) {
             // assumes first layer is from active db
