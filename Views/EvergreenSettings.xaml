@@ -47,8 +47,8 @@
                    Style="{DynamicResource Esri_TextBlockRegular}"
                    Foreground="{DynamicResource Esri_TextCaptionActiveBrush}"
                    VerticalAlignment="Center">
-          <Hyperlink NavigateUri="https://github.com/agrc/uic-addin" Command="{Binding OpenRepository}">
-            https://github.com/agrc/uic-addin
+          <Hyperlink NavigateUri="https://github.com/uic-utah/uic-addin" Command="{Binding OpenRepository}">
+            https://github.com/uic-utah/uic-addin
           </Hyperlink>
       </TextBlock>
         <CheckBox Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"

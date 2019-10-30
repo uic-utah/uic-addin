@@ -13,7 +13,7 @@ namespace uic_addin.Views {
             CurrentVersion = UicModule.Current.Evergreen.Select(x =>
                              UicModule.Current.EvergreenSettings.CurrentVersion.AddInVersion).ToReactiveProperty();
 
-            OpenRepository.Subscribe(() => Process.Start("https://github.com/agrc/uic-addin"));
+            OpenRepository.Subscribe(() => Process.Start("https://github.com/uic-utah/uic-addin"));
         }
 
         public ReactiveCommand OpenRepository { get; set; } = new ReactiveCommand();

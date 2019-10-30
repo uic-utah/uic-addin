@@ -31,7 +31,7 @@ namespace uic_addin {
         private SubscriptionToken _token;
 
         public ReactiveProperty<Evergreen> Evergreen { get; } = new ReactiveProperty<Evergreen> {
-            Value = new Evergreen("agrc", "uic-addin")
+            Value = new Evergreen("uic-utah", "uic-addin")
         };
 
         public ReactiveProperty<bool> IsCurrent { get; } = new ReactiveProperty<bool>(true);
