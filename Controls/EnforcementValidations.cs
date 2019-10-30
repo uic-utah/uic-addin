@@ -37,8 +37,6 @@ namespace uic_addin.Controls {
 
                 Log.Verbose("searching for enforcements with an enforcement date");
 
-                Log.Verbose("searching for area of review records with no art pen date");
-
                 var problems = new List<long>();
                 using (var gdb = table.GetDatastore() as Geodatabase) {
                     if (gdb == null) {
