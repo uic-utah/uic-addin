@@ -5,13 +5,17 @@ using Serilog;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Core.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace uic_addin.Controls {
     internal class AuthorizationAction : Button {
         protected override async void OnClick() => await ThreadService.RunOnBackground(async () => {
             Log.Debug("Running Authorization missing Action Validation");
 
-            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", 100, false);
+            var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
             const string layerName = "UICAuthorizationAction";
@@ -25,39 +29,51 @@ namespace uic_addin.Controls {
                 return;
             }
 
-            IGPResult result = null;
-            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "Authorization_FK IS NULL");
-            var progSrc = new CancelableProgressorSource(progressDialog);
+            progressor.Value = 10;
 
-            Log.Verbose("management.SelectLayerByAttribute on {layer} with {@params}", layerName, parameters);
+            const string parentLayerName = "UICAuthorization";
+            var parentLayer = LayerService.GetStandaloneTable(parentLayerName, MapView.Active.Map);
 
-            try {
-                result = await Geoprocessing.ExecuteToolAsync(
-                     "management.SelectLayerByAttribute",
-                     parameters,
-                     null,
-                     new CancelableProgressorSource(progressDialog).Progressor,
-                     GPExecuteToolFlags.Default
-                );
-            } catch (Exception ex) {
-                NotificationService.NotifyOfGpCrash(ex, parameters);
+            if (parentLayer == null) {
+                NotificationService.NotifyOfMissingLayer(parentLayerName);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            if (result.IsFailed || string.IsNullOrEmpty(result?.ReturnValue)) {
-                NotificationService.NotifyOfGpFailure(result, parameters);
+            progressor.Value = 20;
 
-                progressDialog.Hide();
+            var foreignKeys = new HashSet<string>();
+            var primaryKeys = new HashSet<string>();
 
-                return;
+            using (var cursor = layer.Search(new QueryFilter {
+                SubFields = "Authorization_FK"
+            })) {
+                while (cursor.MoveNext()){
+                    var fk = Convert.ToString(cursor.Current["AUTHORIZATION_FK"]);
+
+                    foreignKeys.Add(fk);
+                }
             }
 
-            var problems = Convert.ToInt32(result?.Values[1]);
+            progressor.Value = 50;
 
-            if (problems == 0) {
+            using (var cursor = parentLayer.Search(new QueryFilter{
+                SubFields = "GUID"
+            })) {
+                while (cursor.MoveNext()) {
+                    var fk = Convert.ToString(cursor.Current["GUID"]);
+
+                    primaryKeys.Add(fk);
+                }
+            }
+
+            progressor.Value = 80;
+
+            primaryKeys.ExceptWith(foreignKeys);
+
+            if (primaryKeys.Count == 0) {
                 NotificationService.NotifyOfValidationSuccess();
 
                 progressDialog.Hide();
@@ -65,9 +81,30 @@ namespace uic_addin.Controls {
                 return;
             }
 
+            var problems = new List<long>(primaryKeys.Count);
+
+            using (var cursor = parentLayer.Search(new QueryFilter {
+                SubFields = "OBJECTID",
+                WhereClause = $"GUID IN ({string.Join(",", primaryKeys.Select(x => $"'{x}'"))})"
+            })) {
+                while (cursor.MoveNext()) {
+                    var id = cursor.Current.GetObjectID();
+
+                    problems.Add(id);
+                }
+            }
+
+            progressor.Value = 90;
+
+            MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
+                { parentLayer, problems }
+            });
+
+            progressor.Value = 100;
+
             progressDialog.Hide();
 
-            NotificationService.NotifyOfValidationFailure(problems);
+            NotificationService.NotifyOfValidationFailure(problems.Count);
 
             Log.Verbose("Zooming to selected");
 
