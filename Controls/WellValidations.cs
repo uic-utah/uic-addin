@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -13,36 +14,40 @@ using uic_addin.Services;
 namespace uic_addin.Controls {
     internal class WellOperatingStatus : Button {
         protected override void OnClick() => ThreadService.RunOnBackground(async () => {
-            Log.Debug("running well operating status validation");
+            Log.Debug("running well missing operating status validation");
 
-            var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
+            var progressDialog = new ProgressDialog("🔍 Finding issues...", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
             progressDialog.Show();
 
-            const string layerName = "UICWell";
-            var layer = LayerService.GetLayer(layerName, MapView.Active.Map);
+            const string tableName = "UICWell";
+            const string childTableName = "UICWellOperatingStatus";
+
+            var layer = LayerService.GetLayer(tableName, MapView.Active.Map);
+
+            progressor.Value = 10;
 
             if (layer == null) {
-                NotificationService.NotifyOfMissingLayer(layerName);
+                NotificationService.NotifyOfMissingLayer(tableName);
 
                 progressDialog.Hide();
 
                 return;
             }
 
-            IGPResult result;
-            var parameters = Geoprocessing.MakeValueArray(layer, "NEW_SELECTION", "not exists (select 1 from UICWellOperatingStatus b where b.WELL_FK = UICWell.GUID)");
-            var progSrc = new CancelableProgressorSource(progressDialog);
+            IGPResult result = null;
+            var parameters = Geoprocessing.MakeValueArray(layer);
 
-            Log.Verbose("management.SelectLayerByAttribute on {layer} with {@params}", layerName, parameters);
+            Log.Verbose("management.GetCount on {layer}", tableName);
 
+            var cts = new CancellationTokenSource();
             try {
                 result = await Geoprocessing.ExecuteToolAsync(
-                    "management.SelectLayerByAttribute",
-                    parameters,
-                    null,
-                    new CancelableProgressorSource(progressDialog).Progressor,
-                    GPExecuteToolFlags.Default);
+                        "management.GetCount",
+                        parameters,
+                        null,
+                        cts.Token
+                );
             } catch (Exception ex) {
                 NotificationService.NotifyOfGpCrash(ex, parameters);
 
@@ -59,9 +64,74 @@ namespace uic_addin.Controls {
                 return;
             }
 
-            var problems = Convert.ToInt32(result?.Values[1]);
+            progressor.Value = 20;
 
-            if (problems == 0) {
+            var total = Convert.ToInt32(result?.Values[0]);
+            Log.Verbose("found {records} well records", total);
+
+            var perRecordTick = 60F / total;
+            float startingPoint = 20;
+
+            var wellPks = new Dictionary<string, long>(total);
+            var primaryKeys = new HashSet<string>();
+            var foreignKeys = new HashSet<string>();
+
+            using (var parentTable = LayerService.GetTableFromLayersOrTables(tableName, MapView.Active.Map))
+            using (var childTable = LayerService.GetTableFromLayersOrTables(childTableName, MapView.Active.Map)) {
+                if (childTable == null) {
+                    NotificationService.NotifyOfMissingLayer(childTableName);
+
+                    progressDialog.Hide();
+
+                    return;
+                }
+
+                var filter = new QueryFilter {
+                    SubFields = "OBJECTID,GUID"
+                };
+
+                using (var cursor = parentTable.Search(filter, true)) {
+                    var guidIndex = cursor.FindField("GUID");
+
+                    while (cursor.MoveNext()) {
+                        var id = cursor.Current.GetObjectID();
+                        var guid = cursor.Current[guidIndex].ToString();
+
+                        wellPks[guid] = id;
+                        primaryKeys.Add(guid);
+
+                        startingPoint += perRecordTick;
+                        var tick = Convert.ToUInt32(startingPoint);
+
+                        if (tick - 5 > progressor.Value) {
+                            progressor.Value = tick;
+                        }
+                    }
+                }
+
+                Log.Verbose("Built set of well primary keys");
+
+                filter.SubFields = "WELL_FK";
+
+                using (var cursor = childTable.Search(filter, true)) {
+                    var guidIndex = cursor.FindField("WELL_FK");
+
+                    while (cursor.MoveNext()) {
+                        var guid = cursor.Current[guidIndex].ToString();
+
+                        foreignKeys.Add(guid);
+                    }
+                }
+
+                Log.Verbose("Built set of well operating status foreign keys");
+                progressor.Value = 90;
+            }
+
+            primaryKeys.ExceptWith(foreignKeys);
+
+            Log.Information("Found {count} issues", primaryKeys.Count);
+
+            if (primaryKeys.Count == 0) {
                 NotificationService.NotifyOfValidationSuccess();
 
                 progressDialog.Hide();
@@ -69,9 +139,21 @@ namespace uic_addin.Controls {
                 return;
             }
 
+            var problems = new List<long>(primaryKeys.Count);
+            problems.AddRange(wellPks.Where(x => primaryKeys.Contains(x.Key)).Select(x => x.Value));
+            Log.Debug("Problem records {items}", problems);
+
+            progressor.Value = 100;
+
+            Log.Verbose("Setting selection");
+
+            MapView.Active.Map.SetSelection(new Dictionary<MapMember, List<long>> {
+                { layer, problems }
+            });
+
             progressDialog.Hide();
 
-            NotificationService.NotifyOfValidationFailure(problems);
+            NotificationService.NotifyOfValidationFailure(problems.Count);
 
             Log.Verbose("Zooming to selected");
 
