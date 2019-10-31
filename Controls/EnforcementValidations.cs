@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using ArcGIS.Core.Data;
-using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
@@ -90,7 +88,7 @@ namespace uic_addin.Controls {
 
                                 var violationString = Convert.ToString(row[violationIndex]);
 
-                                if(violationString is null) {
+                                if (violationString is null) {
                                     row.Dispose();
 
                                     continue;
