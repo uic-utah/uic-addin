@@ -193,6 +193,7 @@
       <DependentUpon>FeedbackControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FeedbackControlViewModel.cs" />
+    <Compile Include="Controls\InspectionValidations.cs" />
     <Compile Include="Controls\PropertiesButton.cs" />
     <Compile Include="Controls\UpdateButton.cs" />
     <Compile Include="Controls\WellValidations.cs" />
