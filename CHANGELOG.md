@@ -1,3 +1,17 @@
+# [2.0.0-beta.11](https://github.com/uic-utah/uic-addin/compare/2.0.0-beta.10...2.0.0-beta.11) (2019-10-31)
+
+
+### Bug Fixes
+
+* **well:** replace gp tool with cursors ([195d6af](https://github.com/uic-utah/uic-addin/commit/195d6af)), closes [#29](https://github.com/uic-utah/uic-addin/issues/29) [#46](https://github.com/uic-utah/uic-addin/issues/46)
+
+
+### Features
+
+* **inspection:** values other than no deficiency require correction ([366a66d](https://github.com/uic-utah/uic-addin/commit/366a66d)), closes [#48](https://github.com/uic-utah/uic-addin/issues/48)
+
+
+
 # [2.0.0-beta.10](https://github.com/agrc/uic-addin/compare/2.0.0-beta.9...2.0.0-beta.10) (2019-10-30)
 
 
