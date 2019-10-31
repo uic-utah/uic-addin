@@ -72,7 +72,7 @@ namespace uic_addin.Controls {
             var perRecordTick = 60F / total;
             float startingPoint = 20;
 
-            var wellPks = new Dictionary<string, long>(total);
+            var idMap = new Dictionary<string, long>(total);
             var primaryKeys = new HashSet<string>();
             var foreignKeys = new HashSet<string>();
 
@@ -97,7 +97,7 @@ namespace uic_addin.Controls {
                         var id = cursor.Current.GetObjectID();
                         var guid = cursor.Current[guidIndex].ToString();
 
-                        wellPks[guid] = id;
+                        idMap[guid] = id;
                         primaryKeys.Add(guid);
 
                         startingPoint += perRecordTick;
@@ -140,7 +140,7 @@ namespace uic_addin.Controls {
             }
 
             var problems = new List<long>(primaryKeys.Count);
-            problems.AddRange(wellPks.Where(x => primaryKeys.Contains(x.Key)).Select(x => x.Value));
+            problems.AddRange(idMap.Where(x => primaryKeys.Contains(x.Key)).Select(x => x.Value));
             Log.Debug("Problem records {items}", problems);
 
             progressor.Value = 100;
