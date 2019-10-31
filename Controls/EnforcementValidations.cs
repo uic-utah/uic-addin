@@ -10,7 +10,7 @@ using uic_addin.Services;
 namespace uic_addin.Controls {
     internal class EnforcementDate : Button {
         protected override async void OnClick() => await ThreadService.RunOnBackground(() => {
-            Log.Debug("Running enforcement with older date than violation");
+            Log.Debug("running enforcement with older date than violation");
 
             var progressDialog = new ProgressDialog("🔍 Finding issues...", "Cancel", 100, false);
             var progressor = new CancelableProgressorSource(progressDialog).Progressor;
@@ -38,18 +38,18 @@ namespace uic_addin.Controls {
                 var problems = new List<long>();
                 using (var gdb = table.GetDatastore() as Geodatabase) {
                     if (gdb == null) {
-                        Log.Warning("Could not get geodatabase object");
+                        Log.Warning("could not get geodatabase object");
 
                         progressDialog.Hide();
                     }
 
-                    Log.Verbose("Got datastore as a geodatabase");
+                    Log.Verbose("got datastore as a geodatabase");
 
-                    Log.Verbose("Opening relationship class and selecting {table} records", tableName);
+                    Log.Verbose("opening relationship class and selecting {table} records", tableName);
 
                     var dbSchema = LayerService.GetDbSchema(MapView.Active.Map);
 
-                    Log.Verbose("Using db and schema {schema}", dbSchema);
+                    Log.Verbose("using db and schema {schema}", dbSchema);
 
                     using (var relationshipClass = gdb.OpenDataset<RelationshipClass>($"{dbSchema}UICViolationToEnforcement"))
                     using (var cursor = table.Search(filter, true)) {
@@ -73,7 +73,7 @@ namespace uic_addin.Controls {
                             return;
                         }
 
-                        Log.Verbose("Finding related records to {ids} records", dateMap.Keys.Count);
+                        Log.Verbose("finding related records to {ids} records", dateMap.Keys.Count);
 
                         foreach (var id in dateMap.Keys) {
                             var rows = relationshipClass.GetRowsRelatedToDestinationRows(new[] { id });
@@ -82,7 +82,7 @@ namespace uic_addin.Controls {
                             foreach (var row in rows) {
                                 var violationIndex = row.FindField("ViolationDate");
                                 if (violationIndex == -1) {
-                                    Log.Verbose("Field not found {field}", "ViolationDate");
+                                    Log.Verbose("field not found {field}", "ViolationDate");
                                     continue;
                                 }
 
@@ -136,7 +136,7 @@ namespace uic_addin.Controls {
 
                     NotificationService.NotifyOfValidationFailure(problems.Count);
 
-                    Log.Debug("Finished enforcement date < violation date validation");
+                    Log.Debug("finished enforcement date < violation date validation");
                 }
             }
         });

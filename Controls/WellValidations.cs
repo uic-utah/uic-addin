@@ -21,7 +21,7 @@ namespace uic_addin.Controls {
             progressDialog.Show();
 
             const string tableName = "UICWell";
-            const string childTableName = "UICWellOperatingStatus";
+            const string relatedTableName = "UICWellOperatingStatus";
 
             var layer = LayerService.GetLayer(tableName, MapView.Active.Map);
 
@@ -77,9 +77,9 @@ namespace uic_addin.Controls {
             var foreignKeys = new HashSet<string>();
 
             using (var parentTable = LayerService.GetTableFromLayersOrTables(tableName, MapView.Active.Map))
-            using (var childTable = LayerService.GetTableFromLayersOrTables(childTableName, MapView.Active.Map)) {
-                if (childTable == null) {
-                    NotificationService.NotifyOfMissingLayer(childTableName);
+            using (var relatedTable = LayerService.GetTableFromLayersOrTables(relatedTableName, MapView.Active.Map)) {
+                if (relatedTable == null) {
+                    NotificationService.NotifyOfMissingLayer(relatedTableName);
 
                     progressDialog.Hide();
 
@@ -109,11 +109,11 @@ namespace uic_addin.Controls {
                     }
                 }
 
-                Log.Verbose("Built set of well primary keys");
+                Log.Verbose("built set of primary keys");
 
                 filter.SubFields = "WELL_FK";
 
-                using (var cursor = childTable.Search(filter, true)) {
+                using (var cursor = relatedTable.Search(filter, true)) {
                     var guidIndex = cursor.FindField("WELL_FK");
 
                     while (cursor.MoveNext()) {
@@ -123,7 +123,7 @@ namespace uic_addin.Controls {
                     }
                 }
 
-                Log.Verbose("Built set of well operating status foreign keys");
+                Log.Verbose("Built set of foreign keys");
                 progressor.Value = 90;
             }
 
