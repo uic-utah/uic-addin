@@ -27,6 +27,7 @@
           <toolPalette refID="AreaOfReview_Tools" size="large" />
           <toolPalette refID="Enforcement_Tools" size="large" />
           <toolPalette refID="Inspection_Tools" size="large" />
+          <toolPalette refID="Violation_Tools" size="large" />
         </group>
         <group id="UICToolGroup" caption="Tools" keytip="uictools" appearsOnAddInTab="false">
           <button refID="NaicsFinderPaneOpenButton" size="large" />
@@ -132,6 +133,13 @@
             <disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
           </tooltip>
         </button>
+        <button id="Violation_Compliance" caption="missing return to compliance date" loadOnClick="true"
+                className="uic_addin.Controls.ViolationCompliance" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/ErrorException32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Violation Violations">
+            Find Violations without a `ReturnToComplianceDate`
+            <disabledText>Activate the UIC mapping pane to enable this tool</disabledText>
+          </tooltip>
+        </button>
         <button id="CreateAoRButton" caption="Area of review" keytip="ua"
                 className="uic_addin.Controls.AoRButton" loadOnClick="true"
                 smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/EditingBuffer32.png"
@@ -176,6 +184,9 @@
         </buttonPalette>
         <buttonPalette id="Inspection_Tools" caption="Inspection Validations" showItemCaption="true" itemsInRow="1">
           <button refID="Inspection_Correction" />
+        </buttonPalette>
+        <buttonPalette id="Violation_Tools" caption="Violation Validations" showItemCaption="true" itemsInRow="1">
+          <button refID="Violation_Compliance" />
         </buttonPalette>
       </palettes>
     </insertModule>

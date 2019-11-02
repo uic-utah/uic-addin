@@ -196,6 +196,7 @@
     <Compile Include="Controls\InspectionValidations.cs" />
     <Compile Include="Controls\PropertiesButton.cs" />
     <Compile Include="Controls\UpdateButton.cs" />
+    <Compile Include="Controls\ViolationValidations.cs" />
     <Compile Include="Controls\WellValidations.cs" />
     <Compile Include="Converters\StringNullOrEmptyToVisibilityConverter.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
